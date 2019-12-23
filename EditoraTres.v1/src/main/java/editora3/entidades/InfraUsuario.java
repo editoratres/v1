@@ -2,7 +2,10 @@ package editora3.entidades;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -32,8 +35,8 @@ public class InfraUsuario implements Serializable {
 	private String usuario;
 
 	//bi-directional many-to-one association to InfraUsuarioPerfil
-	@OneToMany(mappedBy="infraUsuario")
-	private List<InfraUsuarioPerfil> infraUsuarioPerfils;
+	@OneToMany(mappedBy="infraUsuario" ,  cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<InfraUsuarioPerfil> infraUsuarioPerfils;
 
 	public InfraUsuario() {
 	}
@@ -94,11 +97,11 @@ public class InfraUsuario implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public List<InfraUsuarioPerfil> getInfraUsuarioPerfils() {
+	public Set<InfraUsuarioPerfil> getInfraUsuarioPerfils() {
 		return this.infraUsuarioPerfils;
 	}
 
-	public void setInfraUsuarioPerfils(List<InfraUsuarioPerfil> infraUsuarioPerfils) {
+	public void setInfraUsuarioPerfils(Set<InfraUsuarioPerfil> infraUsuarioPerfils) {
 		this.infraUsuarioPerfils = infraUsuarioPerfils;
 	}
 

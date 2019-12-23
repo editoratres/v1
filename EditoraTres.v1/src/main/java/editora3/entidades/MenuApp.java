@@ -13,9 +13,9 @@ import java.util.Set;
  * The persistent class for the menu database table.
  * 
  */
-@Entity
+@Entity 
 @Table(name = "menu")
-@NamedQuery(name="Menu.findAll", query="SELECT m FROM MenuApp m")
+@NamedQuery(name="Menu.findAll", query="SELECT m FROM MenuApp m Where m.nomepai is null order by m.id")
 public class MenuApp implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -57,6 +57,7 @@ public class MenuApp implements Serializable {
 	private Set<MenuOpcoe> menuOpcoesCollection = new HashSet<>();
 
 	@OneToMany(mappedBy = "nomepai", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OrderBy("id ASC")
 	private Set<MenuApp> menuCollection = new HashSet<>();
 
 	@JoinColumn(name = "nomepai", referencedColumnName = "id")

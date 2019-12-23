@@ -1,4 +1,4 @@
-package eiditora3.infra;
+package editora3.infra;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,8 +12,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,7 +37,7 @@ import editora3.util.JsfUtil;
  * @author Fernando
  */
 @Named("interfaceMenuHtml")
-@ViewScoped
+@SessionScoped
 public class InterfaceMenuHtml implements Serializable{
    
     @Inject
@@ -44,6 +48,7 @@ public class InterfaceMenuHtml implements Serializable{
     private MenuFacade menuFacade;
     private ArrayList<MenuItemApp> itens;
     private MenuItemApp _menuapp;
+    private String idsessao=null;
      public ArrayList<MenuItemApp> getMenuModel(){
         
       if(getItens()==null){  
@@ -114,66 +119,73 @@ public class InterfaceMenuHtml implements Serializable{
     public ArrayList<MenuItemApp> GerarModeloMenuHtml(Collection<MenuApp> menus, MenuItemApp pai){
         ArrayList<MenuItemApp> _menuAppItens = new ArrayList<MenuItemApp>();  
         try {
-              
+        	 boolean Permitido=true;
               for (Iterator<MenuApp> iterator = menus.iterator(); iterator.hasNext();) {
                 MenuApp menuapp = iterator.next();
                 //MenuItemApp item = new MenuItemApp();
                 MenuItemApp item = new MenuItemApp();
-                if(menuapp.getMenuOpcoesCollection().isEmpty()){
+                ArrayList<MenuItemApp> filhos =null;
+                if(!menuapp.getMenuOpcoesCollection().isEmpty()){
                     //SubMenus
-                     
-                     item.setID(menuapp.getId().toString());
-                     item.setLabel(menuapp.getDescricao());
-                     //menu.setExpanded(true);
-                     if(menuapp.getIcone()!=null){
-                         item.setIcone(menuapp.getIcone());
-                     }                    
-                                       
-                    if(menuapp.getMenuOpcoesCollection().size()>0){ 
-                      GerarModeloMenuHtml(menuapp.getMenuCollection(),item);
-                    }
-                    
-                    if(pai!=null){
-                        pai.getItens().add(item);
-                         _menuAppItens.add(pai);
-                     }else{
-                        _menuAppItens.add(item);
-                        //break;
-                     }
-                }else{
-                   
-                     item.setID(menuapp.getId().toString());
-                     item.setLabel(menuapp.getDescricao());
+                
+                	// item.setID(menuapp.getId().toString());
+                     //item.setLabel(menuapp.getDescricao());
                      
                      //item.setValue(menuapp.getDescricao());                
                      //item.getChildren()
-                     if(menuapp.getIcone()!=null){
-                         item.setIcone(menuapp.getIcone());
-                     }
+                     //if(menuapp.getIcone()!=null){
+                     //    item.setIcone(menuapp.getIcone());
+                     //}
                      String Contexto = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
                      MenuOpcoe next = menuapp.getMenuOpcoesCollection().iterator().next();
-                     boolean Permitido=false;
+                    
                      if(next!=null){
                          String Modulo  = next.getInfraModulo().getModulo();
-                         String estagioApp =  (getLoginInfo().getEstagioaplicacao()==null ? "Producao" : getLoginInfo().getEstagioaplicacao());
-                         if(!estagioApp.equalsIgnoreCase("Development")){
-                            List<InfraTipoPerfilDet> LocalizarRecurso = getInfraUsuarioFacade().LocalizarRecurso(getLoginInfo().getUsuario_logado().getIdusuario(), Modulo);                         
-                            if(LocalizarRecurso!=null && LocalizarRecurso.size()>0){
-                                InfraTipoPerfilDet recurso = LocalizarRecurso.get(0);
-                                Permitido = recurso.getAcessar();
-                            }
-                         }else{
-                             Permitido=true;
-                         }
-                         String URL = Modulo.replace(".xhtml", "");
-                         item.setURL(Contexto +"/"+ URL.substring(1)+".jsf");                     
+//                         String estagioApp =  (getLoginInfo().getEstagioaplicacao()==null ? "Producao" : getLoginInfo().getEstagioaplicacao());
+//                         if(!estagioApp.equalsIgnoreCase("Development")){
+//                            List<InfraTipoPerfilDet> LocalizarRecurso = getInfraUsuarioFacade().LocalizarRecurso(getLoginInfo().getUsuario_logado().getIdusuario(), Modulo);                         
+//                            if(LocalizarRecurso!=null && LocalizarRecurso.size()>0){
+//                                InfraTipoPerfilDet recurso = LocalizarRecurso.get(0);
+//                                Permitido = recurso.getAcessar();
+//                            }
+//                         }else{
+//                             Permitido=true;
+//                         }
+                         //String URL = Modulo.replace(".xhtml", "");
+                         //item.setURL(Contexto +"/"+ URL.substring(1)+".jsf");
+                         item.setURL(Modulo);
                     }
-                    if(Permitido){  
-                      pai.getItens().add(item);
-                      _menuAppItens.add(pai);
-                    }
+//                    if(Permitido){  
+//                      pai.getItens().add(item);
+//                      _menuAppItens.add(pai);
+//                    }
                 }
+                
+				item.setID(menuapp.getId().toString());
+				item.setLabel(menuapp.getDescricao());
+				//item.setURL(" ");
+
+				// menu.setExpanded(true);
+				if (menuapp.getIcone() != null) {
+					item.setIcone(menuapp.getIcone());
+				}
+
+				if (!menuapp.getMenuOpcoesCollection().isEmpty() || !menuapp.getMenuCollection().isEmpty()) {
+					filhos = GerarModeloMenuHtml(menuapp.getMenuCollection(), item);
+				}
+				if (filhos != null) {
+					// pai.getItens().add(item);
+					item.getItens().addAll(filhos);
+					_menuAppItens.add(item);
+				} else {
+					_menuAppItens.add(item);
+					// break;
+				}
+                    
+                    
+                
                 if(menuapp.getNomepai()==null){
+             
                     break;
                 }
               }
@@ -201,16 +213,16 @@ public class InterfaceMenuHtml implements Serializable{
     /**
      * @return the itens
      */
-    
+    private void iniciarMenus() {
+    	 List<MenuApp> findAll = getMenuFacade().findAll();
+         ArrayList<MenuItemApp> menu = GerarModeloMenuHtml(findAll,null);  
+         
+         setItens(menu);
+         
+         NosVazio((ArrayList<MenuItemApp>) itens.clone());
+    }
     public ArrayList<MenuItemApp> getItens() {
-       if (itens == null) {
-            //setItens(new ArrayList<>());
-            List<MenuApp> findAll = getMenuFacade().findAll();
-            ArrayList<MenuItemApp> menu = GerarModeloMenuHtml(findAll,null);  
-            setItens(menu);
-            
-            NosVazio((ArrayList<MenuItemApp>) itens.clone());
-        }
+      
         return itens;
     }
 
@@ -247,6 +259,39 @@ public class InterfaceMenuHtml implements Serializable{
      */
     public void setLoginInfo(LoginInfo loginInfo) {
         this.loginInfo = loginInfo;
+    }
+    
+    @PostConstruct
+    public void iniciar() {
+    	try {
+    		if(itens==null) {
+        		iniciarMenus();
+        		idsessao= JsfUtil.idSessao();
+        	}else {
+        	    String sessaoAtual =  JsfUtil.idSessao();
+        	    if(!sessaoAtual.equalsIgnoreCase(idsessao)) {
+        	    	idsessao=sessaoAtual;
+        	    	iniciarMenus();
+        	    }
+        	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+    	
+    }
+    private String previousPage = null;
+
+    public void checkF5() {
+		if (itens != null) {
+			String msg = "";
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			String id = viewRoot.getViewId();
+			if (previousPage != null && (previousPage.equals(id))) {
+				iniciarMenus();
+			}
+			previousPage = id;
+		}
     }
 
 }

@@ -1,9 +1,93 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 	<ui:composition>
-			<h:outputLabel>Pagin inicial</h:outputLabel>
+	  <h:form id="_Formulario" >
+			<div class="main-content"  style="background-color: #f3f3f3; overflow: auto;height:100%">
+				<div class="row">
+					<div class="col-md-3">
+						<div class="tile-stats tile-red">
+							<div class="icon">
+								<i class="glyphicon glyphicon-barcode"></i>
+							</div>
+							<div class="num"> 
+								<h:outputLabel id="id_label_boletos_pendentes" value="YYY" />
+							</div>
+							<h3>TEXTO TILE 1</h3>
+						</div>
+					</div>
+	
+					<div class="col-md-3">
+						<div class="tile-stats tile-blue">
+							<div class="icon">
+								<i class="glyphicon glyphicon-usd"></i>
+							</div>
+							<div class="num">
+								<h:outputLabel id="id_label_boletos_pagos" value="XXXX" />
+							</div>
+							<h3>TEXTO TILE 2</h3>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="tile-stats tile-aqua">
+							<div class="icon">
+								<i class="entypo-mail"></i>
+							</div>
+							<div class="num">
+								<h:outputLabel id="id_label_novas_mensagens" value="ZZZZ" />
+							</div>
+							<h3>TEXTO TILE 3</h3>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="tile-stats tile-green">
+							<div class="icon">
+								<i class="glyphicon glyphicon-plus-sign"></i>
+							</div>
+							<div class="num">
+								<h:outputLabel id="id_label_novas_mensagens2" value="WWW" />
+							</div>
+							<h3>TEXTO TILE 3</h3>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-primary  panel-dark " style="height:100%;">
+							<div class="panel-heading">
+								<div class="panel-title">
+									<i class="entypo-key" /><b>Painel 1</b>
+								</div>
+								<div class="panel-options">
+									<p:commandLink style="font-size: 12px" class="entypo-arrows-ccw"
+										id="btAtualizarLiberacoes" />
+								</div>
+							</div>
+							<div class="panel-body">
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							CONTEUDO DO PAINEL PRINCIPAL
+							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	  </h:form>
 	</ui:composition>
 </html>
+

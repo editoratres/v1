@@ -2,25 +2,35 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:c="http://java.sun.com/jsp/jstl/core" >
-     
-    
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" >	
         <c:forEach items="#{node}" var="item" >
             <li class="#{empty node.get(0).URL  ? class_li : ''}">
-                <a href="#{empty item.URL ? '#' :  item.URL}">
-                    <ui:fragment rendered="#{empty item.URL}">
-                        <i class="#{item.icone}"></i>
-                    </ui:fragment>
-                    <span class="title">#{item.label}</span>
-                </a>            
+            	 <p:commandLink  id="btAcionarMenu" rendered="#{not empty item.URL}"
+            	     update="_main_content :_Formulario" 
+            	     actionListener="#{dashboardController.navegar(item.URL)}">
+	            	  <ui:fragment rendered="#{empty item.URL}">
+	                        <i class="#{item.icone}"></i>
+	                    </ui:fragment> 
+	                    <span class="title">#{item.label}</span>
+	                     
+            	</p:commandLink>
+            	<p:commandLink  id="btAcionarMenu2"   rendered="#{empty item.URL}"
+            	    >
+	            	  <ui:fragment rendered="#{empty item.URL}">
+	                        <i class="#{item.icone}"></i>
+	                    </ui:fragment> 
+	                    <span class="title">#{item.label}</span>
+	                     
+            	</p:commandLink>
                 <ui:fragment rendered="#{item.itens.size()>0}">                
                     <ul>
-                        <ui:include src="/menu.xhtml">
+                        <ui:include src="/ui/menu.xhtml">
                             <ui:param name="node" value="#{item.itens}" />                        
                             <ui:param name="class_li" value="has-sub" />
                         </ui:include>                      
                     </ul>
                 </ui:fragment>
-            </li>    
+            </li>
         </c:forEach>
 </ui:composition>

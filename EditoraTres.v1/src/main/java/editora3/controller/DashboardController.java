@@ -3,14 +3,23 @@ package editora3.controller;
 import java.io.Serializable;
 
 import javax.annotation.ManagedBean;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+
+import editora3.infra.InterfaceMenuHtml;
 @Named("dashboardController")
 @SessionScoped
 public class DashboardController implements Serializable {
 	/**
 	 * 
 	 */
+	 
+	@Inject
+	private FlashApp flashApp;
 	private static final long serialVersionUID = 1L;
 	private String paginaAtual="/ui/inicio.xhtml";
 
@@ -22,6 +31,13 @@ public class DashboardController implements Serializable {
 		this.paginaAtual = paginaAtual;
 	}
 	public void navegar(String pagina) {
-		this.paginaAtual= pagina;
+		if(!pagina.isEmpty()) {
+			flashApp.limpar();
+			this.paginaAtual= pagina;
+		}
 	}
+	
+	 public void checkF5() {
+		 paginaAtual="/ui/inicio.xhtml";
+	 }
 }

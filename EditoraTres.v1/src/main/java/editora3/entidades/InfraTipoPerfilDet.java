@@ -27,12 +27,12 @@ public class InfraTipoPerfilDet implements Serializable {
 	private Boolean excluir;
 
 	//bi-directional many-to-one association to InfraModulo
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne()
 	@JoinColumn(name="idmodulo")
 	private InfraModulo infraModulo;
 
 	//bi-directional many-to-one association to InfraTipoPerfilUsuario
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne()
 	@JoinColumn(name="idtipoperfil")
 	private InfraTipoPerfilUsuario infraTipoPerfilUsuario;
 

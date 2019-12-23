@@ -28,7 +28,7 @@ public class LoginInfo implements Serializable {
     private Integer idrepresentante;
     private InfraUsuario usuario_logado;
     private Timestamp logadodesde;
-    private String estagioaplicacao;
+    private String estagioaplicacao="Development";
 
     public LoginInfo() {
         System.out.println("Criou objeto logininfo");

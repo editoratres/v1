@@ -3,14 +3,11 @@
 	<persistence-unit name="EditoraTres.v1">
 		 <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:/editora3</jta-data-source>
-    <class>editora3.entidades.Representante</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
-      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-      <!-- <property name="javax.persistence.schema-generation.create-source" value="metadata-then-script"/> -->
-       
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>  
 		<property name="javax.persistence.sql-load-script-source" value="META-INF/iniciartabelas.sql"/>
     </properties>
 	</persistence-unit>

@@ -19,12 +19,12 @@ public class MenuOpcoe implements Serializable {
 	private Integer id;
 
 	//bi-directional many-to-one association to InfraModulo
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="idmodulo")
 	private InfraModulo infraModulo;
 
 	//bi-directional many-to-one association to Menu
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="menu")
 	private MenuApp menu;
 

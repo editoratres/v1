@@ -2,6 +2,8 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  height: 100vh;
+  
 }
 
 main {
@@ -40,4 +42,77 @@ footer a:hover {
 .footer-copyright {
   background-color: rgba(51,51,51,0.08);
   padding: 15px 0 15px 0;
+}
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}
+
+.semBorda tr, .semBorda td {
+	border: none !important;
+}   
+
+.ui-widget {
+    font-size: 12px !important;
+}
+.ui-layout-north {
+    z-index: 20 !important;
+    overflow: visible !important;;
+}
+.ui-layout-north .ui-layout-unit-content {
+    overflow: visible !important;
+    background-color:#b9bfda;
+}
+.ui-widget-header {
+    text-align: center;
+    text-transform: uppercase;
+}
+.ui-button {
+    margin-top: 10px !important;
+}
+.TextoMedio 
+{
+  text-align: right ; font-size: medium !important
+}
+.public-event, .public-event .fc-event-skin, .public-event a{
+    background-color: green;
+    color: black;
+    border-color: greenyellow;
+}
+
+.centralizar {
+    	width:100px;
+    	height:100px;
+    	position:absolute;
+    	top:50%;
+    	left:50%;
+    	margin-top:-50px;
+    	margin-left:-50px;
+    }
+    
+    .centralizarlogin {
+    	width:100px;
+    	height:80px;
+    	position:absolute;
+    	top:35%;
+    	left:38%;
+    	 
+    }
+    
+.boleto_vencido{
+    background-color:#ffffff !important;
+    color: #ff923a!important;
+    
+}
+.boleto_atrasado{
+    background-color:#ffffff !important;
+    color: #FF3030!important;
+    
+}
+.boleto_avencer{
+    background-color:#ffffff !important;
+    color : #00ffff!important;
+    
+     
 }

@@ -19,7 +19,7 @@ public class InfraUsuarioPerfil implements Serializable {
 	private Integer idperfil;
 
 	//bi-directional many-to-one association to InfraTipoPerfilUsuario
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="idtipoperfil")
 	private InfraTipoPerfilUsuario infraTipoPerfilUsuario;
 

@@ -2,6 +2,8 @@ package editora3.entidades;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.Collection;
 import java.util.List;
 
 
@@ -24,13 +26,14 @@ public class InfraTipoPerfilUsuario implements Serializable {
 	private String tipoperfil;
 
 	//bi-directional many-to-one association to InfraTipoPerfilDet
-	@OneToMany(mappedBy="infraTipoPerfilUsuario")
-	private List<InfraTipoPerfilDet> infraTipoPerfilDets;
+	@OneToMany(mappedBy="infraTipoPerfilUsuario",cascade = {CascadeType.ALL} , fetch = FetchType.EAGER )
+	@OrderBy("idtipoperfildet")
+	private Collection<InfraTipoPerfilDet> infraTipoPerfilDets;
 
-	//bi-directional many-to-one association to InfraUsuarioPerfil
+	/*//bi-directional many-to-one association to InfraUsuarioPerfil
 	@OneToMany(mappedBy="infraTipoPerfilUsuario")
-	private List<InfraUsuarioPerfil> infraUsuarioPerfils;
-
+	private Collection<InfraUsuarioPerfil> infraUsuarioPerfils;
+*/
 	public InfraTipoPerfilUsuario() {
 	}
 
@@ -58,11 +61,11 @@ public class InfraTipoPerfilUsuario implements Serializable {
 		this.tipoperfil = tipoperfil;
 	}
 
-	public List<InfraTipoPerfilDet> getInfraTipoPerfilDets() {
+	public Collection<InfraTipoPerfilDet> getInfraTipoPerfilDets() {
 		return this.infraTipoPerfilDets;
 	}
 
-	public void setInfraTipoPerfilDets(List<InfraTipoPerfilDet> infraTipoPerfilDets) {
+	public void setInfraTipoPerfilDets(Collection<InfraTipoPerfilDet> infraTipoPerfilDets) {
 		this.infraTipoPerfilDets = infraTipoPerfilDets;
 	}
 
@@ -79,16 +82,35 @@ public class InfraTipoPerfilUsuario implements Serializable {
 
 		return infraTipoPerfilDet;
 	}
+	 @Override
+	    public int hashCode() {
+	        int hash = 0;
+	        hash += (idtipoperfil != null ? idtipoperfil.hashCode() : 0);
+	        return hash;
+	    }
 
-	public List<InfraUsuarioPerfil> getInfraUsuarioPerfils() {
+	    @Override
+	    public boolean equals(Object object) {
+	        // TODO: Warning - this method won't work in the case the id fields are not set
+	        if (!(object instanceof InfraTipoPerfilUsuario)) {
+	            return false;
+	        }
+	        InfraTipoPerfilUsuario other = (InfraTipoPerfilUsuario) object;
+	        if ((this.idtipoperfil == null && other.idtipoperfil != null) || (this.idtipoperfil != null && !this.idtipoperfil.equals(other.idtipoperfil))) {
+	            return false;
+	        }
+	        return true;
+	    }
+
+/*	public Collection<InfraUsuarioPerfil> getInfraUsuarioPerfils() {
 		return this.infraUsuarioPerfils;
 	}
 
-	public void setInfraUsuarioPerfils(List<InfraUsuarioPerfil> infraUsuarioPerfils) {
+	public void setInfraUsuarioPerfils(Collection<InfraUsuarioPerfil> infraUsuarioPerfils) {
 		this.infraUsuarioPerfils = infraUsuarioPerfils;
 	}
-
-	public InfraUsuarioPerfil addInfraUsuarioPerfil(InfraUsuarioPerfil infraUsuarioPerfil) {
+*/
+/*	public InfraUsuarioPerfil addInfraUsuarioPerfil(InfraUsuarioPerfil infraUsuarioPerfil) {
 		getInfraUsuarioPerfils().add(infraUsuarioPerfil);
 		infraUsuarioPerfil.setInfraTipoPerfilUsuario(this);
 
@@ -100,6 +122,6 @@ public class InfraTipoPerfilUsuario implements Serializable {
 		infraUsuarioPerfil.setInfraTipoPerfilUsuario(null);
 
 		return infraUsuarioPerfil;
-	}
+	}*/
 
 }
