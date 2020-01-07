@@ -24,6 +24,8 @@ public class InfraTipoPerfilUsuario implements Serializable {
 	private Boolean ativo;
 
 	private String tipoperfil;
+	
+	private boolean usuarioadm;
 
 	//bi-directional many-to-one association to InfraTipoPerfilDet
 	@OneToMany(mappedBy="infraTipoPerfilUsuario",cascade = {CascadeType.ALL} , fetch = FetchType.EAGER )
@@ -101,6 +103,14 @@ public class InfraTipoPerfilUsuario implements Serializable {
 	        }
 	        return true;
 	    }
+
+		public boolean isUsuarioadm() {
+			return usuarioadm;
+		}
+
+		public void setUsuarioadm(boolean usuarioadm) {
+			this.usuarioadm = usuarioadm;
+		}
 
 /*	public Collection<InfraUsuarioPerfil> getInfraUsuarioPerfils() {
 		return this.infraUsuarioPerfils;

@@ -53,9 +53,9 @@
 
 						<header class="logo-env"> <!-- logo -->
 						<div class="logo">
-							<a href="index.html"> <img
+							  <img
 								src="assets/images/editora3final.png" width="200" alt="" />
-							</a>
+							 
 						</div>
 						<br />
 
@@ -80,9 +80,9 @@
 
 							<div class="sui-normal">
 								<a href="#" class="user-link"> <img
-									src="assets/images/thumb-1@2x.png" width="55" alt=""
-									class="img-circle" /> <span>Welcome,</span> <strong>Art
-										Ramadani</strong>
+									src="assets/images/editora3final.png" width="55" alt=""
+									class="img-circle" /> <span>Bem-vindo,</span> 
+									<strong><p:outputLabel value="#{dashboardController.loginInfo.usuario_logado.nome}" /></strong>
 								</a>
 							</div>
 
@@ -90,9 +90,9 @@
 								<!-- You can remove "inline-links" class to make links appear vertically, class "animate-in" will make A elements animateable when click on user profile -->
 								<a href="#"> <i class="entypo-pencil"></i> New Page
 								</a> <a href="mailbox.html"> <i class="entypo-mail"></i> Inbox
-								</a> <a href="extra-lockscreen.html"> <i class="entypo-lock"></i>
+								</a> <p:commandLink action="#{loginInfo.logout()}" >  <i class="entypo-lock"></i>
 									Log Off
-								</a> <span class="close-sui-popup">&times;</span>
+								</p:commandLink> <span class="close-sui-popup">&times;</span>
 								<!-- this is mandatory -->
 							</div>
 						</div>

@@ -11,12 +11,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import editora3.infra.InterfaceMenuHtml;
+import editora3.seguranca.LoginInfo;
 @Named("dashboardController")
 @SessionScoped
 public class DashboardController implements Serializable {
 	/**
 	 * 
 	 */
+	 @Inject
+	 private LoginInfo loginInfo;
 	 
 	@Inject
 	private FlashApp flashApp;
@@ -40,4 +43,15 @@ public class DashboardController implements Serializable {
 	 public void checkF5() {
 		 paginaAtual="/ui/inicio.xhtml";
 	 }
+
+	public LoginInfo getLoginInfo() {
+		return loginInfo;
+	}
+
+	public void setLoginInfo(LoginInfo loginInfo) {
+		this.loginInfo = loginInfo;
+	}
+	
+	 
+	
 }

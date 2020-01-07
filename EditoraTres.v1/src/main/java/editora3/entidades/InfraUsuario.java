@@ -33,6 +33,10 @@ public class InfraUsuario implements Serializable {
 	private String senha;
 
 	private String usuario;
+	
+	private String email;
+	
+	private boolean usuarioadm;
 
 	//bi-directional many-to-one association to InfraUsuarioPerfil
 	@OneToMany(mappedBy="infraUsuario" ,  cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER, orphanRemoval = true)
@@ -117,6 +121,22 @@ public class InfraUsuario implements Serializable {
 		infraUsuarioPerfil.setInfraUsuario(null);
 
 		return infraUsuarioPerfil;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public boolean isUsuarioadm() {
+		return usuarioadm;
+	}
+
+	public void setUsuarioadm(boolean usuarioadm) {
+		this.usuarioadm = usuarioadm;
 	}
 
 }

@@ -8,15 +8,23 @@ package editora3.facade;
  
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import editora3.entidades.InfraModulo;
 import editora3.entidades.InfraTipoPerfilDet;
+import editora3.entidades.InfraTipoPerfilUsuario;
 import editora3.entidades.InfraUsuario;
+import editora3.entidades.InfraUsuarioPerfil;
 import editora3.entidades.Representante;
 import editora3.util.JsfUtil;
 
@@ -30,6 +38,11 @@ public class InfraUsuarioFacade extends AbstractFacade<InfraUsuario> implements 
 
     @PersistenceContext(unitName = "EditoraTres.v1")
     private EntityManager em;
+    
+    @Inject
+    private editora3.facade.InfraModulosFacade InfraModulosFacade;
+
+	//private InfraTipoPerfilUsuario InfraTipoPerfilUsuario infraTipoPerfilUsuario;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -143,7 +156,54 @@ public class InfraUsuarioFacade extends AbstractFacade<InfraUsuario> implements 
         }
         return ret;
     }
+    @Transactional
+    public void signIN(InfraUsuario administrador) {
+    	administrador.setAtivo(true);
+    	administrador.setUsuarioadm(true);
+    	em.persist(administrador);
+    	
     
+     
+    	editora3.entidades.InfraTipoPerfilUsuario perfilAdministrador = gerarPerfilAdministrador();
+    	em.persist(perfilAdministrador);
+    	 
+    	InfraUsuarioPerfil infraUsuarioPerfil = new InfraUsuarioPerfil();
+    	infraUsuarioPerfil.setInfraTipoPerfilUsuario(perfilAdministrador);
+    	infraUsuarioPerfil.setInfraUsuario(administrador);
+    	
+    	em.persist(infraUsuarioPerfil);
+    	
+    	
+    }
+    public InfraTipoPerfilUsuario gerarPerfilAdministrador(){
+    	
+    	InfraTipoPerfilUsuario infraTipoPerfilUsuario = new InfraTipoPerfilUsuario();
+    	infraTipoPerfilUsuario.setAtivo(true);
+    	infraTipoPerfilUsuario.setUsuarioadm(true);
+    	infraTipoPerfilUsuario.setTipoperfil("Administrador");
+        try {
+        	Collection<InfraTipoPerfilDet> _InfraTipoPerfilDetList=new ArrayList<>();       
+        	
+            List<InfraModulo> modulos = InfraModulosFacade.findAll();
+            for (int i = 0; i < modulos.size(); i++) {
+                InfraTipoPerfilDet _InfraTipoPerfilDet = new InfraTipoPerfilDet();
+               // _InfraTipoPerfilDet.setIdtipoperfildet(i);                
+                _InfraTipoPerfilDet.setInfraModulo(modulos.get(i));
+                _InfraTipoPerfilDet.setAcessar(true);
+                _InfraTipoPerfilDet.setCriar(true);
+                _InfraTipoPerfilDet.setEditar(true);
+                _InfraTipoPerfilDet.setExcluir(true);
+                _InfraTipoPerfilDet.setInfraTipoPerfilUsuario(infraTipoPerfilUsuario);
+                _InfraTipoPerfilDetList.add(_InfraTipoPerfilDet);
+            }
+            infraTipoPerfilUsuario.setInfraTipoPerfilDets(_InfraTipoPerfilDetList);
+            
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage("(getModulos) Falha na requisição\n\n" + e.getMessage());
+        }
+       
+       return infraTipoPerfilUsuario;
+    }
     public InfraUsuario Localizar( String usuario ,String senha ){
         InfraUsuario ret=null;
         try {
@@ -243,4 +303,23 @@ public class InfraUsuarioFacade extends AbstractFacade<InfraUsuario> implements 
 
         return ret;
     }
+
+
+	public BigInteger contarUsuarios() {
+		BigInteger ret = BigInteger.ZERO;
+	
+	    try {
+	        String SQL = "SELECT count(*) total "
+	                + "FROM "
+	                + "  INFRA_USUARIO "
+	                ;
+	        Query q = em.createNativeQuery(SQL);
+	
+	        ret = (BigInteger) q.getSingleResult();
+	    } catch (Exception e) {
+	        JsfUtil.addErrorMessage("(contarUsuarios) Falha na requisição" + e.getMessage());
+	    }
+	
+	    return ret;
+	}
 }

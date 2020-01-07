@@ -8,6 +8,7 @@ package editora3.seguranca;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import editora3.entidades.InfraUsuario;
@@ -124,6 +125,15 @@ public class LoginInfo implements Serializable {
      */
     public void setEstagioaplicacao(String estagioaplicacao) {
         this.estagioaplicacao = estagioaplicacao;
+    }
+    
+    public String logout() {
+    	this.idusuariologado=null;
+    	this.usuario_logado=null;
+    	this.logadodesde=null;
+    	this.usuariologado=null;
+    	FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+    	return "/login.xhtml?faces-redirect=true";
     }
 
 }

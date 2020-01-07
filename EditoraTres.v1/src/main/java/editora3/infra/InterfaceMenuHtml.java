@@ -21,7 +21,7 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.context.RequestContext;
+ 
 
 import editora3.entidades.InfraTipoPerfilDet;
 import editora3.entidades.MenuApp;
@@ -120,12 +120,18 @@ public class InterfaceMenuHtml implements Serializable{
         ArrayList<MenuItemApp> _menuAppItens = new ArrayList<MenuItemApp>();  
         try {
         	 boolean Permitido=true;
+        	 MenuApp menupai = menus.iterator().next();
+        	 if( menupai.getNomepai()==null){
+        		 menus =menupai.getMenuCollection();
+        	 }
+        			 
               for (Iterator<MenuApp> iterator = menus.iterator(); iterator.hasNext();) {
                 MenuApp menuapp = iterator.next();
+                //if(menuapp.getNomepai()!=null) {
                 //MenuItemApp item = new MenuItemApp();
                 MenuItemApp item = new MenuItemApp();
                 ArrayList<MenuItemApp> filhos =null;
-                if(!menuapp.getMenuOpcoesCollection().isEmpty()){
+                if(menuapp.getMenuOpcoesCollection()!=null && !menuapp.getMenuOpcoesCollection().isEmpty()){
                     //SubMenus
                 
                 	// item.setID(menuapp.getId().toString());
@@ -141,54 +147,53 @@ public class InterfaceMenuHtml implements Serializable{
                     
                      if(next!=null){
                          String Modulo  = next.getInfraModulo().getModulo();
-//                         String estagioApp =  (getLoginInfo().getEstagioaplicacao()==null ? "Producao" : getLoginInfo().getEstagioaplicacao());
-//                         if(!estagioApp.equalsIgnoreCase("Development")){
-//                            List<InfraTipoPerfilDet> LocalizarRecurso = getInfraUsuarioFacade().LocalizarRecurso(getLoginInfo().getUsuario_logado().getIdusuario(), Modulo);                         
-//                            if(LocalizarRecurso!=null && LocalizarRecurso.size()>0){
-//                                InfraTipoPerfilDet recurso = LocalizarRecurso.get(0);
-//                                Permitido = recurso.getAcessar();
-//                            }
-//                         }else{
-//                             Permitido=true;
-//                         }
+                         String estagioApp =  (getLoginInfo().getEstagioaplicacao()==null ? "Producao" : getLoginInfo().getEstagioaplicacao());
+                         //if(!estagioApp.equalsIgnoreCase("Development")){
+                            List<InfraTipoPerfilDet> LocalizarRecurso = getInfraUsuarioFacade().LocalizarRecurso(getLoginInfo().getUsuario_logado().getIdusuario(), Modulo);                         
+                            if(LocalizarRecurso!=null && LocalizarRecurso.size()>0){
+                                InfraTipoPerfilDet recurso = LocalizarRecurso.get(0);
+                                Permitido = recurso.getAcessar();
+                            }
+                        /* }else{
+                             Permitido=true;
+                         }*/
                          //String URL = Modulo.replace(".xhtml", "");
                          //item.setURL(Contexto +"/"+ URL.substring(1)+".jsf");
                          item.setURL(Modulo);
                     }
-//                    if(Permitido){  
-//                      pai.getItens().add(item);
-//                      _menuAppItens.add(pai);
-//                    }
+                    /*if(Permitido){  
+                      pai.getItens().add(item);
+                      _menuAppItens.add(pai);
+                    }*/
                 }
-                
-				item.setID(menuapp.getId().toString());
-				item.setLabel(menuapp.getDescricao());
-				//item.setURL(" ");
-
-				// menu.setExpanded(true);
-				if (menuapp.getIcone() != null) {
-					item.setIcone(menuapp.getIcone());
-				}
-
-				if (!menuapp.getMenuOpcoesCollection().isEmpty() || !menuapp.getMenuCollection().isEmpty()) {
-					filhos = GerarModeloMenuHtml(menuapp.getMenuCollection(), item);
-				}
-				if (filhos != null) {
-					// pai.getItens().add(item);
-					item.getItens().addAll(filhos);
-					_menuAppItens.add(item);
-				} else {
-					_menuAppItens.add(item);
-					// break;
-				}
-                    
-                    
-                
-                if(menuapp.getNomepai()==null){
-             
-                    break;
+                if(Permitido){
+					item.setID(menuapp.getId().toString());
+					item.setLabel(menuapp.getDescricao());
+					//item.setURL(" ");
+	
+					// menu.setExpanded(true);
+					if (menuapp.getIcone() != null) {
+						item.setIcone(menuapp.getIcone());
+					}
+	
+					if ( !menuapp.getMenuCollection().isEmpty()) {
+						filhos = GerarModeloMenuHtml(menuapp.getMenuCollection(), item);
+					}
+					if (filhos != null) {
+						// pai.getItens().add(item);
+						item.getItens().addAll(filhos);
+						_menuAppItens.add(item);
+					} else {
+						_menuAppItens.add(item);
+						// break;
+					}
+	                if(menuapp.getNomepai()==null){
+	             
+	                    break;
+	                }
                 }
-              }
+                }
+             // }
               
         } catch (Exception e) {
              JsfUtil.addErrorMessage(e, "(MontarMenu)");

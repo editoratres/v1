@@ -10,8 +10,33 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>*.jsf</url-pattern>
   </servlet-mapping>
-     <context-param>  
-        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>  
-        <param-value>true</param-value>  
-    </context-param>  
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param> 
+    <welcome-file-list>
+        <welcome-file>/login.jsf</welcome-file>
+    </welcome-file-list>
+     <session-config>
+        <session-timeout>
+            5
+        </session-timeout>
+    </session-config> 
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>editora3.seguranca.Autenticacao</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </filter-mapping> 
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>release</param-value>
+    </context-param>
+    <context-param>
+        <param-name>usuario.padrao</param-name>
+        <param-value>@Desenvolvedor</param-value>
+    </context-param>	 
 </web-app>
