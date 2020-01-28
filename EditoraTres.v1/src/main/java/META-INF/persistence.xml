@@ -3,8 +3,8 @@
 	<persistence-unit name="EditoraTres.v1">
 		 <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:/editora3</jta-data-source>
-    <class>editora3.entidades.BrindaDevolucao</class>
-    <class>editora3.entidades.BrindaEntradaIten</class>
+    <class>editora3.entidades.BrindeDevolucao</class>
+    <class>editora3.entidades.BrindeEntradaItens</class>
     <class>editora3.entidades.Brinde</class>
     <class>editora3.entidades.BrindeDevolucaoIten</class>
     <class>editora3.entidades.BrindeEntrada</class>
@@ -16,6 +16,14 @@
     <class>editora3.entidades.OfertaIten</class>
     <class>editora3.entidades.Subcanal</class>
     <class>editora3.entidades.Vendedor</class>
+    <class>editora3.entidades.Assinante</class>
+    <class>editora3.entidades.Contrato</class>
+    <class>editora3.entidades.ContratoBrinde</class>
+    <class>editora3.entidades.ContratoPagamento</class>
+    <class>editora3.entidades.ContratoProduto</class>
+    <class>editora3.entidades.Relatorio</class>
+    <class>editora3.entidades.ContratoEntrada</class>
+    <class>editora3.entidades.ContratoEntradaIten</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.show_sql" value="true"/>

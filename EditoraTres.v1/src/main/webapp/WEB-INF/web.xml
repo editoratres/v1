@@ -30,7 +30,9 @@
         <filter-name>LoginFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
-    </filter-mapping> 
+    </filter-mapping>
+	 
+    
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>release</param-value>

@@ -4,11 +4,25 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('cadastro','Cadast
 insert into menu(nome,descricao, icone,  id, nomepai) values ('vendedor','Vendedor',null,2,1);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('equipe','Equipe',null,25,1);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('produto','Produto',null,3,1);
-insert into menu(nome,descricao, icone,  id, nomepai) values ('brinde','Brinde',null,4,1);
+
 insert into menu(nome,descricao, icone,  id, nomepai) values ('oferta','Oferta',null,5,1);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('relatoriocad','Relatórios',0,6,1);
-insert into menu(nome,descricao, icone,  id, nomepai) values ('contrato','Contrato',null,7,1);
+ 
 insert into menu(nome,descricao, icone,  id, nomepai) values ('comissao','Comissão',null,8,1);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('fornecedor','Fornecedor',null,26,1);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('brindes','Brindes',null,4,1);
+
+insert into menu(nome,descricao, icone,  id, nomepai) values ('brinde','Cadastro de brindes',null,30,4);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('brindeentrada','Entrada de Brindes',null,27,4);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('brindesaida','Saída de Brindes',null,28,4);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('brindedevolucao','Devolução de Brindes',null,29,4);
+
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratos','Contratos',null,31,1)
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratosentrada','Entrada',null,32,31);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratossaida','Saída',null,33,31);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratoscancelamento','Cancelamento',null,34,31);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratosdigitacao','Digitação',null,35,31);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratosassinantes','Assinantes',null,36,31);
 
 insert into menu(nome,descricao, icone,  id, nomepai) values ('relatorios','Relatórios','pe-7s-graph',9,0);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('producao','producao',null,10,9);
@@ -33,7 +47,7 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('perfil','Perfil d
 
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (1,'Brinde',null,'/ui/crud/cadastro/brinde.xhtml','Brinde');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (2,'Comissao',null,'/ui/crud/cadastro/comissao.xhtml','Comissao');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (3,'Contrato',null,'/ui/crud/cadastro/contrato.xhtml','Contrato');
+
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (4,'Oferta',null,'/ui/crud/cadastro/oferta.xhtml','Oferta');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (5,'Produto',null,'/ui/crud/cadastro/produto.xhtml','Produto');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (6,'Relatorioscad',null,'/ui/crud/cadastro/relatorioscad.xhtml','RelatoriosCad');
@@ -52,10 +66,19 @@ insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (19,'TipoMov',null,'/ui/crud/tabela/tipomov.xhtml','TipoMov');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (20,'Perfil',null,'/ui/crud/config/perfil.xhtml','Usuario');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (21,'Equipe',null,'/ui/crud/cadastro/equipe.xhtml','Equipe');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (22,'Fornecedor',null,'/ui/crud/cadastro/fornecedor.xhtml','Fornecedor');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (23,'BrindeEntrada',null,'/ui/crud/cadastro/brindeentrada.xhtml','Entrada de Brinde');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (24,'BrindeSaida',null,'/ui/crud/cadastro/brindesaida.xhtml','Saída  de Brinde');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (25,'BrindeDev',null,'/ui/crud/cadastro/brindedev.xhtml','Devolução de Brinde');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (26,'ContratoEntrada',null,'/ui/crud/cadastro/contratoentrada.xhtml','Entrada de contratos');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (27,'ContratoSaida',null,'/ui/crud/cadastro/contratosaida.xhtml','Saída de contratos');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (28,'ContratoCancel',null,'/ui/crud/cadastro/contratocancelamento.xhtml','Cancelamento de contratos');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (29,'ContratoDigit',null,'/ui/crud/cadastro/contratodigitacao.xhtml','Digitação de contratos');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (30,'ContratoAssinante',null,'/ui/crud/cadastro/contratoassinante.xhtml','Assinantes dos contratos');
+
 
 insert into menu_opcoes(id,idmodulo,menu) values (1,1,'brinde');
 insert into menu_opcoes(id,idmodulo,menu) values (2,2,'comissao');
-insert into menu_opcoes(id,idmodulo,menu) values (3,3,'contrato');
 insert into menu_opcoes(id,idmodulo,menu) values (4,4,'oferta');	
 insert into menu_opcoes(id,idmodulo,menu) values (5,5,'produto');	
 insert into menu_opcoes(id,idmodulo,menu) values (6,6,'relatoriocad');	
@@ -74,5 +97,13 @@ insert into menu_opcoes(id,idmodulo,menu) values (18,18,'origemvenda');
 insert into menu_opcoes(id,idmodulo,menu) values (19,19,'tipomov');
 insert into menu_opcoes(id,idmodulo,menu) values (20,20,'perfil');
 insert into menu_opcoes(id,idmodulo,menu) values (21,21,'equipe');
-
+insert into menu_opcoes(id,idmodulo,menu) values (22,22,'fornecedor');
+insert into menu_opcoes(id,idmodulo,menu) values (23,23,'brindeentrada');
+insert into menu_opcoes(id,idmodulo,menu) values (24,24,'brindesaida');
+insert into menu_opcoes(id,idmodulo,menu) values (25,25,'brindedevolucao');
+insert into menu_opcoes(id,idmodulo,menu) values (26,26,'contratosentrada');
+insert into menu_opcoes(id,idmodulo,menu) values (27,27,'contratossaida');
+insert into menu_opcoes(id,idmodulo,menu) values (28,28,'contratoscancelamento');
+insert into menu_opcoes(id,idmodulo,menu) values (29,29,'contratosdigitacao');
+insert into menu_opcoes(id,idmodulo,menu) values (30,30,'contratosassinantes');
  

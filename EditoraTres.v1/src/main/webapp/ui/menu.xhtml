@@ -5,17 +5,39 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core" >	
         <c:forEach items="#{node}" var="item" >
-            <li><p:commandLink  id="btAcionarMenu"  
-            	     update="_main_content :_Formulario" 
-            	     actionListener="#{dashboardController.navegar(item.URL)}"> 
-	            	    <ui:fragment rendered="#{empty item.URL}">
-	                        <i class="#{item.icone}"> </i>  #{item.label}
-	                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-	                    </ui:fragment>
-	                     <ui:fragment rendered="#{not empty item.URL}">
-	                       <i class="metismenu-icon"> </i>#{item.label}
-	                    </ui:fragment>
-            	</p:commandLink>
+            <li> 
+            	  <ui:fragment rendered="#{empty item.URL}">
+            	 
+		            	<p:commandLink  id="btAcionarMenu"  
+		            	     update="_main_content :_Formulario" 
+		            	     
+		            	     actionListener="#{dashboardController.navegar(item.URL)}"> 
+			            	    <ui:fragment rendered="#{empty item.URL}">
+			                        <i class="metismenu-icon #{item.icone}"> </i>  #{item.label}
+			                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+			                    </ui:fragment>
+			                     <ui:fragment rendered="#{not empty item.URL}">
+			                       <i class="metismenu-icon"> </i>#{item.label}
+			                    </ui:fragment>
+		            	</p:commandLink>
+	            	</ui:fragment>
+	            	<ui:fragment rendered="#{not empty item.URL}">
+            	 
+		            	<p:commandLink  id="btAcionarMenu"  
+		            	     update="_main_content :_Formulario" 
+		            	     onstart="PF('_id-blockui_paginaprincipal').show();"
+		            	     oncomplete="PF('_id-blockui_paginaprincipal').hide();"
+		            	     actionListener="#{dashboardController.navegar(item.URL)}"> 
+			            	    <ui:fragment rendered="#{empty item.URL}">
+			                        <i class="metismenu-icon #{item.icone}"> </i>  #{item.label}
+			                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+			                    </ui:fragment>
+			                     <ui:fragment rendered="#{not empty item.URL}">
+			                       <i class="metismenu-icon"> </i>#{item.label}
+			                    </ui:fragment>
+		            	</p:commandLink>
+	            	</ui:fragment>
+            	 
                 <ui:fragment rendered="#{item.itens.size()>0}">                
                     <ul>
                         <ui:include src="/ui/menu.xhtml">

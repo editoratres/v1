@@ -163,7 +163,7 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>4.3.6.Final</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
@@ -265,7 +265,6 @@
 			<version>7.0</version>
 			<scope>compile</scope>
 		</dependency>
-	 
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
