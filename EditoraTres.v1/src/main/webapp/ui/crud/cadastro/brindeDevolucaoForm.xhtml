@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition>
+	<p:dialog
+		style="width: 70% !important;height: 800px !important;position: absolute !important;left: 0 !important;top: 0 !important;"
+		height="600px" id="brindeDevolucaoDialog"
+		widgetVar="_brindeDevolucaoDialog" modal="true" resizable="false"
+		appendTo="@(body)" showEffect="clip" draggable="false"
+		hideEffect="clip" closeOnEscape="true" header="Devolucao de brindes">
+		<p:ajax event="close"
+			listener="#{brindeDevolucaoController.fecharDialogo()}" />
+		<h:form id="brindeDevolucaoForm">
+			<div class="main-card mb-3 card">
+				<div class="card-body">
+					<div class="form-row">
+						<div class="col-md-5">
+							<div class="position-relative form-group">
+								<b><label for="idEquipe">Equipe</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{brindeDevolucaoController.editar}"
+									converter="editora3.converter.ConversorEquipe"
+									styleClass="form-control MyOneMenu" filter="true"
+									filterMatchMode="startsWith" var="e" id="idEquipe"
+									value="#{brindeDevolucaoController.item.equipeBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{brindeDevolucaoController.equipeFacade.findAll()}"
+										var="equipe" itemLabel="#{equipe.descricao}"
+										itemValue="#{equipe}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{e.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{e.descricao}" />
+									</p:column>
+
+
+									<p:ajax event="change"
+										onstart="PF('_id-blockui_entradabrinde').show();"
+										oncomplete="PF('_id-blockui_entradabrinde').hide();"
+										onerror="PF('_id-blockui_entradabrinde').hide();"
+										update="idvendedor" process="idEquipe" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="position-relative form-group">
+								<b><label for="idvendedor" class="">Vendedor</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{brindeDevolucaoController.editar}"
+									styleClass="form-control MyOneMenu" filter="true"
+									converter="editora3.converter.ConversorVendedor"
+									filterMatchMode="startsWith" var="v" id="idvendedor"
+									value="#{brindeDevolucaoController.item.vendedorBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{brindeDevolucaoController.vendedoresDaEquipe}"
+										var="vendedor" itemLabel="#{vendedor.nome}"
+										itemValue="#{vendedor}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{v.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{v.nome}" />
+									</p:column>
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<b><label for="datacad" class="">Data</label> <br /></b>
+								<p:calendar converterMessage="A data informada é inválida"
+									showOn="button" pattern="dd/MM/yyyy" mask="true" size="10"
+									disabled="#{brindeDevolucaoController.editar}"
+									value="#{brindeDevolucaoController.item.data}" id="datacad"
+									type="text" validatorMessage="Data informada inválida">
+
+								</p:calendar>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-5">
+							<div class="position-relative form-group">
+								<b><label for="idcanal" class="">Canal</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{brindeDevolucaoController.editar}"
+									styleClass="form-control MyOneMenu" filter="true"
+									filterMatchMode="startsWith" var="c" id="idcanal"
+									converter="editora3.converter.ConversorCanal"
+									value="#{brindeDevolucaoController.item.canalBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{brindeDevolucaoController.canalFacade.findAll()}"
+										var="canal" itemLabel="#{canal.descricao}"
+										itemValue="#{canal}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{c.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{c.descricao}" />
+									</p:column>
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="position-relative form-group">
+								<b><label for="idsubcanal" class="">SubCanal</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{brindeDevolucaoController.editar}"
+									styleClass="form-control MyOneMenu" filter="true"
+									converter="editora3.converter.ConversorSubCanal"
+									filterMatchMode="startsWith" var="s" id="idsubcanal"
+									value="#{brindeDevolucaoController.item.subcanlBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{brindeDevolucaoController.subcanalFacade.findAll()}"
+										var="subcanal" itemLabel="#{subcanal.descricao}"
+										itemValue="#{subcanal}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{s.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{s.descricao}" />
+									</p:column>
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<b><label for="idnaocontabilizar" class="">Não
+										contabilizar</label> <br /></b>
+								<p:selectBooleanCheckbox
+									disabled="#{brindeDevolucaoController.editar}"
+									value="#{brindeDevolucaoController.item.naocontabilizar}"
+									id="idnaocontabilizar" type="text">
+								</p:selectBooleanCheckbox>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-10">
+							<div class="position-relative form-group">
+								<b><label for="idobs" class="">Obs</label> <br /></b>
+								<p:inputTextarea cols="140" rows="2"
+									disabled="#{brindeDevolucaoController.editar}"
+									value="#{brindeDevolucaoController.item.obs}" id="idobs"
+									type="text">
+								</p:inputTextarea>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<b><label for="idTotalDevolucaos" class="">Quantidade
+										Total</label> <br /></b>
+								<center>
+									<h3>
+										<b> <p:outputLabel id="idTotalDevolucaos"
+												value="#{brindeDevolucaoController.quantidadeTotalDevolucaoItens}">
+											</p:outputLabel>
+										</b>
+									</h3>
+								</center>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="form-row">
+						<p:dataTable styleClass="table" id="datalistItens"
+							widgetVar="_datalistItens"
+							style="width: 100% !important;height: 180px !important;"
+							value="#{brindeDevolucaoController.item.brindeDevolucaoItens}"
+							var="itens" emptyMessage="Nenhum registro localizado"
+							paginator="false" rowKey="#{itens.id}" scrollable="true"
+							selectionMode="single"
+							disabled="#{brindeDevolucaoController.editar}" scrollRows="10"
+							scrollHeight="130" rowIndexVar="idrowiditem">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="#" />
+								</f:facet>
+								<h:outputText value="#{idrowiditem+1}" />
+							</p:column>
+							<p:column width="60%" headerText="Descrição">
+								<div class="form-row">
+									<div class="col-md-1">
+										<p:commandLink
+											onclick="PF('_datalistBrindes').clearFilters();" 
+											update=":idFormPesquisarBrinde:painelBuscaBrinde"
+											actionListener="#{brindeDevolucaoController.prepararConsultarBrinde(itens)}"
+											oncomplete="PF('_idConsultaBrindes').show();"
+											style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-search" />
+										</p:commandLink>
+									</div>
+									<div class="col-md-11">
+										<p:outputLabel value="#{itens.brindeBean.descricao}" />
+									</div>
+								</div>
+
+							</p:column>
+							<p:column headerText="Quantidade">
+								<p:inputNumber maxValue="99999" size="13" minValue="0"
+									inputStyle="text-align: center !important;"
+									disabled="#{brindeDevolucaoController.editar}"
+									id="idQuantidadeBrinde" decimalPlaces="0"
+									value="#{itens.quantidade}">
+									<p:ajax event="change"
+										update=":brindeDevolucaoForm:idTotalDevolucaos" />
+								</p:inputNumber>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Ações" />
+								</f:facet>
+								<center>
+									<p:commandLink
+										actionListener="#{brindeDevolucaoController.excluirItem(itens)}"
+										disabled="#{brindeDevolucaoController.editar}"
+										update=":brindeDevolucaoForm:datalistItens, :growl, :brindeDevolucaoForm:idTotalDevolucaos"
+										style="font-size: 20px">
+										<i class="metismenu-icon pe-7s-trash" />
+										<p:confirm header="Excluir brinde da entrada"
+											message="Deseja confirmar esta operação?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+
+								</center>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</div>
+					<hr />
+					<div class="form-row">
+						<div class="col-md-9">
+							<p:commandLink style="font-size: 20px"
+								update=":brindeDevolucaoForm:datalistItens :growl :idFormPesquisarBrinde:painelBuscaBrinde"
+								disabled="#{brindeDevolucaoController.editar}"
+								onclick="PF('_datalistBrindes').clearFilters();" 
+								actionListener="#{brindeDevolucaoController.validarNovoItem()}"
+								oncomplete="if(!args.validationFailed) {PF('_idConsultaBrindes').show();}"
+								styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+								id="btAdicionarItem">
+								<i class="fas fa-plus-circle" />
+										Inserir brinde
+									</p:commandLink>
+						</div>
+						<div class="col-md-3">
+							<p:commandLink
+								actionListener="#{brindeDevolucaoController.create()}"
+								update=":_Formulario:datalist :growl"
+								disabled="#{brindeDevolucaoController.editar}"
+								onstart="PF('_id-blockui_entradabrinde').show();"
+								oncomplete="if(!args.validationFailed){ PF('_brindeDevolucaoDialog').hide();PF('_id-blockui_entradabrinde').hide();}"
+								onsuccess="PF('_id-blockui_entradabrinde').hide();"
+								styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+								style="font-size: 20px" type="submit">
+								<i class="fa fa-check"> </i>  Gravar Devolução
+			 						<p:confirm header="Criar/Editar Devolucao de brinde"
+									message="Deseja confirmar esta operação?" icon="ui-icon-alert" />
+
+							</p:commandLink>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<p:blockUI widgetVar="_id-blockui_entradabrinde"
+				id="id-blockui_entradabrinde" block=":brindeDevolucaoForm">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
+			<p:confirmDialog global="true" showEffect="clip" hideEffect="clip">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+	</p:dialog>
+	<p:dialog modal="true" appendTo="@(body)"  width="800" height="400"
+		appendToBody="true"
+		closeOnEscape="true" header="Consulta de brindes"
+		id="idConsultaBrindes" widgetVar="_idConsultaBrindes">
+		<h:form id="idFormPesquisarBrinde">
+			<p:outputPanel id="painelBuscaBrinde">
+				<p:dataTable styleClass="table" id="datalistBrindes"
+					widgetVar="_datalistBrindes"
+					value="#{brindeDevolucaoController.brindeFacade.findAll()}"
+					var="brindes" emptyMessage="Nenhum registro localizado"
+					paginator="false" rowKey="#{brindes.codigo}" scrollable="true"
+					disabled="#{brindeDevolucaoController.editar}" scrollRows="10"
+					scrollHeight="330">
+
+					<p:column filterBy="#{brindes.codigo}" filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText value="Codigo" />
+						</f:facet>
+						<h:outputText value="#{brindes.codigo}" />
+					</p:column>
+					<p:column width="60%" filterBy="#{brindes.descricao}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText value="Descricao" />
+						</f:facet>
+						<h:outputText value="#{brindes.descricao}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Qtd" />
+						</f:facet>
+						<h:outputText value="#{brindes.quantidade}" />
+					</p:column>
+					<p:column>
+						<p:commandLink update=":brindeDevolucaoForm:datalistItens"
+							actionListener="#{brindeDevolucaoController.atualizarBrindeConsultadoNoGrid(brindes)}"
+							oncomplete="PF('_idConsultaBrindes').hide();"
+							style="font-size: 20px">
+							<i class="fa fa-check" />
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+
+
+	<style>
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
+	font-size: 12px;
+}
+
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
+	height: 33px !important;
+}
+</style>
+	<script>
+function scrollToBottom() {
+    $('.ui-datatable-scrollable-body').scrollTop(100000)
+}
+</script>
+</ui:composition>
+</html>

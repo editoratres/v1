@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<f:view contentType="text/html">
+	<h:head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Neon Admin Panel" />
+		<meta name="author" content="" />
+
+
+
+		<meta http-equiv="cache-control" content="max-age=0" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<link rel="stylesheet"
+			href="assets/css/font-icons/entypo/css/entypo.css" />
+
+		<link rel="stylesheet"
+			href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic" />
+
+		<link rel="stylesheet" href="assets/css/bootstrap.css" />
+
+		<link rel="stylesheet" href="assets/css/neon-core.css" />
+		<link rel="stylesheet" href="assets/css/neon-theme.css" />
+		<link rel="stylesheet" href="assets/css/neon-forms.css" />
+		<link rel="stylesheet" href="assets/css/custom.css" />
+		<link rel="stylesheet" href="assets/css/skins/black.css" />
+		<link rel="stylesheet" href="assets/css/primeutil.css" />
+
+		<script src="assets/js/raphael-min.js"></script>
+		<script src="assets/js/morris.min.js"></script>
+
+		<script src="assets/js/jsfcrud.js"></script>
+
+		<!-- 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
+ -->
+		<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"/> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"/>
+ -->
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+			integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+			crossorigin="anonymous" />
+	</h:head>
+	<h:body id="painelPrincipal" class="page-body skin-black">
+
+		<p:growl id="growl" life="6000" showDetail="true" />
+		<div class="page-container">
+			<div class="sidebar-menu">
+				<h:form id="formDash">
+					<div class="sidebar-menu-inner">
+
+						<header class="logo-env">
+						<div class="logo">
+							<a href="index.html"> <img
+								src="assets/images/editora3final.png" width="200" alt="" />
+							</a>
+						</div>
+						<br />
+
+						<!-- logo collapse icon -->
+						<div class="sidebar-collapse">
+							<a href="#" class="sidebar-collapse-icon"> <!-- add class "with-animation" if you want sidebar to have animation during expanding/collapsing transition -->
+								<i class="entypo-menu"></i>
+							</a>
+						</div>
+
+
+						<!-- open/close menu icon (do not remove if you want to enable menu on mobile devices) -->
+						<div class="sidebar-mobile-menu visible-xs">
+							<a href="#" class="with-animation"> <!-- add class "with-animation" to support animation -->
+								<i class="entypo-menu"></i>
+							</a>
+						</div>
+
+						</header>
+
+						<div class="sidebar-user-info">
+
+							<div class="sui-normal">
+								<a href="#" class="user-link"> <img
+									src="assets/images/thumb-1@2x.png" width="55" alt=""
+									class="img-circle" /> <span>Bem-vindo,</span> <strong><p:outputLabel
+											value="#{dashboardController.loginInfo.usuario_logado.nome}" />
+								</strong>
+								</a>
+							</div>
+
+							<div class="sui-hover inline-links animate-in">
+								<!-- You can remove "inline-links" class to make links appear vertically, class "animate-in" will make A elements animateable when click on user profile -->
+								<a href="#"> <i class="entypo-pencil"></i> New Page
+								</a> <a href="mailbox.html"> <i class="entypo-mail"></i> Inbox
+								</a> <a href="extra-lockscreen.html"> <i class="entypo-lock"></i>
+									Log Off
+								</a> <span class="close-sui-popup">&times;</span>
+								<!-- this is mandatory -->
+							</div>
+						</div>
+
+
+						<ul id="main-menu" class="main-menu">
+							<!-- add class "multiple-expanded" to allow multiple submenus to open -->
+							<!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+							<ui:include src="/ui/menu.xhtml">
+								<ui:param name="node" value="#{interfaceMenuHtml.itens}" />
+								<ui:param name="class_li" value="active opened active has-sub" />
+							</ui:include>
+						</ul>
+					</div>
+				</h:form>
+			</div>
+			
+			<div class="main-content" style="margin: 0; padding: 0;">
+				<h:panelGroup id="_main_content">
+					<ui:include src="#{dashboardController.paginaAtual}"></ui:include>
+				</h:panelGroup>
+			</div>
+			<f:metadata>
+				<f:viewAction action="#{interfaceMenuHtml.checkF5}"
+					onPostBack="true" />
+				<f:viewAction action="#{dashboardController.checkF5}"
+					onPostBack="true" />
+			</f:metadata>
+		</div>
+		<script src="assets/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js"></script>
+
+		<link rel="stylesheet"
+			href="assets/js/jvectormap/jquery-jvectormap-1.2.2.css" />
+
+
+		<!-- Bottom scripts (common) -->
+
+		<script src="assets/js/gsap/TweenMax.min.js"></script>
+
+		<script src="assets/js/joinable.js"></script>
+
+		<script src="assets/js/resizeable.js"></script>
+
+		<script src="assets/js/neon-api.js"></script>
+
+
+		<script src="assets/js/tocify/jquery.tocify.min.js"></script>
+		<script src="assets/js/neon-custom.js"></script>
+
+
+	</h:body>
+
+
+
+</f:view>
+</html>

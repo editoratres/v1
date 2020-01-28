@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<f:metadata>
+		<f:viewAction  action="#{brindeEntradaController.atualizar()}"  />
+	</f:metadata>
+	<h:form id="_Formulario">
+
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-gift icon-gradient bg-premium-dark"> </i>
+						</div>
+						<div>
+							<h3><b>
+							Entrada de Brindes
+							</b></h3>
+						</div>
+					</div>
+					<div class="container" style="width: 10%">
+						<div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									actionListener="#{brindeEntradaController.atualizar()}" update="datalist"
+									id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px" update=":brindeEntradaForm"
+									actionListener="#{brindeEntradaController.prepararNovo()}"
+									oncomplete="PF('_brindeEntradaDialog').show();" id="btAdicionar">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<h5 style="margin: 10px;" class="card-title">Listagem de Entrada de brindes</h5>
+						<div style="margin: 5px;" class="card-body">
+
+							<p:dataTable id="datalist" styleClass="table"
+								value="#{brindeEntradaController.itens}" var="item" selectionMode="single"
+								paginatorPosition="bottom"
+									 
+								emptyMessage="Nenhum registro localizado"
+								selection="#{brindeEntradaController.item}" paginator="true"
+								rowKey="#{item.codigo}" rows="10"
+								rowsPerPageTemplate="10,20,30,40,50">
+
+								<p:column width="10%" sortBy="#{item.codigo}">
+									<f:facet name="header">
+										<h:outputText value="Código" />
+									</f:facet>
+									<h:outputText value="#{item.codigo}" />
+								</p:column>
+
+								<p:column  headerText="Nota fiscal" filterBy="#{item.notafiscal}"  filterMatchMode="contains">
+									 <h:outputText value="#{item.notafiscal}" />
+									 
+								</p:column>
+								<p:column  headerText="Dt. Entrada">
+									 <h:outputText value="#{item.data}" >
+									 	<f:convertDateTime pattern="dd/MM/yyyy" />
+									 </h:outputText>
+								</p:column>
+								<p:column  width="20%" filterBy="#{item.fornecedorBean.descricao}"  filterMatchMode="contains">
+									<f:facet name="header">
+										<h:outputText value="Fornecedor" />
+									</f:facet>
+									<h:outputText value="#{item.fornecedorBean.descricao}" />
+								</p:column>
+								<p:column  >
+									<f:facet name="header">
+										<h:outputText value="Total" />
+									</f:facet>
+									<h:outputText value="#{item.total}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+								</p:column>
+								<!-- <p:column  headerText="Dt. Cancel.">
+									 <h:outputText value="#{item.dataCancelamento}" >
+									 	 <f:convertDateTime pattern="dd/MM/yyyy" />
+									 </h:outputText>
+								</p:column>
+	 -->
+								<p:column width="20%">
+									<f:facet name="header">
+										<h:outputText value="Ações" />
+									</f:facet>
+									<center>
+										<p:commandLink disabled="#{not empty item.dataCancelamento}" actionListener="#{brindeEntradaController.excluir(item)}"
+											update="datalist, :growl" style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-trash" />
+											<p:confirm header="Cancelamento da entrada de brinde"
+												message="Deseja confirma esta operação?"
+												icon="ui-icon-alert" />
+										</p:commandLink>
+										<p:commandLink update=":brindeEntradaForm"
+											actionListener="#{brindeEntradaController.prepararEditar(item)}"
+											oncomplete="PF('_brindeEntradaDialog').show();" style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-search" />
+										</p:commandLink>
+									</center>
+
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+
+	<ui:include src="brindeEntradaForm.xhtml" />
+
+</ui:composition>
+</html>

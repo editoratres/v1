@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition>
+
+
+	<p:dialog id="saidaContratoDialog" widgetVar="_saidaContratoDialog"
+		modal="true" resizable="false" appendTo="@(body)" showEffect="clip"
+		hideEffect="clip" closeOnEscape="true" width="40%"
+		header="Saída de contratos">
+		<p:ajax event="close"
+			listener="#{contratoSaidaController.fecharDialogo()}" />
+		<h:form id="contratoSaidaForm">
+			<div class="main-card mb-3 card">
+				<div class="card-body">
+					<div class="form-row">
+						<div class="col-md-12">
+							<div class="position-relative form-group">
+								<b><label for="idEquipe">Equipe</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{contratoSaidaController.editar}"
+									converter="editora3.converter.ConversorEquipe"
+									styleClass="form-control MyOneMenu" filter="true"
+									filterMatchMode="startsWith" var="e" id="idEquipe"
+									value="#{contratoSaidaController.item.equipeBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{contratoSaidaController.equipeFacade.findAll()}"
+										var="equipe" itemLabel="#{equipe.descricao}"
+										itemValue="#{equipe}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{e.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{e.descricao}" />
+									</p:column>
+									<p:ajax event="change"
+										onstart="PF('_id-blockui_entradabrinde').show();"
+										oncomplete="PF('_id-blockui_entradabrinde').hide();"
+										onerror="PF('_id-blockui_entradabrinde').hide();"
+										update="idvendedor" process="idEquipe" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-12">
+							<div class="position-relative form-group">
+								<b><label for="idvendedor" class="">Vendedor</label></b>
+								<p:selectOneMenu autoWidth="false"
+									disabled="#{contratoSaidaController.editar}"
+									styleClass="form-control MyOneMenu" filter="true"
+									converter="editora3.converter.ConversorVendedor"
+									filterMatchMode="startsWith" var="v" id="idvendedor"
+									value="#{contratoSaidaController.item.vendedorBean}">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{contratoSaidaController.vendedoresDaEquipe}"
+										var="vendedor" itemLabel="#{vendedor.nome}"
+										itemValue="#{vendedor}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{v.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{v.nome}" />
+									</p:column>
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="faixainicial" class="">Faixa inicial</label>
+								<p:inputNumber decimalPlaces="0"  maxValue="9999999"
+								    inputStyleClass="form-control"
+								    inputStyle="text-align : center !important;"
+									value="#{contratoSaidaController.item.faixainicial}"
+									required="true" maxlength="20"
+									requiredMessage="A faixa inicial é obrigatória"
+									id="faixainicial" type="text">
+									<p:ajax event="change" process="faixafinal faixainicial" update="quantidade" />
+									 
+								</p:inputNumber>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="faixafinal" class="">Faixa Final</label>
+								<p:inputNumber decimalPlaces="0" maxValue="9999999"
+									inputStyleClass="form-control"
+									inputStyle="text-align : center !important;"
+									value="#{contratoSaidaController.item.faixafinal}"
+									required="true" maxlength="20"
+									requiredMessage="A faixa final é obrigatória" id="faixafinal"
+									type="text">
+									<p:ajax event="change" process="faixafinal faixainicial" update="quantidade" />
+								 
+								</p:inputNumber>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="quantidade" class="">Quantidade</label>
+								<p:inputNumber inputStyleClass="form-control" decimalPlaces="0"
+									inputStyle="text-align : center !important;" maxValue="9999999"
+									readonly="true"
+									value="#{contratoSaidaController.calcularTamanhoFaixa(contratoSaidaController.item)}"
+									required="true" maxlength="20"
+									requiredMessage="A faixa final é obrigatória" id="quantidade"
+									type="text" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<center>
+				<p:commandLink actionListener="#{contratoSaidaController.create()}"
+					update=":_Formulario:datalist :growl"
+					onstart="PF('_id-blockui_entradabrinde').show();"
+					onsuccess="PF('_id-blockui_entradabrinde').hide();"
+					oncomplete="if (!args.validationFailed) { PF('_saidaContratoDialog').hide();PF('_id-blockui_entradabrinde').hide(); }"
+					styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+					type="submit">
+					<i class="fa fa-check"> </i>  Gravar
+			 	<p:confirm header="Criar/Editar saída de contrato"
+						message="Deseja confirma esta operação?" icon="ui-icon-alert" />
+
+				</p:commandLink>
+			</center>
+			<p:blockUI widgetVar="_id-blockui_entradabrinde"
+				id="id-blockui_entradabrinde" block=":contratoSaidaForm">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
+			<p:confirmDialog global="true" showEffect="clip" hideEffect="clip">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</p:dialog>
+	<style>
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
+	font-size: 12px;
+}
+
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
+	height: 33px !important;
+}
+</style>
+
+</ui:composition>
+</html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+	<h:form id="_Formulario">
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-key icon-gradient bg-premium-dark"> </i>
+						</div>
+						<div>
+							<h3>
+								<b>Perfil de Acesso</b>
+							</h3>
+						</div>
+					</div>
+					<div class="container" style="width: 10%">
+						<div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									actionListener="#{infraTipoPerfilUsuarioController.atualizar()}"
+									update="datalist" id="btAtualizar">
+									<i class="fas fa-sync-alt btn-black" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									actionListener="#{infraTipoPerfilUsuarioController.prepareCreate()}"
+									update=":InfraTipoPerfilUsuarioCreateForm"
+									oncomplete="PF('InfraTipoPerfilUsuarioCreateDialog').show()"
+									id="btUsuarioPerfilForm">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<h5 style="margin: 10px;" class="card-title">Listagem de
+							perfil</h5>
+						<div style="margin: 5px;" class="card-body">
+							<div class="row">
+								<p:dataTable id="datalist"
+									value="#{infraTipoPerfilUsuarioController.items}" var="item"
+									selectionMode="single" paginatorPosition="bottom"
+									emptyMessage="Nenhum registro localizado"
+									selection="#{infraTipoPerfilUsuarioController.selected}"
+									paginator="true" rowKey="#{item.idtipoperfil}" rows="10">
+
+										<p:column>
+										<f:facet name="header">
+											<h:outputText value="ID" />
+										</f:facet>
+										<h:outputText value="#{item.idtipoperfil}" />
+									</p:column>
+									<p:column width="60%">
+										<f:facet name="header">
+											<h:outputText value="Nome do perfil" />
+										</f:facet>
+										<h:outputText value="#{item.tipoperfil}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Ativo" />
+										</f:facet>
+										<p:selectBooleanCheckbox value="#{item.ativo}" disabled="true" />
+									</p:column>
+									<p:column width="10%">
+										<f:facet name="header">
+											<h:outputText value="Ações" />
+										</f:facet>
+										<center>
+											<p:commandLink
+												actionListener="#{infraTipoPerfilUsuarioController.destroy(item)}"
+												update="datalist, :growl" style="font-size: 20px">
+												<i class="metismenu-icon pe-7s-trash" />
+												<p:confirm header="Excluir Usuario"
+													message="Deseja confirma esta operação?"
+													icon="ui-icon-alert" />
+											</p:commandLink>
+											<p:commandLink update=":InfraTipoPerfilUsuarioCreateForm"
+												actionListener="#{infraTipoPerfilUsuarioController.prepararEditar(item)}"
+												oncomplete="PF('InfraTipoPerfilUsuarioCreateDialog').show();"
+												style="font-size: 20px">
+												<i class="metismenu-icon pe-7s-note" />
+											</p:commandLink>
+										</center>
+
+									</p:column>
+
+								</p:dataTable>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</h:form>
+	<ui:include src="perfilForm.xhtml" />
+</ui:composition>
+</html>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition>
+	<p:dialog id="ofertaDialogItens" widgetVar="_ofertaDialogItens"
+		modal="true" resizable="false" appendTo="@(body)" showEffect="clip"
+		hideEffect="clip" closeOnEscape="true" width="90%"
+		header="Edições da oferta">
+		<p:ajax event="close" />
+		<h:form id="ofertaFormItens">
+			<div class="main-card mb-3 card">
+				<div class="card-body">
+
+
+					<div class="form-row">
+						<div class="col-md-3">
+							<div class="position-relative form-group">
+								<label for="edicao" class="">Edição</label>
+								<h:inputText
+									value="#{ofertaController.ofertaItensSelecionado.edicao}"
+									required="true" maxlength="20"
+									requiredMessage="A edição é obrigatória" id="edicao"
+									type="text" styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="premio" class="">Prêmio</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									style="width : 90%"
+									value="#{ofertaController.ofertaItensSelecionado.premio}"
+									id="premio" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="valorbase" class="">Valor Base</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.valorbase}"
+									id="valorbase" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vendbase" class="">Vend Base</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vendbase}"
+									id="vendbase" type="text" />
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez1" class="">1ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez1}"
+									id="vez1" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez2" class="">2ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez2}"
+									id="vez2" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez2" class="">3ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez3}"
+									id="vez3" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez4" class="">4ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez4}"
+									id="vez4" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez5" class="">5ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez5}"
+									id="vez5" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez6" class="">6ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez6}"
+									id="vez6" type="text" />
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez7" class="">7ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez7}"
+									id="vez7" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez8" class="">8ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez8}"
+									id="vez8" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez9" class="">9ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez9}"
+									id="vez9" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez10" class="">10ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez10}"
+									id="vez10" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez11" class="">11ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez11}"
+									id="vez11" type="text" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="vez12" class="">12ª Vez</label>
+								<p:inputNumber maxValue="999999.99" minValue="0"
+									value="#{ofertaController.ofertaItensSelecionado.vez12}"
+									id="vez12" type="text" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<hr />
+			<center>
+				<p:commandLink update=":growl, :ofertaForm:datalistofertaItens"
+					actionListener="#{ofertaController.createItemOferta()}"
+					onstart="PF('_id-blockui_oferta_itens').show();"
+					oncomplete="if (!args.validationFailed) {PF('_ofertaDialogItens').hide() ; PF('_id-blockui_oferta_itens').hide();}"
+					onsuccess="PF('_id-blockui_oferta_itens').hide();"
+					styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+					type="submit">
+					<i class="fa fa-check"> </i>  Confirmar
+			 
+
+				</p:commandLink>
+			</center>
+			<p:blockUI widgetVar="_id-blockui_oferta_itens"
+				id="id-blockui_oferta_itens" block=":ofertaFormItens">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
+
+
+		</h:form>
+	</p:dialog>
+
+
+</ui:composition>
+</html>

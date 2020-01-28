@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<f:metadata>
+		<f:viewAction action="#{contratoCancelamentoController.atualizar()}" />
+	</f:metadata>
+	<h:form id="_Formulario">
+
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-file-contract icon-gradient bg-danger"> </i>
+						</div>
+						<div>
+							<h3><b>
+							Cancelamento de contratos
+							</b></h3>
+						</div>
+					</div>
+					<div class="container" style="width: 10%">
+						<div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									onstart="PF('_id-blockui_contratoentradabrinde').show();"
+										oncomplete ="PF('_id-blockui_contratoentradabrinde').hide();"
+									actionListener="#{contratoCancelamentoController.atualizar()}" update="datalist"
+									id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px" update=":contratoCancelamentoForm"
+									actionListener="#{contratoCancelamentoController.prepararNovo()}"
+									oncomplete="PF('_cancelamentoContratoDialog').show();" id="btAdicionar">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<h5 style="margin: 10px;" class="card-title">Listagem de saída de contratos</h5>
+						<div style="margin: 5px;" class="card-body">
+
+							<p:dataTable id="datalist" styleClass="table"
+								value="#{contratoCancelamentoController.itens}" var="item" selectionMode="single"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum registro localizado"
+								selection="#{contratoCancelamentoController.item}" paginator="true"
+								rowKey="#{item.codigo}" rows="10"
+								rowsPerPageTemplate="10,20,30,40,50">
+
+						 		<p:column width="10%" sortBy="#{item.codigo}">
+									<f:facet name="header">
+										<h:outputText value="Codigo" />
+									</f:facet>
+									 <h:outputText value="#{item.codigo}" style="font-size: 12px;" />
+									
+								</p:column>
+								<p:column width="10%" style="text-align: center !important;">
+									<f:facet name="header">
+										<h:outputText value="Data" />
+									</f:facet>
+									 <h:outputText value="#{item.data}"  style="font-size: 12px;">
+									 	<f:convertDateTime pattern="dd/MM/yyyy" />
+									 </h:outputText>
+								</p:column>
+								<p:column    style="text-align: center !important;"    >
+									<f:facet name="header">
+										<h:outputText value="Inicial" />
+									</f:facet>
+									<h:outputText value="#{item.faixainicial}" style="font-size: 12px;"/>
+								</p:column>
+								<p:column      style="text-align: center !important;"  >
+									<f:facet name="header">
+										<h:outputText value="Final" />
+									</f:facet>
+									<h:outputText value="#{item.faixafinal}" style="font-size: 12px;" />
+								</p:column>
+								<p:column   style="text-align: center !important;"  >
+									<f:facet name="header">
+										<h:outputText value="Quant" />
+									</f:facet>
+									<h:outputText value="#{item.faixafinal-item.faixainicial+1}" style="font-size: 12px;"/>
+								</p:column>
+								<p:column width="10%" style="text-align: center !important;">
+									<f:facet name="header">
+										<h:outputText value="Ações" />
+									</f:facet>
+									<p:commandLink actionListener="#{contratoCancelamentoController.excluir(item)}"
+										onstart="PF('_id-blockui_contratoentradabrinde').show();"
+										oncomplete ="PF('_id-blockui_contratoentradabrinde').hide();"
+										onsuccess ="PF('_id-blockui_contratoentradabrinde').hide();"
+										update="datalist, :growl" style="font-size: 20px">
+										<i class="metismenu-icon pe-7s-trash" />
+										
+										<p:confirm header="Cancelar o cancelamento"
+											message="Deseja confirma esta operação?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p:blockUI widgetVar="_id-blockui_contratoentradabrinde"
+				id="id-blockui_contratoentradabrinde" block=":_Formulario">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
+	</h:form>
+
+	<ui:include src="contratoCancelamentoForm.xhtml" />
+
+</ui:composition>
+</html>

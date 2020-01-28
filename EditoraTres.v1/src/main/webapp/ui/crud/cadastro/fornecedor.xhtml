@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<f:metadata>
+		<f:viewAction action="#{fornecedorController.atualizar()}" />
+	</f:metadata>
+	<h:form id="_Formulario">
+
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-industry icon-gradient bg-premium-dark"> </i>
+						</div>
+						<div>
+							<h3><b>
+							Fornecedor
+							</b></h3>
+						</div>
+					</div>
+					<div class="container" style="width: 10%">
+						<div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									actionListener="#{fornecedorController.atualizar()}" update="datalist"
+									id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px" update=":fornecedorForm"
+									actionListener="#{fornecedorController.prepararNovo()}"
+									oncomplete="PF('_fornecedorDialog').show();" id="btAdicionar">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<h5   style="margin: 10px;" class="card-title">Listagem de Fornecedores</h5>
+						<div style="margin: 5px;" class="card-body">
+
+							<p:dataTable id="datalist" styleClass="table"
+								value="#{fornecedorController.itens}" var="item" selectionMode="single"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum registro localizado"
+								selection="#{fornecedorController.item}" paginator="true"
+								rowKey="#{item.codigo}" rows="10"
+								rowsPerPageTemplate="10,20,30,40,50">
+
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText value="Código" />
+									</f:facet>
+									<h:outputText value="#{item.codigo}" />
+								</p:column>
+								<p:column  >
+									<f:facet name="header">
+										<h:outputText value="Descrição" />
+									</f:facet>
+									<h:outputText value="#{item.descricao}" />
+								</p:column>
+								 
+
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText value="Ações" />
+									</f:facet>
+									<center>
+										<p:commandLink actionListener="#{fornecedorController.excluir(item)}"
+											update="datalist, :growl" style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-trash" />
+											<p:confirm header="Excluir equipe"
+												message="Deseja confirma esta operação?"
+												icon="ui-icon-alert" />
+										</p:commandLink>
+										<p:commandLink update=":fornecedorForm"
+											actionListener="#{fornecedorController.prepararEditar(item)}"
+											oncomplete="PF('_fornecedorDialog').show();" style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-note" />
+										</p:commandLink>
+									</center>
+
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+
+	<ui:include src="fornecedorForm.xhtml" />
+
+</ui:composition>
+</html>

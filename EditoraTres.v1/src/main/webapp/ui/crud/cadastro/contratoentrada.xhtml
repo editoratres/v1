@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<f:metadata>
+		<f:viewAction action="#{contratoEntradaController.atualizar()}" />
+	</f:metadata>
+	<h:form id="_Formulario">
+
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-file-contract icon-gradient bg-info"> </i>
+						</div>
+						<div>
+							<h3><b>
+							Entrada de contratos
+							</b></h3>
+						</div>
+					</div>
+					<div class="container" style="width: 10%">
+						<div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									onstart="PF('_id-blockui_contratoentradabrinde').show();"
+										oncomplete ="PF('_id-blockui_contratoentradabrinde').hide();"
+									actionListener="#{contratoEntradaController.atualizar()}" update="datalist"
+									id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px" update=":contratoEntradaForm"
+									actionListener="#{contratoEntradaController.prepararNovo()}"
+									oncomplete="PF('_entradaContratoDialog').show();" id="btAdicionar">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<h5 style="margin: 10px;" class="card-title">Listagem de entrada de contratos</h5>
+						<div style="margin: 5px;" class="card-body">
+
+							<p:dataTable id="datalist" styleClass="table"
+								value="#{contratoEntradaController.itens}" var="item" selectionMode="single"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum registro localizado"
+								selection="#{contratoEntradaController.item}" paginator="true"
+								rowKey="#{item.codigo}" rows="10"
+								rowsPerPageTemplate="10,20,30,40,50">
+
+						 		<p:column width="10%" sortBy="#{item.codigo}">
+									<f:facet name="header">
+										<h:outputText value="Codigo" />
+									</f:facet>
+									 <h:outputText value="#{item.codigo}" style="font-size: 12px;" />
+									
+								</p:column>
+								<p:column width="20%" style="text-align: center !important;">
+									<f:facet name="header">
+										<h:outputText value="Data" />
+									</f:facet>
+									 <h:outputText value="#{item.data}"  style="font-size: 12px;" >
+									 	<f:convertDateTime pattern="dd/MM/yyyy" />
+									 </h:outputText>
+								</p:column>
+								<p:column  width="20%" style="text-align: center !important;"    >
+									<f:facet name="header">
+										<h:outputText value="Faixa Inicial" />
+									</f:facet>
+									<h:outputText value="#{item.faixainicial}" style="font-size: 12px;" />
+								</p:column>
+								<p:column  width="20%"   style="text-align: center !important;"  >
+									<f:facet name="header">
+										<h:outputText value="Faixa Final" />
+									</f:facet>
+									<h:outputText value="#{item.faixafinal}" style="font-size: 12px;"/>
+								</p:column>
+								<p:column  width="20%" style="text-align: center !important;"  >
+									<f:facet name="header">
+										<h:outputText value="Quant" />
+									</f:facet>
+									<h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(0)}" style="font-size: 12px;" >
+											<f:convertNumber  maxFractionDigits="0"/>
+									</h:outputText>
+								</p:column>
+								<p:column  width="20%"  style="text-align: center !important;" >
+									<f:facet name="header" >
+										<div class="form-row" >
+											<div class="col-md-6">
+												<div class="mb-2 mr-2 badge badge-info">Dispon.</div>
+											</div>	
+											<div class="col-md-6">	
+												<div class="mb-2 mr-2 badge badge-success">Saida</div>
+											</div>
+										</div>
+										<div class="mb-2 mr-2 badge badge-danger">Cancelamento</div>
+										<!-- <h:outputText value="Disponivel/Saida" style="font-size: 14px !important;"/> -->
+									</f:facet>
+									 
+								 	<br/>
+									<div class="mb-3 progress">
+											 <div class="progress-bar bg-info" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(1)}" 
+											 aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+											 style="width: #{contratoEntradaController.informacaoFaixa(item).get(4)}%; font-size: 12px !important;">
+												 <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(1)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+											 </div>
+                                             <div class="progress-bar bg-success" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(2)}"
+                                              aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+                                              style="width: #{contratoEntradaController.informacaoFaixa(item).get(5)}%;font-size: 12px !important;">
+	                                             <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(2)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+                                             </div>
+                                             <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(3)}" 
+                                             aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+                                             style="width: #{contratoEntradaController.informacaoFaixa(item).get(6)}%;font-size: 12px !important;">
+	                                             <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(3)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+                                             </div>
+									</div>
+									
+								</p:column>
+								 
+								<p:column width="10%" style="text-align: center !important;">
+									<f:facet name="header">
+										<h:outputText value="Ações" />
+									</f:facet>
+									<p:commandLink actionListener="#{contratoEntradaController.excluir(item)}"
+										onstart="PF('_id-blockui_contratoentradabrinde').show();"
+										oncomplete ="PF('_id-blockui_contratoentradabrinde').hide();"
+										onsuccess ="PF('_id-blockui_contratoentradabrinde').hide();"
+										update="datalist, :growl" style="font-size: 20px">
+										<i class="metismenu-icon pe-7s-trash" />
+										
+										<p:confirm header="Cancelar entrada"
+											message="Deseja confirma esta operação?"
+											icon="ui-icon-alert" />
+									</p:commandLink>
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p:blockUI widgetVar="_id-blockui_contratoentradabrinde"
+				id="id-blockui_contratoentradabrinde" block=":_Formulario">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
+	</h:form>
+
+	<ui:include src="contratoEntradaForm.xhtml" />
+
+</ui:composition>
+</html>
