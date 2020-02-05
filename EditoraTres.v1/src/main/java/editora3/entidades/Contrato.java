@@ -2,6 +2,8 @@ package editora3.entidades;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,14 +22,32 @@ public class Contrato implements Serializable {
 	private Integer codigo;
 	
 	private Integer codigocontrato;
-
+	
+	@ManyToOne()
 	@JoinColumn(name="CanalBean", referencedColumnName="codigo")
-	private Canal canal;
+	private Canal canalBean;
+
+	public Canal getCanalBean() {
+		return canalBean;
+	}
+
+	public void setCanalBean(Canal canalBean) {
+		this.canalBean = canalBean;
+	}
+
+	public Equipe getEquipeBean() {
+		return equipeBean;
+	}
+
+	public void setEquipeBean(Equipe equipeBean) {
+		this.equipeBean = equipeBean;
+	}
 
 	private String cartaobeneficio;
 
+	@ManyToOne()
 	@JoinColumn(name="equipeBean", referencedColumnName="codigo")
-	private Equipe equipe;
+	private Equipe equipeBean;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date inclusao;
@@ -38,27 +58,40 @@ public class Contrato implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datageracao;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date datavenda;
+	
+	@ManyToOne()
 	@JoinColumn(name="relatorioBean", referencedColumnName="codigo")
-	private Relatorio relatorioBean;
-
+	private Relatorio relatorioBean=new Relatorio();
+	
+	@ManyToOne()
+	@JoinColumn(name="assinanteBean", referencedColumnName="codigo")
+	private Assinante assinanteBean=new Assinante();
+	
+	@ManyToOne()
 	@JoinColumn(name="subcanlBean", referencedColumnName="codigo")
 	private Subcanal subcanlBean;
-	 
+	
+	@ManyToOne() 
 	@JoinColumn(name="vendedorBean", referencedColumnName="codigo")
 	private Vendedor vendedorBean;
+	
+	@ManyToOne() 
+	@JoinColumn(name="pagamentoBean", referencedColumnName="id")
+	private ContratoPagamento pagamentoBean=new  ContratoPagamento();
 	 
 
 	//bi-directional many-to-one association to ContratoBrinde
-	@OneToMany(mappedBy="contrato", fetch=FetchType.EAGER)
-	private List<ContratoBrinde> contratoBrindes;
+	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY)
+	private List<ContratoBrinde> contratoBrindes=new ArrayList<>();
 
 	//bi-directional many-to-one association to ContratoPagamento
-	@OneToMany(mappedBy="contrato", fetch=FetchType.EAGER)
-	private List<ContratoPagamento> contratoPagamentos;
+	
 
 	//bi-directional many-to-one association to ContratoProduto
-	@OneToMany(mappedBy="contrato", fetch=FetchType.EAGER)
-	private List<ContratoProduto> contratoProdutos;
+	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY)
+	private List<ContratoProduto> contratoProdutos=new ArrayList<>();
 
 	public Contrato() {
 	}
@@ -102,21 +135,7 @@ public class Contrato implements Serializable {
 	 
 
 	
-	public Canal getCanal() {
-		return canal;
-	}
-
-	public void setCanal(Canal canal) {
-		this.canal = canal;
-	}
-
-	public Equipe getEquipe() {
-		return equipe;
-	}
-
-	public void setEquipe(Equipe equipe) {
-		this.equipe = equipe;
-	}
+	 
 
 	public Relatorio getRelatorioBean() {
 		return relatorioBean;
@@ -189,27 +208,9 @@ public class Contrato implements Serializable {
 		return contratoBrinde;
 	}
 
-	public List<ContratoPagamento> getContratoPagamentos() {
-		return this.contratoPagamentos;
-	}
+	 
 
-	public void setContratoPagamentos(List<ContratoPagamento> contratoPagamentos) {
-		this.contratoPagamentos = contratoPagamentos;
-	}
-
-	public ContratoPagamento addContratoPagamento(ContratoPagamento contratoPagamento) {
-		getContratoPagamentos().add(contratoPagamento);
-		contratoPagamento.setContrato(this);
-
-		return contratoPagamento;
-	}
-
-	public ContratoPagamento removeContratoPagamento(ContratoPagamento contratoPagamento) {
-		getContratoPagamentos().remove(contratoPagamento);
-		contratoPagamento.setContrato(null);
-
-		return contratoPagamento;
-	}
+	 
 
 	public List<ContratoProduto> getContratoProdutos() {
 		return this.contratoProdutos;
@@ -247,6 +248,30 @@ public class Contrato implements Serializable {
 
 	public void setCodigocontrato(Integer codigocontrato) {
 		this.codigocontrato = codigocontrato;
+	}
+
+	public Assinante getAssinanteBean() {
+		return assinanteBean;
+	}
+
+	public void setAssinanteBean(Assinante assinanteBean) {
+		this.assinanteBean = assinanteBean;
+	}
+
+	public Date getDatavenda() {
+		return datavenda;
+	}
+
+	public void setDatavenda(Date datavenda) {
+		this.datavenda = datavenda;
+	}
+
+	public ContratoPagamento getPagamentoBean() {
+		return pagamentoBean;
+	}
+
+	public void setPagamentoBean(ContratoPagamento pagamentoBean) {
+		this.pagamentoBean = pagamentoBean;
 	}
 
 }

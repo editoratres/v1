@@ -32,8 +32,8 @@
 								<div class="col-md-4">
 									<div class="position-relative form-group">
 										<label for="produto" class="">Produto</label>
-										<h:selectOneMenu styleClass="form-control"  
-											filter="true" filterMatchMode="startsWith"
+										<h:selectOneMenu styleClass="form-control" filter="true"
+											filterMatchMode="startsWith"
 											requiredMessage="O produto é obrigatório"
 											value="#{ofertaController.item.produtoBean}" var="t"
 											id="produto">
@@ -56,8 +56,8 @@
 								<div class="col-md-4">
 									<div class="position-relative form-group">
 										<label for="brinde" class="">Brindes</label>
-										<h:selectOneMenu styleClass="form-control" 
-											filter="true" filterMatchMode="startsWith"
+										<h:selectOneMenu styleClass="form-control" filter="true"
+											filterMatchMode="startsWith"
 											value="#{ofertaController.item.brindeBean}" var="v"
 											id="brinde">
 											<f:selectItem itemValue="0" itemLabel="Selecione"
@@ -92,7 +92,20 @@
 								</div>
 							</div>
 
-
+							<div class="form-row">
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<label for="idativo" class="">Status?</label>
+										<br />
+										<p:inputSwitch  value="#{ofertaController.item.ativa}" 
+										offLabel="Inativa" onLabel="Ativa"
+										 id="idativo" >
+										 	  <p:ajax update="idativo"/>
+										 </p:inputSwitch>
+										 								
+									</div>
+								</div>
+							</div>
 
 						</div>
 					</div>
@@ -117,7 +130,13 @@
 										</p:commandLink>
 									</div>
 								</f:facet>
-
+								<p:column  >
+									<f:facet name="header">
+										<h:outputText value="Status" />
+									</f:facet>
+									<h:outputText value="#{ofertaitem.ativa ? 'ATIVA' : 'inativa'}" />
+									 
+								</p:column>
 								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Edição" />
@@ -152,14 +171,14 @@
 									<center>
 										<p:commandLink
 											actionListener="#{ofertaController.excluirItemOferta(ofertaitem)}"
-											  update=":ofertaForm:datalistofertaItens, :growl"
+											update=":ofertaForm:datalistofertaItens, :growl"
 											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir item da oferta"
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":ofertaFormItens"  
+										<p:commandLink update=":ofertaFormItens"
 											oncomplete="PF('_ofertaDialogItens').show();"
 											actionListener="#{ofertaController.prepareEditarItemOferta(ofertaitem)}"
 											style="font-size: 20px">

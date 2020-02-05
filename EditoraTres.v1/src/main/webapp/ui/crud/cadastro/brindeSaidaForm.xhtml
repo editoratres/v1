@@ -7,8 +7,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <ui:composition>
 	<p:dialog
-		style="width: 70% !important;height: 600px !important;position: absolute !important;left: 0 !important;top: 0 !important;"
-		height="520px" id="brindeSaidaDialog" widgetVar="_brindeSaidaDialog"
+		width="80%" height="520" id="brindeSaidaDialog" widgetVar="_brindeSaidaDialog"
 		modal="true" resizable="false" appendTo="@(body)" showEffect="clip"
 		draggable="false" hideEffect="clip" closeOnEscape="true"
 		header="Saída de brindes">
@@ -154,12 +153,12 @@
 					<div class="form-row">
 						<p:dataTable styleClass="table" id="datalistItens"
 							widgetVar="_datalistItens"
-							style="width: 100% !important;height: 180px !important;"
+							style="width: 100% !important;height: 200px !important;"
 							value="#{brindeSaidaController.item.brindeSaidaItens}"
 							var="itens" emptyMessage="Nenhum registro localizado"
 							paginator="false" rowKey="#{itens.id}" scrollable="true"
 							selectionMode="single" disabled="#{brindeSaidaController.editar}"
-							scrollRows="10" scrollHeight="130" rowIndexVar="idrowiditem">
+							scrollRows="10" scrollHeight="190" rowIndexVar="idrowiditem">
 							<p:column>
 								<f:facet name="header">
 									<h:outputText value="#" />
@@ -185,7 +184,7 @@
 
 							</p:column>
 							<p:column headerText="Quantidade">
-								<p:inputNumber maxValue="99999" size="13" minValue="0"
+								<p:inputNumber maxValue="99999" size="10" minValue="0"
 									inputStyle="text-align: center !important;"
 									disabled="#{brindeSaidaController.editar}"
 									id="idQuantidadeBrinde" decimalPlaces="0"
@@ -312,7 +311,7 @@
 	</p:dialog>
 
 
-	<style>
+	<!-- <style>
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
 	font-size: 12px;
 }
@@ -321,10 +320,11 @@
 	height: 33px !important;
 }
 </style>
+-->
 	<script>
 function scrollToBottom() {
     $('.ui-datatable-scrollable-body').scrollTop(100000)
 }
-</script>
+</script> 
 </ui:composition>
 </html>

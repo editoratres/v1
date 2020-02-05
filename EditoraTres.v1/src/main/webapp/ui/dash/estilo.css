@@ -1,0 +1,96 @@
+.body-editora {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 0.7rem;
+  font-weight: 400;
+  line-height: 0.8px;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+
+.table-editora {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 10px	;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
+	font-size: 10px;
+}
+
+.MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
+	height: 25px !important;
+}
+
+.form-group {
+	 
+	margin-bottom: 0.5rem !important;
+ 
+}
+.ui-inputfield.form-control {
+    color: #555 !important;
+    display: block !important;
+    margin-bottom: 0 !important;
+    padding: 10px 10px !important;
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+  	height: 28px !important;
+}
+.ui-selectonemenu.form-control {
+    color: #555 !important;
+    display: block !important;
+    margin-bottom: 0 !important;
+    padding: 0px 0px !important;
+    background-color: #fff !important;
+    border: 2px solid #ccc !important;
+  	height: 27px !important;
+}
+
+.radius-none {
+    border-radius: 0 !important;
+}
+
+
+
+ .hr-1 {
+        padding: 0;
+        border: none;
+        border-top: 1px solid #eaeaea;
+        color: #383a4f;
+        text-align: left;    
+        font-size:16px;
+        font-weight: 300;
+    }
+    .hr-1:after {
+        content: attr(data-content);
+        display: inline-block;
+        position: relative; 
+        top: -0.8em; 
+        padding: 0 1em;
+        background: #ffffff;
+    }
+    
+.ui-accordion .ui-accordion-content{
+      border-top: 5px none;
+      margin-bottom: 2px;
+      margin-top: 10px;
+      overflow: auto;
+      padding: 3px;
+      position: relative;
+      top: 5px;
+       font-size: 14px !important;
+      
+ }    
+ 
+ .ui-widget, .ui-widget .ui-widget {    
+    font-size: 95% !important;
+}
+
+ .ui-toggleswitch {
+        vertical-align: bottom;
+    }

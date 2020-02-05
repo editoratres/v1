@@ -14,40 +14,45 @@
 		<h:form id="ofertaFormItens">
 			<div class="main-card mb-3 card">
 				<div class="card-body">
-
-
 					<div class="form-row">
+						
 						<div class="col-md-3">
 							<div class="position-relative form-group">
-								<label for="edicao" class="">Edição</label>
-								<h:inputText
+								<b><label for="edicao" class="">Edição</label></b>
+								<p:inputNumber maxValue="9999999" minValue="0"
+								   decimalPlaces="0"
+								   decimalSeparator=""
+										thousandSeparator=""
 									value="#{ofertaController.ofertaItensSelecionado.edicao}"
 									required="true" maxlength="20"
+									inputStyleClass="form-control"
 									requiredMessage="A edição é obrigatória" id="edicao"
-									type="text" styleClass="form-control" />
+									type="text"  />
 							</div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-3">
 							<div class="position-relative form-group">
-								<label for="premio" class="">Prêmio</label>
+								<b><label for="premio" class="">Prêmio</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
-									style="width : 90%"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.premio}"
 									id="premio" type="text" />
 							</div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-3">
 							<div class="position-relative form-group">
-								<label for="valorbase" class="">Valor Base</label>
+								<b><label for="valorbase" class="">Valor Base</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.valorbase}"
 									id="valorbase" type="text" />
 							</div>
 						</div>
-						<div class="col-md-2">
+						<div class="col-md-3">
 							<div class="position-relative form-group">
-								<label for="vendbase" class="">Vend Base</label>
+								<b><label for="vendbase" class="">Vend Base</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+								inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vendbase}"
 									id="vendbase" type="text" />
 							</div>
@@ -56,48 +61,54 @@
 					<div class="form-row">
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez1" class="">1ª Vez</label>
+								<b><label for="vez1" class="">1ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez1}"
 									id="vez1" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez2" class="">2ª Vez</label>
+								<b><label for="vez2" class="">2ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+								inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez2}"
 									id="vez2" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez2" class="">3ª Vez</label>
+								<b><label for="vez2" class="">3ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez3}"
 									id="vez3" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez4" class="">4ª Vez</label>
+								<b><label for="vez4" class="">4ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez4}"
 									id="vez4" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez5" class="">5ª Vez</label>
+								<b><label for="vez5" class="">5ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez5}"
 									id="vez5" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez6" class="">6ª Vez</label>
+								<b><label for="vez6" class="">6ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez6}"
 									id="vez6" type="text" />
 							</div>
@@ -106,50 +117,68 @@
 					<div class="form-row">
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez7" class="">7ª Vez</label>
+								<b><label for="vez7" class="">7ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez7}"
 									id="vez7" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez8" class="">8ª Vez</label>
+								<b><label for="vez8" class="">8ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez8}"
 									id="vez8" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez9" class="">9ª Vez</label>
+								<b><label for="vez9" class="">9ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez9}"
 									id="vez9" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez10" class="">10ª Vez</label>
+								<b><label for="vez10" class="">10ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez10}"
 									id="vez10" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez11" class="">11ª Vez</label>
+								<b><label for="vez11" class="">11ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez11}"
 									id="vez11" type="text" />
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="position-relative form-group">
-								<label for="vez12" class="">12ª Vez</label>
+								<b><label for="vez12" class="">12ª Vez</label></b>
 								<p:inputNumber maxValue="999999.99" minValue="0"
+									inputStyleClass="form-control"
 									value="#{ofertaController.ofertaItensSelecionado.vez12}"
 									id="vez12" type="text" />
+							</div>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<b><label for="idativo" class="">Status?</label></b>
+								<br />
+								<p:inputSwitch offLabel="Inativa" onLabel="Ativa" 
+								value="#{ofertaController.ofertaItensSelecionado.ativa}" id="idativo" >
+									 <p:ajax update="idativo"/>
+								</p:inputSwitch>								
 							</div>
 						</div>
 					</div>

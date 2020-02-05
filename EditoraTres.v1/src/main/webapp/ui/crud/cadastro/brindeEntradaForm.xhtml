@@ -247,10 +247,10 @@
 		closeOnEscape="true" widgetVar="_idConsultaBrindes">
 		<h:form id="idFormPesquisarBrinde">
 			<p:outputPanel id="painelBuscaBrinde">
-				<p:commandLink update="datalistBrindes">
+				<!-- <p:commandLink update="datalistBrindes">
 					<i class="fas fa-plus-circle" />
 										Inserir brinde
-				</p:commandLink>
+				</p:commandLink> -->
 				<p:dataTable styleClass="table" id="datalistBrindes"
 					widgetVar="_datalistBrindes"
 					value="#{brindeEntradaController.brindeFacade.findAll()}"
@@ -293,7 +293,7 @@
 	</p:dialog>
 
 
-	<style>
+	<!-- <style>
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
 	font-size: 12px;
 }
@@ -301,7 +301,7 @@
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
 	height: 33px !important;
 }
-</style>
+</style> -->
 	<script>
 function scrollToBottom() {
     $('.ui-datatable-scrollable-body').scrollTop(100000)

@@ -52,6 +52,7 @@ public abstract class AbstractFacade<T> {
     }
 
     @SuppressWarnings("rawtypes")
+    
 	public List<T> findAll() {
     	
          

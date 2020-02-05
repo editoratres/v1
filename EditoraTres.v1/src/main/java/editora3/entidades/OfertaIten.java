@@ -42,6 +42,8 @@ public class OfertaIten implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer codigo;
+	
+	private Boolean ativa;
 
 	@Column(name="vez1")
 	private Double vez1=0d;
@@ -238,6 +240,14 @@ public class OfertaIten implements Serializable {
 
 	public void setOferta(Oferta oferta) {
 		this.oferta = oferta;
+	}
+
+	public Boolean getAtiva() {
+		return ativa;
+	}
+
+	public void setAtiva(Boolean ativa) {
+		this.ativa = ativa;
 	}
 
 }

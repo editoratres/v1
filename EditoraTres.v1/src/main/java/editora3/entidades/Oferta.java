@@ -25,6 +25,7 @@ public class Oferta implements Serializable {
 	@JoinColumn(name="brindeBean", referencedColumnName="codigo")
 	private Brinde brindeBean;
 
+	private Boolean ativa;
 	public Brinde getBrindeBean() {
 		return brindeBean;
 	}
@@ -48,7 +49,7 @@ public class Oferta implements Serializable {
 	private String tipoassinatura;
 
 	//bi-directional many-to-one association to OfertaIten
-	@OneToMany(mappedBy="oferta", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="oferta", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<OfertaIten> ofertaItens=new ArrayList<>();
 
 	public Oferta() {
@@ -116,6 +117,14 @@ public class Oferta implements Serializable {
 		ofertaIten.setOferta(null);
 
 		return ofertaIten;
+	}
+
+	public Boolean getAtiva() {
+		return ativa;
+	}
+
+	public void setAtiva(Boolean ativa) {
+		this.ativa = ativa;
 	}
 
 }

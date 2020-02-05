@@ -42,6 +42,23 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 	}
 	
 	@Transactional
+	public List<Brinde> findAll(String status){
+		List<Brinde> ret =null;
+		try {
+			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("from Brinde c "+ (status.equalsIgnoreCase("todos") ? "": " where c.status=TRUE") + " order by c.descricao",Brinde.class);
+			 
+			 ret = createQuery.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	
+		
+		
+		return ret;
+	}
+	
+	@Transactional
 	public Integer movimentacoesBrinde(Integer id) {
 		 int ret=0;
 		 TypedQuery<BrindeEntradaItens> createQuery = getEntityManager().createQuery("from BrindeEntradaItens b where b.brindeBean.codigo =:codigo",BrindeEntradaItens.class);

@@ -85,8 +85,21 @@ public class ContratoBrinde implements Serializable {
 		return this.contrato;
 	}
 
+	
 	public void setContrato(Contrato contrato) {
 		this.contrato = contrato;
 	}
+	
+	public ContratoProduto getContratoProdutoBean() {
+		return contratoProdutoBean;
+	}
+
+	public void setContratoProdutoBean(ContratoProduto contratoProdutoBean) {
+		this.contratoProdutoBean = contratoProdutoBean;
+	}
+
+	@ManyToOne()
+	@JoinColumn(name="contratoProdutoBean", referencedColumnName="id")
+	private ContratoProduto contratoProdutoBean;
 
 }

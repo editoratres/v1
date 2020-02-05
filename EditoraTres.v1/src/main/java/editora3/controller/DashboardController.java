@@ -1,5 +1,6 @@
 package editora3.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.ManagedBean;
@@ -7,8 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import editora3.infra.InterfaceMenuHtml;
 import editora3.seguranca.LoginInfo;
@@ -52,6 +56,10 @@ public class DashboardController implements Serializable {
 		this.loginInfo = loginInfo;
 	}
 	
-	 
+	@PostConstruct
+	public void reload() throws IOException {
+	    ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+	    ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+	}
 	
 }

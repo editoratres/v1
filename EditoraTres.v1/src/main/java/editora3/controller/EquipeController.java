@@ -293,8 +293,8 @@ public class EquipeController implements AbstractController<Equipe>{
 		return estados;
 	}
 
-	public void setEstados(List<String> estados) {
-		estados = estados;
+	public void setEstados(ArrayList<Estados> estados) {
+		this.estados =  estados;
 	}
 
 	public ArrayList<Municipio> getMunicipios() {

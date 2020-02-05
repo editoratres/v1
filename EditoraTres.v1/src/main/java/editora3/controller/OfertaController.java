@@ -114,7 +114,9 @@ public class OfertaController implements AbstractController<Oferta> {
 
 	@Override
 	public void prepararNovo() {
-		setItem(new Oferta()); 
+		Oferta oferta = new Oferta();
+		oferta.setAtiva(false);
+		setItem(oferta); 
 		// TODO Auto-generated method stub
 		
 	}
@@ -210,7 +212,7 @@ public class OfertaController implements AbstractController<Oferta> {
 	public List<Oferta> getItens() {
 		ArrayList<Oferta> itens = (ArrayList<Oferta>) getFlash().getValoresPorID("ofertaForm").get("itens");
 		if(itens==null) {
-			itens = (ArrayList<Oferta>) getOfertafacade().findAll();
+			itens = (ArrayList<Oferta>) getOfertafacade().findAllLazy("todos");
 			setItens(itens);
 		}
 		// TODO Auto-generated method stub
@@ -226,8 +228,9 @@ public class OfertaController implements AbstractController<Oferta> {
 				FacesContext.getCurrentInstance().validationFailed();
 				return;
 			}
-			
-			setOfertaItensSelecionado(new OfertaIten());
+			OfertaIten ofertaIten = new OfertaIten();
+			ofertaIten.setAtiva(false);
+			setOfertaItensSelecionado(ofertaIten);
 			getOfertaItensSelecionado().setOferta(item);
 			
 			
@@ -256,13 +259,16 @@ public class OfertaController implements AbstractController<Oferta> {
 			Oferta item = getItem();
 			List<OfertaIten> ofertaItens = item.getOfertaItens();
 			int Total=0;
+			boolean repetido=false;
 			for (Iterator iterator = ofertaItens.iterator(); iterator.hasNext();) {
 				OfertaIten ofertaIten = (OfertaIten) iterator.next();
-				if(ofertaItensSelecionado.getCodigo()!=ofertaIten.getCodigo() &&  ofertaIten.getEdicao().equalsIgnoreCase(ofertaItensSelecionado.getEdicao())) {
-					Total++;
+				if((ofertaItensSelecionado.getCodigo()==null && ofertaItensSelecionado.getCodigo()!=ofertaIten.getCodigo()) &&   
+						ofertaIten.getEdicao().equalsIgnoreCase(ofertaItensSelecionado.getEdicao()) ) {
+					repetido=true;
+					break;
 				}
 			}
-			if( Total>0) {
+			if(repetido) {
 				PrimeFaces.current().resetInputs(":ofertaFormItens");
 				JsfUtil.addErrorMessage("A Edição ja foi incluida nessa oferta", "Procedimento não realizado");
 				setOfertaItensSelecionado(null);
@@ -278,6 +284,7 @@ public class OfertaController implements AbstractController<Oferta> {
 				ofertaItensSelecionado.setOferta(getItem());
 				item.getOfertaItens().add(ofertaItensSelecionado);
 			}else {
+				ofertaItensSelecionado.setOferta(getItem());
 				int indexOf = item.getOfertaItens().indexOf(ofertaItensSelecionado);
 				if(indexOf>=0) {
 					item.getOfertaItens().set(indexOf, ofertaItensSelecionado);

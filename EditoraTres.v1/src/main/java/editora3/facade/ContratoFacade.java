@@ -5,12 +5,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+
+import editora3.entidades.Contrato;
 import editora3.entidades.Relatorio;
 
-public class ContratoFacade extends AbstractFacade<Relatorio> {
+public class ContratoFacade extends AbstractFacade<Contrato> {
 
 	public ContratoFacade() {
-		super(Relatorio.class);
+		super(Contrato.class);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -23,13 +25,13 @@ public class ContratoFacade extends AbstractFacade<Relatorio> {
 		return em;
 	}
 
-	public Relatorio localizarPorNome(String identificacao) {
-		Relatorio c = null;
+	public Contrato localizarPorCodigo(Integer codigocontrato) {
+		Contrato c = null;
 
-		TypedQuery<Relatorio> createQuery = getEntityManager().createQuery("from Relatorio c where c.identificacao=:identificacao",
-				Relatorio.class);
-		createQuery.setParameter("identificacao", identificacao);
-		List<Relatorio> resultList = createQuery.getResultList();
+		TypedQuery<Contrato> createQuery = getEntityManager().createQuery("from Contrato c where c.codigocontrato=:codigocontrato",
+				Contrato.class);
+		createQuery.setParameter("codigocontrato", codigocontrato);
+		List<Contrato> resultList = createQuery.getResultList();
 		if (resultList != null && !resultList.isEmpty()) {
 			c = resultList.get(0);
 		}

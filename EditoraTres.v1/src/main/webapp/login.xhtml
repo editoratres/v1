@@ -52,6 +52,7 @@
 					</div>
 					<div class="card-body">
 						<h:form id="form_login">
+							<p:defaultCommand target="btLogin" />
 							<div class="input-group form-group">
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -72,9 +73,9 @@
 								<input type="checkbox">Lembrar login</input>
 							</div>
 							<div class="form-group">
-								<!-- <input type="submit" value="Login"
-									class="btn float-right login_btn" /> -->
-								<p:commandLink  id="btLogin" update=":growl" action="#{loginController.login()}" value ="login" styleClass="btn float-right login_btn"/>
+								<p:commandLink  id="btLogin" update=":growl" action="#{loginController.login()}"
+									 value ="LOGIN"
+									 styleClass="btn float-right login_btn form-control"/>
 								
 							</div>
 							 <p:blockUI trigger="form_login:btLogin" id="blockui_listagem"  block=":idbody">

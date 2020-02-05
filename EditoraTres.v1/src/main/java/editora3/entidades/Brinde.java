@@ -49,6 +49,8 @@ public class Brinde implements Serializable {
 	private Integer quantidade;
 
 	private double valor;
+	
+	private Boolean status;
 
 	public Brinde() {
 	}
@@ -91,6 +93,14 @@ public class Brinde implements Serializable {
 
 	public void setValor(double valor) {
 		this.valor = valor;
+	}
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 }

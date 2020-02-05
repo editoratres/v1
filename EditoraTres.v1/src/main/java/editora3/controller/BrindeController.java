@@ -62,6 +62,7 @@ public class BrindeController implements AbstractController<Brinde> {
 	public void prepararNovo() {
 		setItem(new Brinde()); 
 		getItem().setQuantidade(0);
+		getItem().setStatus(false);
 		// TODO Auto-generated method stub
 		
 	}

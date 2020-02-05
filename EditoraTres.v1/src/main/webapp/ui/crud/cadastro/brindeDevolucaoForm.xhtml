@@ -7,8 +7,8 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <ui:composition>
 	<p:dialog
-		style="width: 70% !important;height: 800px !important;position: absolute !important;left: 0 !important;top: 0 !important;"
-		height="600px" id="brindeDevolucaoDialog"
+	    id="brindeDevolucaoDialog"
+		width="80%" height="560"
 		widgetVar="_brindeDevolucaoDialog" modal="true" resizable="false"
 		appendTo="@(body)" showEffect="clip" draggable="false"
 		hideEffect="clip" closeOnEscape="true" header="Devolucao de brindes">
@@ -151,7 +151,7 @@
 						<div class="col-md-10">
 							<div class="position-relative form-group">
 								<b><label for="idobs" class="">Obs</label> <br /></b>
-								<p:inputTextarea cols="140" rows="2"
+								<p:inputTextarea cols="100" rows="2"
 									disabled="#{brindeDevolucaoController.editar}"
 									value="#{brindeDevolucaoController.item.obs}" id="idobs"
 									type="text">
@@ -178,13 +178,13 @@
 					<div class="form-row">
 						<p:dataTable styleClass="table" id="datalistItens"
 							widgetVar="_datalistItens"
-							style="width: 100% !important;height: 180px !important;"
+							style="width: 100% !important;height: 120px !important;"
 							value="#{brindeDevolucaoController.item.brindeDevolucaoItens}"
 							var="itens" emptyMessage="Nenhum registro localizado"
 							paginator="false" rowKey="#{itens.id}" scrollable="true"
 							selectionMode="single"
 							disabled="#{brindeDevolucaoController.editar}" scrollRows="10"
-							scrollHeight="130" rowIndexVar="idrowiditem">
+							scrollHeight="90" rowIndexVar="idrowiditem">
 							<p:column>
 								<f:facet name="header">
 									<h:outputText value="#" />
@@ -210,7 +210,7 @@
 
 							</p:column>
 							<p:column headerText="Quantidade">
-								<p:inputNumber maxValue="99999" size="13" minValue="0"
+								<p:inputNumber maxValue="99999" size="10" minValue="0"
 									inputStyle="text-align: center !important;"
 									disabled="#{brindeDevolucaoController.editar}"
 									id="idQuantidadeBrinde" decimalPlaces="0"
@@ -339,7 +339,7 @@
 	</p:dialog>
 
 
-	<style>
+	<!-- <style>
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
 	font-size: 12px;
 }
@@ -347,7 +347,7 @@
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
 	height: 33px !important;
 }
-</style>
+</style> -->
 	<script>
 function scrollToBottom() {
     $('.ui-datatable-scrollable-body').scrollTop(100000)

@@ -24,7 +24,7 @@ public class ContratoProduto implements Serializable {
 	private String edicao;
 	@ManyToOne()
 	@JoinColumn(name="ofertaBean", referencedColumnName="codigo")
-	private Oferta oferta;
+	private Oferta ofertaBean;
 	
 	private Integer parcelas;
 
@@ -69,12 +69,12 @@ public class ContratoProduto implements Serializable {
 		this.produtoBean = produtoBean;
 	}
 
-	public Oferta getOferta() {
-		return oferta;
+	public Oferta getOfertaBean() {
+		return ofertaBean;
 	}
 
-	public void setOferta(Oferta oferta) {
-		this.oferta = oferta;
+	public void setOfertaBean(Oferta ofertaBean) {
+		this.ofertaBean = ofertaBean;
 	}
 
 	@Override
