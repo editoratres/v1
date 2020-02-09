@@ -99,13 +99,14 @@ public class InterfaceMenuHtml implements Serializable{
                        i++;
                    }
                 }else{
-                   if(next.getURL()==null){ 
+                   if(next.getURL()==null ){ 
                     //ExcluirNo(next,itens);
-                     menuspesquisa.remove(i);                     
+                     menuspesquisa.remove(next);                     
                    }else{
                        i++;
                    }
                 }
+                 
             }
         } catch (Exception e) {
                JsfUtil.addErrorMessage(e, "(LimparNosVazio)");
@@ -131,6 +132,7 @@ public class InterfaceMenuHtml implements Serializable{
                 //MenuItemApp item = new MenuItemApp();
                 MenuItemApp item = new MenuItemApp();
                 ArrayList<MenuItemApp> filhos =null;
+                Permitido=true;
                 if(menuapp.getMenuOpcoesCollection()!=null && !menuapp.getMenuOpcoesCollection().isEmpty()){
                     //SubMenus
                 
@@ -224,7 +226,9 @@ public class InterfaceMenuHtml implements Serializable{
          
          setItens(menu);
          
-         NosVazio((ArrayList<MenuItemApp>) itens.clone());
+         NosVazio((ArrayList<MenuItemApp>) itens);
+         
+        // NosVazio((ArrayList<MenuItemApp>) itens.clone());
     }
     public ArrayList<MenuItemApp> getItens() {
       

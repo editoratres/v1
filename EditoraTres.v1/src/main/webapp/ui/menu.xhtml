@@ -5,8 +5,8 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core" >	
         <c:forEach items="#{node}" var="item" >
-            <li> 
-            	  <ui:fragment rendered="#{empty item.URL}">
+            <li class="#{item.ID==1 ? 'mm-active' : ''}"> 
+            	  <ui:fragment  rendered="#{empty item.URL}">
             	 
 		            	<p:commandLink  id="btAcionarMenu"  
 		            	     update="_main_content :_Formulario" 

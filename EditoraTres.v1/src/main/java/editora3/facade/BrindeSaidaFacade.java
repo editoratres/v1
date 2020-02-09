@@ -7,12 +7,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeDevolucao;
 import editora3.entidades.BrindeDevolucaoIten;
+import editora3.entidades.BrindeEstoqueEquipe;
 import editora3.entidades.BrindeSaida;
 import editora3.entidades.BrindeSaidaIten;
 import editora3.entidades.Canal;
@@ -50,12 +52,35 @@ public class BrindeSaidaFacade extends AbstractFacade<BrindeSaida> {
 							((Double) brindeEntradaItem.getQuantidade()).intValue();
 					find.setQuantidade(novaQT);
 					getEntityManager().merge(find);
+					
+					
+					Query createNativeQuery = getEntityManager().createQuery("From BrindeEstoqueEquipe b where b.brindeBean.codigo=:brindeBean and b.equipeBean.codigo=:equipeBean",BrindeEstoqueEquipe.class);
+					createNativeQuery.setParameter("brindeBean", find.getCodigo());
+					createNativeQuery.setParameter("equipeBean",brindeSaida.getEquipeBean().getCodigo());
+					List<BrindeEstoqueEquipe> resultList =(List<BrindeEstoqueEquipe>) createNativeQuery.getResultList();
+					if(resultList!=null) {
+						BrindeEstoqueEquipe brindeEstoqueEquipe=null;
+						if(resultList.isEmpty()) {
+							brindeEstoqueEquipe  = new BrindeEstoqueEquipe();
+							brindeEstoqueEquipe.setBrindeBean(find);
+							brindeEstoqueEquipe.setEquipeBean(brindeSaida.getEquipeBean());
+							brindeEstoqueEquipe.setQuantidade(brindeEntradaItem.getQuantidade());
+							getEntityManager().persist(brindeEstoqueEquipe);
+						}else {
+							brindeEstoqueEquipe=resultList.get(0);
+						 
+							brindeEstoqueEquipe.setQuantidade(brindeEstoqueEquipe.getQuantidade() + brindeEntradaItem.getQuantidade() );
+							getEntityManager().merge(brindeEstoqueEquipe);
+						}
+					}
+					
 				}
 				
 			}
 		
 		}
 	}
+	
 	
 	@Transactional
 	public void cancelarSaidaBrinde(BrindeSaida brindeSaida) {
@@ -70,6 +95,28 @@ public class BrindeSaidaFacade extends AbstractFacade<BrindeSaida> {
 						 (find.getQuantidade()==null ? 0 : find.getQuantidade().intValue())+  ((Double) brindeSaidaItem.getQuantidade()).intValue();
 				find.setQuantidade(novaQT);
 				getEntityManager().merge(find);
+				
+				
+				Query createNativeQuery = getEntityManager().createQuery("From BrindeEstoqueEquipe b where b.brindeBean.codigo=:brindeBean and b.equipeBean.codigo=:equipeBean",BrindeEstoqueEquipe.class);
+				createNativeQuery.setParameter("brindeBean", find.getCodigo());
+				createNativeQuery.setParameter("equipeBean",brindeSaida.getEquipeBean().getCodigo());
+				List<BrindeEstoqueEquipe> resultList =(List<BrindeEstoqueEquipe>) createNativeQuery.getResultList();
+				if(resultList!=null) {
+					BrindeEstoqueEquipe brindeEstoqueEquipe=null;
+					if(resultList.isEmpty()) {
+						brindeEstoqueEquipe  = new BrindeEstoqueEquipe();
+						brindeEstoqueEquipe.setBrindeBean(find);
+						brindeEstoqueEquipe.setEquipeBean(brindeSaida.getEquipeBean());
+						brindeEstoqueEquipe.setQuantidade(brindeSaidaItem.getQuantidade());
+						getEntityManager().persist(brindeEstoqueEquipe);
+					}else {
+						brindeEstoqueEquipe=resultList.get(0);
+					 
+						brindeEstoqueEquipe.setQuantidade(brindeEstoqueEquipe.getQuantidade() - brindeSaidaItem.getQuantidade() );
+						getEntityManager().merge(brindeEstoqueEquipe);
+					}
+				}
+				
 			}
 			
 		}

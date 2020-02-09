@@ -15,20 +15,39 @@
 		<p:ajax event="close" listener="#{contratoController.fecharDialogo()}" />
 		<h:form id="contratoForm">
 			 <p:remoteCommand update=":contratoForm:datalistBrindes" name="atualizarBrindes"></p:remoteCommand>
+			 
 			<div class="form-row body-editora">
-				<div class="col-md-3">
+				<div class="col-md-2">
 					<div class="position-relative form-group">
-						<b><label for="idEquipe">Relatório</label></b>
+						<b><label for="divinclusao" class="">Inclusão</label></b>
+						<div id="divinclusao">
+							<p:calendar inputStyleClass="form-control"
+								 
+								disabled="true" 
+								converterMessage="Data de Inclusão informada inválida"
+								pattern="dd/MM/yyyy" mask="true"
+								value="#{contratoController.item.inclusao}" id="idinclusao"
+								type="text" validatorMessage="Data informada inválida">
+							</p:calendar>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+				
+					<div class="position-relative form-group">
+						
+						<b><label for="idrelatorio">Relatório</label></b>
 						<p:selectOneMenu autoWidth="false"
 							disabled="#{contratoController.editar}"
 							converter="editora3.converter.ConversorRelatorio"
-							styleClass="form-control MyOneMenu" filter="true"
+							styleClass="form-control MyOneMenu " filter="true"
+						    style="#{contratoController.camposInvalidos.contains('idrelatorio') ? 'border: 2px solid red !important;' : ''}"
 							filterMatchMode="startsWith" var="r" id="idrelatorio"
 							value="#{contratoController.item.relatorioBean}">
 							<f:selectItem itemValue="0" itemLabel="Selecione"
 								noSelectionOption="true" />
 							<f:selectItems
-								value="#{contratoController.relatorioFacade.findAll()}"
+								value="#{contratoController.relatoriosDisponiveis}"
 								var="relatorio" itemLabel="#{relatorio.descricao}"
 								itemValue="#{relatorio}" />
 							<p:column style="width:10%">
@@ -38,6 +57,7 @@
 								<h:outputText value="#{r.descricao}" />
 							</p:column>
 						</p:selectOneMenu>
+						<p:message for="idrelatorio" display="text" />
 					</div>
 				</div>
 				<div class="col-md-3 body-editora">
@@ -45,38 +65,39 @@
 						<b><label for="iddivcontrato" class="">Contrato</label></b>
 						<div id="iddivcontrato" class="input-group mb-3">
 							<p:inputNumber minValue="0" maxValue="9999999"
+								disabled="#{contratoController.editar or contratoController.contratoCarregado or contratoController.item.inclusao!=null}"
 								inputStyleClass="form-control" decimalPlaces="0"
+								 style="#{contratoController.camposInvalidos.contains('idcontrato') ? 'border: 2px solid red !important;' : ''}"
+								
 								decimalSeparator="" thousandSeparator=""
+								size="28"
 								value="#{contratoController.item.codigocontrato}"
 								id="idcontrato" />
 							<span class="input-group-btn"> <p:commandLink
-									styleClass="btn btn-outline-secondary btn-sm"
-									id="id-contrato-form-btpesquisarcontrato"
-									process="@this,idcontrato" type="button">
-									<i class="fa fa-search " />
+									styleClass="btn btn-outline-secondary"
+									id="idpesquisarContrato"
+									 onstart="PF('_id-blockui_entradabrinde').show();"
+									 process="@this,idcontrato"
+									onclick="PF('_datalistCtoDisponiveis').clearFilters();"
+									oncomplete="PF('_id-blockui_entradabrinde').hide() ; if(!args.validationFailed) { PF('_idConsultaCtoDisponiveis').show();PF('_id-blockui_entradabrinde').hide();}"
+									actionListener="#{contratoController.prepararConsultarContratoDisponivel()}"
+									update =":formConsultaCtoDisponiveis:datalistCtoDisponiveis :growl :contratoForm"
+									 
+									onerror="PF('_id-blockui_entradabrinde').hide();"
+									 type="button">
+									<i class="#{contratoController.contratoCarregado ? 'fa fa-redo' : 'fa fa-search'}" />
 								</p:commandLink>
 							</span>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-2">
-					<div class="position-relative form-group">
-						<b><label for="divinclusao" class="">Inclusão</label></b>
-						<div id="divinclusao">
-							<p:calendar inputStyleClass="form-control"
-								converterMessage="Data de Inclusão informada inválida"
-								pattern="dd/MM/yyyy" mask="true"
-								value="#{contratoController.item.inclusao}" id="idinclusao"
-								type="text" validatorMessage="Data informada inválida">
-							</p:calendar>
-						</div>
-					</div>
-				</div>
+				
 				<div class="col-md-2">
 					<div class="position-relative form-group">
 						<b><label for="divvenda" class="">Data Venda</label></b>
 						<div id="divvenda">
 							<p:calendar inputStyleClass="form-control"
+								disabled="#{contratoController.editar}"
 								converterMessage="Data de Inclusão informada inválida"
 								pattern="dd/MM/yyyy" mask="true"
 								value="#{contratoController.item.datavenda}" id="iddatavenda"
@@ -90,6 +111,7 @@
 						<b><label for="idcartaobeneficio" class="">Cartão
 								benefício</label></b>
 						<p:inputNumber decimalPlaces="0" decimalSeparator="" minValue="0"
+						disabled="#{contratoController.editar }"
 							maxValue="9999999999999999" inputStyleClass="form-control"
 							value="#{contratoController.item.cartaobeneficio}"
 							id="idcartaobeneficio" type="text">
@@ -105,7 +127,8 @@
 							<div class="position-relative form-group">
 								<b><label for="idEquipe">Equipe</label></b>
 								<p:selectOneMenu autoWidth="false"
-									disabled="#{contratoController.editar}"
+									disabled="#{contratoController.editar or (contratoController.contratoCarregado and  contratoController.item.equipeBean!=null)  or  contratoController.item.inclusao!=null}"
+									style="#{contratoController.camposInvalidos.contains('idEquipe') ? 'border: 2px solid red !important;' : ''}"
 									converter="editora3.converter.ConversorEquipe"
 									styleClass="form-control MyOneMenu" filter="true"
 									filterMatchMode="startsWith" var="e" id="idEquipe"
@@ -113,7 +136,7 @@
 									<f:selectItem itemValue="0" itemLabel="Selecione"
 										noSelectionOption="true" />
 									<f:selectItems
-										value="#{contratoController.equipeFacade.findAll()}"
+										value="#{contratoController.equipesDisponiveis}"
 										var="equipe" itemLabel="#{equipe.descricao}"
 										itemValue="#{equipe}" />
 									<p:column style="width:10%">
@@ -134,7 +157,9 @@
 							<div class="position-relative form-group">
 								<b><label for="idvendedor" class="">Vendedor</label></b>
 								<p:selectOneMenu autoWidth="false"
-									disabled="#{contratoController.editar}"
+									style="#{contratoController.camposInvalidos.contains('idvendedor') ? 'border: 2px solid red !important;' : ''}"
+									
+									disabled="#{contratoController.editar or (contratoController.contratoCarregado and  contratoController.item.vendedorBean!=null )  or  contratoController.item.inclusao!=null}"
 									styleClass="form-control MyOneMenu" filter="true"
 									converter="editora3.converter.ConversorVendedor"
 									filterMatchMode="startsWith" var="v" id="idvendedor"
@@ -159,14 +184,17 @@
 								<b><label for="idcanal" class="">Canal</label></b>
 								<p:selectOneMenu autoWidth="false"
 									disabled="#{contratoController.editar}"
+									style="#{contratoController.camposInvalidos.contains('idcanal') ? 'border: 2px solid red !important;' : ''}"
+								
 									styleClass="form-control MyOneMenu" filter="true"
 									filterMatchMode="startsWith" var="c" id="idcanal"
 									converter="editora3.converter.ConversorCanal"
 									value="#{contratoController.item.canalBean}">
+									 
 									<f:selectItem itemValue="0" itemLabel="Selecione"
 										noSelectionOption="true" />
 									<f:selectItems
-										value="#{contratoController.canalFacade.findAll()}"
+										value="#{contratoController.canaisdisponiveis}"
 										var="canal" itemLabel="#{canal.descricao}"
 										itemValue="#{canal}" />
 									<p:column style="width:10%">
@@ -182,6 +210,7 @@
 							<div class="position-relative form-group">
 								<b><label for="idsubcanal" class="">SubCanal</label></b>
 								<p:selectOneMenu autoWidth="false"
+									style="#{contratoController.camposInvalidos.contains('idsubcanal') ? 'border: 2px solid red !important;' : ''}"
 									disabled="#{contratoController.editar}"
 									styleClass="form-control MyOneMenu" filter="true"
 									converter="editora3.converter.ConversorSubCanal"
@@ -190,7 +219,7 @@
 									<f:selectItem itemValue="0" itemLabel="Selecione"
 										noSelectionOption="true" />
 									<f:selectItems
-										value="#{contratoController.subcanalFacade.findAll()}"
+										value="#{contratoController.subcanaisdisponiveis}"
 										var="subcanal" itemLabel="#{subcanal.descricao}"
 										itemValue="#{subcanal}" />
 									<p:column style="width:10%">
@@ -227,6 +256,8 @@
 							<div class="position-relative form-group">
 								<b><label for="cpf" class="">CPF/CNPJ</label></b>
 								<p:inputMask mask="#{contratoController.mascaraPessoa}"
+									style="#{contratoController.camposInvalidos.contains('cnpjcpf') ? 'border: 2px solid red !important;' : ''}"
+									
 									size="13" requiredMessage="CNPJ/CPF obrigatório"
 									value="#{contratoController.item.assinanteBean.cnpjcpf}"
 									id="cnpjcpf" type="text" styleClass="form-control">
@@ -239,6 +270,8 @@
 							<div class="position-relative form-group">
 								<b><label for="nome" class="">Nome</label></b>
 								<p:inputText
+									style="#{contratoController.camposInvalidos.contains('nome') ? 'border: 2px solid red !important;' : ''}"
+									
 									value="#{contratoController.item.assinanteBean.descricao}"
 									maxlength="150" requiredMessage="A descrição é obrigatório"
 									id="nome" type="text" styleClass="form-control" />
@@ -263,7 +296,7 @@
 							<div class="position-relative form-group">
 								<b><label for="cep" class="">Cep</label></b>
 								<div id="cep" class="input-group mb-3">
-									<p:inputMask mask="99.999-999" size="12"
+									<p:inputMask mask="99.999-999" size="14"
 										inputStyleClass="form-control"
 										value="#{contratoController.item.assinanteBean.cep}" id="cep" />
 									<span class="input-group-btn"> <p:commandLink
@@ -393,7 +426,7 @@
 
 				</p:tab>
 			</p:accordionPanel>
-			<ul class="tabs-animated-shadow tabs-animated nav">
+			<ul class="nav nav-tabs" style="margin-top: 5px !important;">
 				<li class="nav-item"><a role="tab" class="nav-link active"
 					id="tab-0" data-toggle="tab" href="#tab-content-0-contrato"> <span>PRODUTO</span>
 				</a></li>
@@ -406,10 +439,10 @@
 
 			</ul>
 			<div class="tab-content" >
-				<div class="tab-pane tabs-animation fade show"
+				<div class="tab-pane  fade show active"
 					id="tab-content-0-contrato" role="tabpanel"
 					style="margin: 0 !important;">
-					<div class="main-card mb-1 card"
+					<div class="main-card mb-2 card"
 						style="margin: 0 0 none !important;">
 						<div class="card-body" style="padding: 0rem !important;">
 							<div class="form-row body-editora">
@@ -457,7 +490,7 @@
 													onstart="PF('_id-blockui_entradabrinde').show();"
 													oncomplete="PF('_id-blockui_entradabrinde').hide();"
 													listener="#{contratoController.atualizarValorTotalProduto(prod)}"
-													update=":contratoForm:idTotalProdutos :contratoForm:datalistitens :growl , :contratoForm:idTotalProdutosParcela" />
+													update=":contratoForm:idvalorcartao :contratoForm:idTotalProdutos :contratoForm:datalistitens :growl , :contratoForm:idTotalProdutosParcela" />
 											</p:spinner>
 										</p:column>
 										<p:column width="5%">
@@ -473,7 +506,7 @@
 													onstart="PF('_id-blockui_entradabrinde').show();"
 													oncomplete="PF('_id-blockui_entradabrinde').hide();"
 													listener="#{contratoController.atualizarValorTotalProduto(prod)}"
-													update=":contratoForm:idTotalProdutos :contratoForm:datalistitens :growl  :contratoForm:idTotalProdutosParcela" />
+													update=":contratoForm:idvalorcartao :contratoForm:idTotalProdutos :contratoForm:datalistitens :growl  :contratoForm:idTotalProdutosParcela" />
 											</p:spinner>
 										</p:column>
 										<p:column width="10%">
@@ -497,7 +530,7 @@
 										<p:column width="5%">
 											<center>
 												<p:commandLink
-													update=":contratoForm:idTotalBrindes :contratoForm:datalistBrindes :contratoForm:datalistitens, :growl, :contratoForm:idTotalProdutos , :contratoForm:idTotalProdutosParcela"
+													update=":contratoForm:idvalorcartao :contratoForm:idTotalBrindes :contratoForm:datalistBrindes :contratoForm:datalistitens, :growl, :contratoForm:idTotalProdutos , :contratoForm:idTotalProdutosParcela"
 													actionListener="#{contratoController.excluirContratoProdutoItem(prod)}"
 													style="font-size: 20px !important;">
 													<i class="metismenu-icon pe-7s-trash" />
@@ -562,9 +595,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane tabs-animation fade show active"
+				<div class="tab-pane  fade show "
 					id="tab-content-1-contrato" role="tabpanel">
-					<div class="main-card mb-1 card"
+					<div class="main-card mb-2 card"
 						style="margin: 0 0 none !important;">
 						<div class="card-body" style="padding: 0rem !important;">
 							<div class="form-row body-editora">
@@ -594,7 +627,9 @@
 											<f:facet name="header">
 												<h:outputText value="Valor" />
 											</f:facet>
-											<h:outputText value="#{brindes.brindBean.valor}" />
+											<h:outputText value="#{brindes.brindBean.valor}" >
+												<f:convertNumber type="currency" currencySymbol="R$" />
+											</h:outputText>
 										</p:column>
 										<p:column  width="10%">
 											<f:facet name="header">
@@ -652,17 +687,191 @@
 						</div>
 					</div>
 				</div>
+ 
+				<div class="tab-pane  fade show"
+					id="tab-content-2-contrato" role="tabpanel" style="margin: 0 !important;">
+					<div class="main-card mb-2 card" style="margin: 0 0 none !important;">
+						<div class="card-body" style="padding: 0rem !important;">
+							<div class="form-row body-editora">
+								<div class="col-md-3">
+									<div class="position-relative form-group">
+										<b><label for="idbandeira" class="">Bandeira</label></b>
+										<h:selectOneMenu styleClass="form-control MyOneMenu"
+											autoWidth="false"
+										converter="editora3.converter.ConversorBandeiraCartao"
+											style="#{contratoController.camposInvalidos.contains('idbandeira') ? 'border: 2px solid red !important;' : ''}"
+									
+											value="#{contratoController.item.pagamentoBean.bandeiraBean}"
+											var="b" id="idbandeira">
+											<f:selectItem itemValue="0" itemLabel="Selecione"
+												noSelectionOption="true" />
+											<f:selectItems value="#{contratoController.bandeiraCartaos}"
+												var="bandeiras" itemLabel="#{bandeiras.descricao}"
+												itemValue="#{bandeiras}" />
+											<p:column style="width:10%">
+												<h:outputText value="#{b.codigo}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{b.descricao}" />
+											</p:column>
+											 
+										</h:selectOneMenu>
 
-				<div class="tab-pane tabs-animation fade show"
-					id="tab-content-2-contrato" role="tabpanel">
-					<div class="main-card mb-3 card">
-						<div class="card-body">pagamento</div>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="position-relative form-group">
+										<b><label for="idcartao" class="">Cartão</label></b>
+										<p:inputText
+											style="#{contratoController.camposInvalidos.contains('idcartao') ? 'border: 2px solid red !important;' : ''}"
+									
+											value="#{contratoController.item.pagamentoBean.cartao}"
+											 
+											id="idcartao" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idcodseg" class="">Cod.Seg.</label></b>
+										<p:inputText
+											size="7"
+											style="#{contratoController.camposInvalidos.contains('idcodseg') ? 'border: 2px solid red !important;' : ''}"
+									
+											value="#{contratoController.item.pagamentoBean.codseguranca}"
+										 
+											id="idcodseg" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idvalidade" class="">Validade</label></b>
+										<p:inputMask mask="99/99"
+											style="#{contratoController.camposInvalidos.contains('idvalidade') ? 'border: 2px solid red !important;' : ''}"
+									
+											value="#{contratoController.item.pagamentoBean.validade}"
+											id="idvalidade" type="text" styleClass="form-control">
+										</p:inputMask>
+									</div>
+								</div>
+
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idvalorcartao" class="">Valor</label></b>
+										<p:inputNumber decimalPlaces="2" 
+											minValue="0" maxValue="99999.99"
+											readonly="true"
+											inputStyleClass="form-control"
+											value="#{contratoController.item.pagamentoBean.valor}"
+											id="idvalorcartao" type="text">
+										</p:inputNumber>
+									</div>
+								</div>
+
+							</div>
+							<div class="form-row body-editora">
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idlote" class="">Lote</label></b>
+										<p:inputText
+											size="7"
+											maxlength="20"
+											value="#{contratoController.item.pagamentoBean.lote}"
+											id="idlote" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idmaquineta" class="">Maquineta</label></b>
+										<p:inputText
+											size="7"
+											maxlength="20"
+											value="#{contratoController.item.pagamentoBean.maquineta}"
+											id="idmaquineta" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idnsu" class="">NSU</label></b>
+										<p:inputText
+											size="7"
+											maxlength="20"
+											value="#{contratoController.item.pagamentoBean.nsu}"
+											id="idnsu" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idterminal" class="">Terminal</label></b>
+										<p:inputText
+											size="7"
+											maxlength="20"
+											value="#{contratoController.item.pagamentoBean.terminal}"
+											id="idterminal" type="text" styleClass="form-control" />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="position-relative form-group">
+										<b><label for="idtitular" class="">Titular</label></b>
+										<p:inputText
+											maxlength="100"
+											value="#{contratoController.item.pagamentoBean.titular}"
+											id="idtitular" type="text" styleClass="form-control" />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-row body-editora">
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="iddataautorizacao" class="">Data autorização</label></b>
+										<div id="iddataautorizacao">
+											<p:calendar inputStyleClass="form-control"
+												converterMessage="Data de autorização informada inválida"
+												pattern="dd/MM/yyyy" mask="true"
+												value="#{contratoController.item.pagamentoBean.data}" id="iddataautorizacao"
+												type="text" validatorMessage="Data informada inválida">
+											</p:calendar>
+										</div>
+									</div>
+								</div>
+								
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="idposparcial" class="">Pos Parcial</label></b>
+										<div id="idposparcial">
+											<p:selectBooleanCheckbox  
+												value="#{contratoController.item.pagamentoBean.condposparcial}" 
+												id="idposparcial"
+												 
+												 >
+												 
+											</p:selectBooleanCheckbox>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<b><label for="divinclusao" class="">Pos Total</label></b>
+										<div id="idpostotal">
+											<p:selectBooleanCheckbox  
+												value="#{contratoController.item.pagamentoBean.condpostotal}" 
+												id="idpostotal"
+												
+												 >
+												 
+											</p:selectBooleanCheckbox>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<center>
 				<p:commandLink actionListener="#{contratoController.create()}"
-					update=":_Formulario:datalist :growl"
+					update="@form :_Formulario:datalist :growl"
 					onstart="PF('_id-blockui_entradabrinde').show();"
 					onsuccess="PF('_id-blockui_entradabrinde').hide();"
 					style="font-size: 15px !important;"
@@ -701,6 +910,9 @@
 .datatable {  
     padding-left: 15px;  
     padding-right: 15px;  
+}
+.inputInvalid {
+   border: 2px solid red !important;
 }
 </style>
 

@@ -82,6 +82,10 @@ public class Equipe implements Serializable {
 	private String tipoconta;
 
 	private String tipopessoa;
+	
+	@ManyToOne()
+	@JoinColumn(name="infraUsuarioBean", referencedColumnName="idusuario")
+	private InfraUsuario infraUsuarioBean;
 
 	//bi-directional many-to-one association to Vendedor
 	@OneToMany(mappedBy="equipeBean")
@@ -270,6 +274,14 @@ public class Equipe implements Serializable {
 		vendedor.setEquipeBean(null);
 
 		return vendedor;
+	}
+
+	public InfraUsuario getInfraUsuarioBean() {
+		return infraUsuarioBean;
+	}
+
+	public void setInfraUsuarioBean(InfraUsuario infraUsuarioBean) {
+		this.infraUsuarioBean = infraUsuarioBean;
 	}
 
 }

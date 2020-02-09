@@ -36,11 +36,12 @@
 	<f:event type="preRenderView"
 		listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 	<p:growl id="growl" life="6000" showDetail="true" />
+	 <ui:include src="sessionTimeOut.xhtml" /> 
 	<div
 		class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
-		<div class="app-header header-shadow">
+		<div class="app-header header-shadow bg-heavy-rain header-text-dark">
 			<div class="app-header__logo">
-				<a href="index.xhtml"> <img
+				<a href="index.jsf"> <img
 					src="assets/images/editora3final.png" width="100" alt="" /></a>
 				<div class="header__pane ml-auto">
 					<div>
@@ -471,7 +472,7 @@
 			</div>
 		</div>
 		<div class="app-main">
-			<div class="app-sidebar sidebar-shadow">
+			<div class="app-sidebar sidebar-shadow bg-royal sidebar-text-light">
 				<div class="app-header__logo">
 					<div class="logo-src"></div>
 					<div class="header__pane ml-auto">
@@ -508,9 +509,11 @@
 				<div class="scrollbar-sidebar">
 					<div class="app-sidebar__inner">
 						<h:form id="formDash">
+							
 							<ul class="vertical-nav-menu">
 								<li class="app-sidebar__heading">Menu Principal</li>
-								<ui:include src="/ui/menu.xhtml">
+								
+								<ui:include  src="/ui/menu.xhtml">
 									<ui:param name="node" value="#{interfaceMenuHtml.itens}" />
 								</ui:include>
 								<!-- <li class="app-sidebar__heading">UI Components</li>
@@ -622,9 +625,11 @@
 					</div>
 				</div>
 			</div>
+			
+			
 			<div class="app-main__outer">
 				<div class="main-content" style="margin: 0; padding: 0;">
-					<h:panelGroup id="_main_content">
+					<h:panelGroup id="_main_content" >
 						<ui:include src="#{dashboardController.paginaAtual}"></ui:include>
 					</h:panelGroup>
 				</div>
@@ -640,6 +645,22 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="./assets/scripts/main.js"></script>
+	<script type='text/javascript'>
 
+(function()
+{
+  if( window.localStorage )
+  {
+    if( !localStorage.getItem('firstLoad') )
+    {
+      localStorage['firstLoad'] = true;
+      window.location.reload();
+    }  
+    else
+      localStorage.removeItem('firstLoad');
+  }
+})();
+
+</script>
 </h:body>
 </html>

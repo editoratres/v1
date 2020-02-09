@@ -1,6 +1,7 @@
 package editora3.facade;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,29 +36,19 @@ public class ContratoCancelamentoFacade extends AbstractFacade<ContratoCancelame
 	@Transactional
 	public void excluirSaidaContrato(ContratoCancelamento contratoCancelamento) {
 		contratoCancelamento = getEntityManager().merge(contratoCancelamento);
-		for (int i = 0; i <contratoCancelamento.getContratoCancelamentoIten().size(); i++) {
-			ContratoCancelamentoIten contratoCancelamentoIten = contratoCancelamento.getContratoCancelamentoIten().get(i);
-			//getEntityManager().remove(contratoEntradaIten.getContratoBean());
-			getEntityManager().remove(contratoCancelamentoIten);
+		for (int i = contratoCancelamento.getFaixainicial(); i  <= contratoCancelamento.getFaixafinal(); i++) {
+			
+			Query createQuery = getEntityManager().createNativeQuery("update contrato set datacancelamento=null where codigocontrato=:ccodigocontrato", Contrato.class);
+			 
+			createQuery.setParameter("ccodigocontrato", i);
+			
+			createQuery.executeUpdate();
+			
 			if(i% 20==0) {
 				getEntityManager().flush();
 			}
 		}
-		List<Object> listarEntradasDisponiveisNaFaixa = (List<Object>)listarEntradasDisponiveisNaFaixa(contratoCancelamento.getFaixainicial(), contratoCancelamento.getFaixafinal());
-	     Integer quantidade=0;
-		 for (Iterator iterator = listarEntradasDisponiveisNaFaixa.iterator(); iterator.hasNext();) {
-			Object[] faixasDisponiveis = (Object[]) iterator.next();
-			ContratoEntrada contratoEntrada = getEntityManager().find(ContratoEntrada.class, faixasDisponiveis[0],  LockModeType.PESSIMISTIC_READ);
-			if(contratoEntrada!=null) {
-				quantidade = (faixasDisponiveis[1]==null ? 0 : ((BigDecimal)faixasDisponiveis[1]).intValue() );
-				if(quantidade!=null) {
-					contratoEntrada.setCancelamentos((contratoEntrada.getCancelamentos()==null ? 0 :contratoEntrada.getCancelamentos())  - quantidade );
-					getEntityManager().merge(contratoEntrada);
-				}
-			}
-			
-		}
-		 
+		
 		getEntityManager().remove(contratoCancelamento);
 	}
 	public Integer consultarContratosEmUso(Integer faixainicial, Integer faixafinal) {
@@ -72,58 +63,34 @@ public class ContratoCancelamentoFacade extends AbstractFacade<ContratoCancelame
 		return ret;		
 	}
 	
+	
 	public Integer verificarQuantidadeDeContratosDisponiveis(Integer faixainicial, Integer faixafinal) {
 		Integer ret=0;
+		
 		StringBuilder sql = new StringBuilder();
-		sql.append("select  ")
-		.append("sum( " )
-		.append("(ce.faixafinal-ce.faixainicial+1)- " )
-		.append("		(  " )
-		.append("		select   COALESCE( sum(upper(numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]'))- ")
-		.append("		 lower(numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]')) +1)  ,0) ")
-		.append("		from contrato_saida  ")
-		.append("		where numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]')<>'empty' ")
-		.append("		)) disponivel ")
-		.append("		 from contrato_entrada ce ")
-		.append("		where numrange(ce.faixainicial,ce.faixafinal,'[]') * numrange(:faixainicial,:faixafinal,'[]')  <>'empty'");
-						 
-		 Query nativeQuery = getEntityManager().createNativeQuery(sql.toString());
-		 nativeQuery.setParameter("faixainicial", faixainicial);
-		 nativeQuery.setParameter("faixafinal", faixafinal);
-		 Object singleResult = nativeQuery.getSingleResult();		
+		
+		sql.append("select count(*) totalcontratos from contrato c where c.codigocontrato>=:faixainicial and c.codigocontrato<=:faixafinal  and c.datacancelamento is null"); 
+		Query createNativeQuery = getEntityManager().createNativeQuery(sql.toString());
+		createNativeQuery.setParameter("faixainicial", faixainicial);
+		createNativeQuery.setParameter("faixafinal", faixafinal);
+		 Object singleResult = createNativeQuery.getSingleResult();		
 		 if(singleResult!=null) {
 			 ret = Integer.parseInt(singleResult.toString());
-		 }
+		 } 
 		return ret;	
 	}
-	
 	@Transactional
 	public void criarCancelamento(ContratoCancelamento contratoCancelamento) {
 		//List<ContratoEntradaIten> contratoEntradaIten = contratoEntrada.getContratoEntradaIten();
 		for (int i = contratoCancelamento.getFaixainicial(); i  <= contratoCancelamento.getFaixafinal(); i++) {
-			Contrato contrato = getEntityManager().find(Contrato.class, i);
+			Query createQuery = getEntityManager().createNativeQuery("update contrato set  datacancelamento=:datacancelamento where codigocontrato=:ccodigocontrato", Contrato.class);
+			createQuery.setParameter("datacancelamento", new Date());
+			createQuery.setParameter("ccodigocontrato", i);
 			
-			ContratoCancelamentoIten cancelamentoIten = new ContratoCancelamentoIten();
-			cancelamentoIten.setContratoCancelamento(contratoCancelamento);
-			cancelamentoIten.setContratoBean(contrato);
-			
-			contratoCancelamento.getContratoCancelamentoIten().add(cancelamentoIten);
+			createQuery.executeUpdate();
 			
 		}
-		 List<Object> listarEntradasDisponiveisNaFaixa = (List<Object>)listarEntradasDisponiveisNaFaixa(contratoCancelamento.getFaixainicial(), contratoCancelamento.getFaixafinal());
-	     Integer quantidade=0;
-		 for (Iterator iterator = listarEntradasDisponiveisNaFaixa.iterator(); iterator.hasNext();) {
-			Object[] faixasDisponiveis = (Object[]) iterator.next();
-			ContratoEntrada contratoEntrada = getEntityManager().find(ContratoEntrada.class, faixasDisponiveis[0],  LockModeType.PESSIMISTIC_READ);
-			if(contratoEntrada!=null) {
-				quantidade = (faixasDisponiveis[1]==null ? 0 : ((BigDecimal)faixasDisponiveis[1]).intValue() );
-				if(quantidade!=null) {
-					contratoEntrada.setCancelamentos((contratoEntrada.getCancelamentos()==null ? 0 :contratoEntrada.getCancelamentos())  + quantidade );
-					getEntityManager().merge(contratoEntrada);
-				}
-			}
-			
-		}
+		 
 		getEntityManager().persist(contratoCancelamento);
 	}
 	public List listarEntradasDisponiveisNaFaixa(Integer faixainicial, Integer faixaFinal){

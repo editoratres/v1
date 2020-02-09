@@ -1,6 +1,7 @@
 package editora3.facade;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,31 +37,22 @@ public class ContratoSaidaFacade extends AbstractFacade<ContratoSaida> {
 	@Transactional
 	public void excluirSaidaContrato(ContratoSaida contratoSaida) {
 		contratoSaida = getEntityManager().merge(contratoSaida);
-		for (int i = 0; i <contratoSaida.getContratoSaidaIten().size(); i++) {
-			ContratoSaidaIten contratoEntradaIten = contratoSaida.getContratoSaidaIten().get(i);
+		for (int i = contratoSaida.getFaixainicial(); i  <= contratoSaida.getFaixafinal(); i++) {
+			 
 			//getEntityManager().remove(contratoEntradaIten.getContratoBean());
-			getEntityManager().remove(contratoEntradaIten);
+			Query createQuery = getEntityManager().createNativeQuery("update contrato set equipeBean=null , vendedorbean=null, datasaida=null where codigocontrato=:ccodigocontrato", Contrato.class);
 			
+			createQuery.setParameter("ccodigocontrato", i);
+			
+			createQuery.executeUpdate();
+			 
 			 
 			
 			if(i% 20==0) {
 				getEntityManager().flush();
 			}
 		}
-		List<Object> listarEntradasDisponiveisNaFaixa = (List<Object>)listarEntradasDisponiveisNaFaixa(contratoSaida.getFaixainicial(), contratoSaida.getFaixafinal());
-	     Integer quantidade=0;
-		 for (Iterator iterator = listarEntradasDisponiveisNaFaixa.iterator(); iterator.hasNext();) {
-			Object[] faixasDisponiveis = (Object[]) iterator.next();
-			ContratoEntrada contratoEntrada = getEntityManager().find(ContratoEntrada.class, faixasDisponiveis[0],  LockModeType.PESSIMISTIC_READ);
-			if(contratoEntrada!=null) {
-				quantidade = (faixasDisponiveis[1]==null ? 0 : ((BigDecimal)faixasDisponiveis[1]).intValue() );
-				if(quantidade!=null) {
-					contratoEntrada.setSaidas((contratoEntrada.getSaidas()==null ? 0 :contratoEntrada.getSaidas())  - quantidade );
-					getEntityManager().merge(contratoEntrada);
-				}
-			}
-			
-		}
+		
 		 
 		getEntityManager().remove(contratoSaida);
 	}
@@ -78,26 +70,17 @@ public class ContratoSaidaFacade extends AbstractFacade<ContratoSaida> {
 	
 	public Integer verificarQuantidadeDeContratosDisponiveis(Integer faixainicial, Integer faixafinal) {
 		Integer ret=0;
+		
 		StringBuilder sql = new StringBuilder();
-		sql.append("select  ")
-		.append("sum( " )
-		.append("(ce.faixafinal-ce.faixainicial+1)- " )
-		.append("		(  " )
-		.append("		select   COALESCE( sum(upper(numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]'))- ")
-		.append("		 lower(numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]')) +1)  ,0) ")
-		.append("		from contrato_saida  ")
-		.append("		where numrange(faixainicial,faixafinal,'[]') * numrange(ce.faixainicial,ce.faixafinal,'[]')<>'empty' ")
-		.append("		)) disponivel ")
-		.append("		 from contrato_entrada ce ")
-		.append("		where numrange(ce.faixainicial,ce.faixafinal,'[]') * numrange(:faixainicial,:faixafinal,'[]')  <>'empty'");
-						 
-		 Query nativeQuery = getEntityManager().createNativeQuery(sql.toString());
-		 nativeQuery.setParameter("faixainicial", faixainicial);
-		 nativeQuery.setParameter("faixafinal", faixafinal);
-		 Object singleResult = nativeQuery.getSingleResult();		
+		
+		sql.append("select count(*) totalcontratos from contrato c where c.codigocontrato>=:faixainicial and c.codigocontrato<=:faixafinal  and c.datasaida is null and c.datacancelamento is null"); 
+		Query createNativeQuery = getEntityManager().createNativeQuery(sql.toString());
+		createNativeQuery.setParameter("faixainicial", faixainicial);
+		createNativeQuery.setParameter("faixafinal", faixafinal);
+		 Object singleResult = createNativeQuery.getSingleResult();		
 		 if(singleResult!=null) {
 			 ret = Integer.parseInt(singleResult.toString());
-		 }
+		 } 
 		return ret;	
 	}
 	
@@ -105,29 +88,30 @@ public class ContratoSaidaFacade extends AbstractFacade<ContratoSaida> {
 	public void criarSaida(ContratoSaida contratoSaida) {
 		//List<ContratoEntradaIten> contratoEntradaIten = contratoEntrada.getContratoEntradaIten();
 		for (int i = contratoSaida.getFaixainicial(); i  <= contratoSaida.getFaixafinal(); i++) {
-			Contrato contrato = getEntityManager().find(Contrato.class, i);
 			
-			ContratoSaidaIten saidaIten = new ContratoSaidaIten();
+			
+			Query createQuery = getEntityManager().createNativeQuery("update contrato set equipeBean=:equipebean "+ 
+			(contratoSaida.getVendedorBean()==null ? "" : ", vendedorbean=:vendedorbean")
+			+ ", datasaida=:datasaida where codigocontrato=:ccodigocontrato", Contrato.class);
+			createQuery.setParameter("equipebean", contratoSaida.getEquipeBean().getCodigo());
+			if(contratoSaida.getVendedorBean()!=null) {
+				createQuery.setParameter("vendedorbean", contratoSaida.getVendedorBean().getCodigo());
+			}
+			createQuery.setParameter("datasaida", new Date());
+			createQuery.setParameter("ccodigocontrato", i);
+			
+			createQuery.executeUpdate();
+			
+			
+			
+			/*ContratoSaidaIten saidaIten = new ContratoSaidaIten();
 			saidaIten.setContratoSaida(contratoSaida);
 			saidaIten.setContratoBean(contrato);
 			
-			contratoSaida.getContratoSaidaIten().add(saidaIten);
+			contratoSaida.getContratoSaidaIten().add(saidaIten);*/
 			
 		}
-		 List<Object> listarEntradasDisponiveisNaFaixa = (List<Object>)listarEntradasDisponiveisNaFaixa(contratoSaida.getFaixainicial(), contratoSaida.getFaixafinal());
-	     Integer quantidade=0;
-		 for (Iterator iterator = listarEntradasDisponiveisNaFaixa.iterator(); iterator.hasNext();) {
-			Object[] faixasDisponiveis = (Object[]) iterator.next();
-			ContratoEntrada contratoEntrada = getEntityManager().find(ContratoEntrada.class, faixasDisponiveis[0],  LockModeType.PESSIMISTIC_READ);
-			if(contratoEntrada!=null) {
-				quantidade = (faixasDisponiveis[1]==null ? 0 : ((BigDecimal)faixasDisponiveis[1]).intValue() );
-				if(quantidade!=null) {
-					contratoEntrada.setSaidas((contratoEntrada.getSaidas()==null ? 0 :contratoEntrada.getSaidas())  + quantidade );
-					getEntityManager().merge(contratoEntrada);
-				}
-			}
-			
-		}
+		  
 		getEntityManager().persist(contratoSaida);
 	}
 	public List listarEntradasDisponiveisNaFaixa(Integer faixainicial, Integer faixaFinal){

@@ -4,32 +4,49 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.LockModeType;
+import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.primefaces.PrimeFaces;
+import org.primefaces.context.PrimeFacesContext;
 
 import editora3.entidades.Assinante;
+import editora3.entidades.BandeiraCartao;
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeDevolucao;
 import editora3.entidades.BrindeDevolucaoIten;
+import editora3.entidades.BrindeEstoqueEquipe;
 import editora3.entidades.BrindeSaida;
+import editora3.entidades.Canal;
 import editora3.entidades.Contrato;
 import editora3.entidades.ContratoBrinde;
+import editora3.entidades.ContratoPagamento;
 import editora3.entidades.ContratoProduto;
 import editora3.entidades.Equipe;
 import editora3.entidades.Oferta;
 import editora3.entidades.OfertaIten;
 import editora3.entidades.Produto;
+import editora3.entidades.Relatorio;
+import editora3.entidades.Subcanal;
 import editora3.entidades.Vendedor;
+import editora3.facade.BandeiraCartaoFacade;
 import editora3.facade.BrindeFacade;
 import editora3.facade.CanalFacade;
 import editora3.facade.ContratoFacade;
@@ -39,6 +56,7 @@ import editora3.facade.ProdutoFacade;
 import editora3.facade.RelatorioFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.LoginInfo;
 import editora3.util.CepWebService;
 import editora3.util.JsfUtil;
 import editora3.util.ValidacoesDiversas;
@@ -50,6 +68,9 @@ import editora3.util.CepWebService.cep;
 @RequestScoped
 public class ContratoController implements AbstractController<Contrato> {
 
+	@Inject
+	private LoginInfo loginInfo;
+	
 	@Inject
 	private CepWebService cepWebService;
 	
@@ -75,6 +96,9 @@ public class ContratoController implements AbstractController<Contrato> {
 	
 	@Inject
 	private OfertaFacade ofertaFacade;	
+	
+	@Inject
+	private BandeiraCartaoFacade bandeiraCartaoFacade;
 	
 	
 	@Inject
@@ -136,7 +160,8 @@ public class ContratoController implements AbstractController<Contrato> {
 	@Override
 	public void excluir(Contrato item) {
 		// TODO Auto-generated method stub
-		getContratofacade().remove(item);
+		
+		getContratofacade().cancelarContrato(item);
 		setItens(null);
 
 	}
@@ -148,7 +173,11 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	@Override
 	public void prepararEditar(Contrato item) {
+		resetarList();
+		item = getContratofacade().getContratoEager(item.getCodigo());
+		setContratoCarregado(false);
 		setItem(item);
+		 
 		// TODO Auto-generated method stub
 
 	}
@@ -162,13 +191,26 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	@Override
 	public void prepararNovo() {
+		resetarList();
+		setContratoCarregado(false);
 		Contrato contrato = new Contrato();
 		contrato.setAssinanteBean(new Assinante()); 
-		contrato.setInclusao(new Date());
+		//contrato.setInclusao(new Date());
+		
+		ContratoPagamento contratoPagamento = new ContratoPagamento();
+		contratoPagamento.setCondposparcial(false);
+		contratoPagamento.setCondpostotal(false);
+		contrato.setPagamentoBean(contratoPagamento);
 		setItem(contrato);
 	
 		// TODO Auto-generated method stub
 
+	}
+	private void resetarList() {
+		setBrindesDisponiveis(null);
+		setOfertasDisponiveis(null);
+		setListaContratosDisponiveis(null);
+		
 	}
 
 	@Override
@@ -178,13 +220,204 @@ public class ContratoController implements AbstractController<Contrato> {
 		// TODO Auto-generated method stub
 
 	}
+	private UIComponent findComponent(String id, UIComponent where) {
+		if (where == null) {
+		   return null;
+		}
+		else if (where.getId().equals(id)) {
+		   return where;
+		}
+		else {
+		   List<UIComponent> childrenList = where.getChildren();
+		   if (childrenList == null || childrenList.isEmpty()) {
+		      return null;
+		   }
+		   for (UIComponent child : childrenList) {
+		      UIComponent result = null;
+		      result = findComponent(id, child);
+		      if(result != null) {
+		         return result;
+		      }
+		   }
+		   
+		}
+		return null;   
+	}   
+	
+	private void invalidarComponente( String id,UIComponent where ) { 
+		 
+		
+		UIInput c = (UIInput) findComponent(id,where);
+		if(c!=null) {
+		c.setValid(false);
+			getCamposInvalidos().add(id);
+		}
+	}
+	private List<String> camposInvalidos=new ArrayList<>();
+	private boolean validarCamposObrigorios(Contrato item ) {
+		getCamposInvalidos().clear();
+		UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+		boolean ret=true;
+		 
+		if(item.getRelatorioBean()==null) {
+			
+			invalidarComponente("idrelatorio",viewRoot);
+			ret=false;
+		}
+		
+		if(item.getCodigocontrato()==null || (item.getCodigocontrato()!=null && item.getCodigocontrato()==0)) {
 
+			invalidarComponente("idcontrato",viewRoot);
+			ret=false;
+		}
+		if(item.getEquipeBean()==null) {
+			
+			invalidarComponente("idEquipe",viewRoot);
+			ret=false;
+		}
+		
+		
+		if(item.getVendedorBean()==null) {
+			
+			invalidarComponente("idvendedor",viewRoot);
+			ret=false;
+		}
+		if(item.getCanalBean()==null) {
+			
+			invalidarComponente("idcanal",viewRoot);
+			ret=false;
+		}
+		if(item.getSubcanlBean()==null) {
+			
+			invalidarComponente("idsubcanal",viewRoot);
+			ret=false;
+		}
+		
+		if(item.getAssinanteBean().getCnpjcpf().trim().length()==0) {
+			
+			invalidarComponente("cnpjcpf",viewRoot);
+			ret=false;
+		}
+		
+		if(item.getAssinanteBean().getDescricao().trim().length()==0) {
+			
+			invalidarComponente("nome",viewRoot);
+			ret=false;
+		}
+		
+		if(item.getPagamentoBean().getBandeiraBean()==null) {
+			
+			invalidarComponente("idbandeira",viewRoot);
+			ret=false;
+		}
+		if(item.getPagamentoBean().getCartao().trim().length()==0) {
+			
+			invalidarComponente("idcartao",viewRoot);
+			ret=false;
+		}
+		
+		if(item.getPagamentoBean().getCodseguranca().trim().length()==0) {
+			
+			invalidarComponente("idcodseg",viewRoot);
+			ret=false;
+		}
+		if(item.getPagamentoBean().getCodseguranca().trim().length()==0) {
+			
+			invalidarComponente("idvalidade",viewRoot);
+			ret=false;
+		}
+		
+		return ret;
+	}
+	private boolean validarProdutos(Contrato item) {
+		if(item.getContratoProdutos()!=null && item.getContratoProdutos().isEmpty()) {
+			JsfUtil.addErrorMessage("Contrato não pode ser gravado sem produtos", "Procedimento não realizado");
+		 	return false;
+		}
+		List<ContratoProduto> contratoProdutos = item.getContratoProdutos();
+		for (int i = 0; i < contratoProdutos.size(); i++) {
+			if(contratoProdutos.get(i).getValortotal()<=0) {
+				JsfUtil.addErrorMessage("O produto ["+ i +"] não possui valor", "Procedimento não realizado");
+				return false;
+			}
+			
+		}
+		
+		return true;
+	}
+	private boolean validarBrindes(Integer codigoEquipe, List<ContratoBrinde> contratoBrindes) {
+		HashMap<Integer, Integer> quantidadesSumarizadas = new HashMap<>();
+		Integer codigoBrinde = 0;
+		Integer qtArmazenada=0;
+		
+		for (Iterator iterator = contratoBrindes.iterator(); iterator.hasNext();) {
+			ContratoBrinde contratoBrinde = (ContratoBrinde) iterator.next();
+			codigoBrinde = contratoBrinde.getBrindBean().getCodigo();
+			qtArmazenada = quantidadesSumarizadas.get(codigoBrinde)==null ? 0 : quantidadesSumarizadas.get(codigoBrinde); 
+			quantidadesSumarizadas.put(codigoBrinde, qtArmazenada +1);
+			
+		}
+		Integer codigoBrindeSumarizado=0;
+		Integer QuantidadeSumarizada=0;
+		Integer QuantidadeEstoque=0;
+		if(!quantidadesSumarizadas.isEmpty()) {
+			Set<Integer> keySet = quantidadesSumarizadas.keySet();
+			for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
+				codigoBrindeSumarizado = (Integer) iterator.next();
+				 QuantidadeSumarizada = quantidadesSumarizadas.get(codigoBrindeSumarizado);
+				Brinde findLocalizado = getBrindeFacade().find(codigoBrindeSumarizado);
+				if(codigoEquipe==null) {
+					QuantidadeEstoque =findLocalizado.getQuantidade()==null ? 0 : findLocalizado.getQuantidade();
+				}else {
+					List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getContratofacade().RetornarEstoqueEquipe(findLocalizado.getCodigo(),codigoEquipe);
+					if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+						QuantidadeEstoque = (int) retornarEstoqueEquipe.get(0).getQuantidade();
+					}
+				}
+				if(QuantidadeEstoque<QuantidadeSumarizada) {
+					JsfUtil.addErrorMessage("O Estoque ["+ QuantidadeEstoque +"] do brinde [ "+ findLocalizado.getDescricao()  +" ] não é suficiente para realizar esta operação", "Procedimento não realizado");
+					return false;
+				}
+				
+			}
+		}
+		
+		return true;
+	}
+	
 	@Override
 	public void create() {
 		// TODO Auto-generated method stub
 		try {
 
 			Contrato item = getItem();
+			if(!validarCamposObrigorios(item)) {
+				JsfUtil.addErrorMessage("Campo(s) obrigatorio(s) não foram preenchidos", "Procedimento não realizado");
+				PrimeFacesContext.getCurrentInstance().validationFailed();
+				return;
+			}
+			
+			if(!validarProdutos(item)) {
+				PrimeFacesContext.getCurrentInstance().validationFailed();
+				return;
+			}
+			
+			if(!validarBrindes((item.getEquipeBean()==null ? null : item.getEquipeBean().getCodigo()), item.getContratoBrindes())) {
+				PrimeFacesContext.getCurrentInstance().validationFailed();
+				return;
+			}
+			if(item.getInclusao()==null) {
+				List<Contrato> contratosDisponiveis = getContratofacade().contratosDisponiveis(null,item.getCodigocontrato());
+				
+				if(contratosDisponiveis.isEmpty()) {
+					
+					JsfUtil.addErrorMessage("O contrato digitado não foi localizado", "Contrato não Encontrado");
+					FacesContext.getCurrentInstance().validationFailed();
+					atualizar();
+					return;
+				}
+			}
+			
 			//item.setDescricao(item.getDescricao().toUpperCase());
 
 			Contrato localizarPorNome = getContratofacade().localizarPorCodigo(item.getCodigocontrato());
@@ -194,20 +427,62 @@ public class ContratoController implements AbstractController<Contrato> {
 				atualizar();
 				return;
 			}
+			
+			
+			
+			List<ContratoBrinde> contratoBrindes = item.getContratoBrindes();
 
-			if (item.getCodigo() == null) {
-				getContratofacade().create(item);
-				JsfUtil.addSuccessMessage("Contrato criado com sucesso", "Procedimento OK");
-			} else {
-				getContratofacade().edit(item);
-				JsfUtil.addSuccessMessage("Contrato alterado com sucesso", "Procedimento OK");
+			if(contratoBrindes!=null) {
+				for (Iterator iterator = contratoBrindes.iterator(); iterator.hasNext();) {
+					ContratoBrinde contratoBrinde = (ContratoBrinde) iterator.next();
+					if(contratoBrinde.getId()<0) {
+						contratoBrinde.setId(null);
+					}
+					
+				}
 			}
+			
+			List<ContratoProduto> contratoProdutos = item.getContratoProdutos();
+			if(contratoProdutos!=null) {
+				for (Iterator iterator = contratoProdutos.iterator(); iterator.hasNext();) {
+					ContratoProduto contratoProduto = (ContratoProduto) iterator.next();
+					if(contratoProduto.getId()<0) {
+						contratoProduto.setId(null);
+						contratoProduto.setContrato(item);
+					}
+				}
+				
+				
+			}
+			item.getPagamentoBean().setContrato(item);
+			 
+			getContratofacade().gravarContrato(item);
+			
+			JsfUtil.addSuccessMessage("Contrato gravado com sucesso", "Procedimento OK");
+		 
 			atualizar();
 		} catch (Exception e) {
+			PrimeFacesContext.getCurrentInstance().validationFailed();
 			JsfUtil.addErrorMessage(e, "create");
 			// TODO: handle exception
 		}
 
+	}
+	
+	public Integer EstoqueAtual(Brinde b) {
+		Integer ret =0;
+		
+		Contrato item = getItem();
+		if(item.getEquipeBean()==null) {
+			ret=b.getQuantidade();
+		}else {
+			List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getContratofacade().RetornarEstoqueEquipe(b.getCodigo(),item.getEquipeBean().getCodigo());
+			if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+				ret = (int) retornarEstoqueEquipe.get(0).getQuantidade();
+			}
+		}
+		
+		return ret;
 	}
 
 	@Override
@@ -246,7 +521,7 @@ public class ContratoController implements AbstractController<Contrato> {
 	public List<Contrato> getItens() {
 		ArrayList<Contrato> itens = (ArrayList<Contrato>) getFlash().getValoresPorID("contratoForm").get("itens");
 		if (itens == null) {
-			itens = (ArrayList<Contrato>) getContratofacade().findAll();
+			itens = (ArrayList<Contrato>) getContratofacade().findAllLazy(getLoginInfo().getCodigoEquipeVinculada());
 			setItens(itens);
 		}
 		// TODO Auto-generated method stub
@@ -260,6 +535,7 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	}
 	 
+	
 
 	public ContratoFacade getContratofacade() {
 		return produtofacade;
@@ -334,7 +610,7 @@ public class ContratoController implements AbstractController<Contrato> {
                     return "99.999.999/9999-99";
                 }
             } else {
-                return "";
+                return "999.999.999-99";
             }
         } else {
             return "";
@@ -582,6 +858,9 @@ public class ContratoController implements AbstractController<Contrato> {
 			
 		    contratoProduto.setValorparcela(valorParcela);
 		    contratoProduto.setValortotal((valorParcela * contratoProduto.getParcelas()) * contratoProduto.getQuantidade());
+
+		    getItem().getPagamentoBean().setValor(getQuantidadeTotalProdutos());
+		    
 			
 		} catch (Exception e) {
 			JsfUtil.addErrorMessage(e, "atualizarValorTotalProduto");
@@ -612,7 +891,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		getContratoProdutoConsultar().setParcelas(parcela);
 		getContratoProdutoConsultar().setValorparcela(valorparcela);
 		getContratoProdutoConsultar().setValortotal((valorparcela==null ? 0d : valorparcela) * parcela);
-		
+		getItem().getPagamentoBean().setValor(getQuantidadeTotalProdutos());
 	}
 	public void NovoItem() {
 		 
@@ -668,6 +947,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		// TODO Auto-generated method stub
 		
 	}
+	
 	public void excluirContratoProdutoItem(ContratoProduto item) {
 		// TODO Auto-generated method stub
 		try {
@@ -677,6 +957,8 @@ public class ContratoController implements AbstractController<Contrato> {
 			contratoBrindes.removeIf(brinde -> brinde.getContratoProdutoBean()!=null && brinde.getContratoProdutoBean().equals(item));
 			
 			getItem().getContratoProdutos().remove(item);
+	
+			getItem().getPagamentoBean().setValor(getQuantidadeTotalProdutos());
 			
 			
 		} catch (Exception e) {
@@ -712,7 +994,68 @@ public class ContratoController implements AbstractController<Contrato> {
 		}
 		return brindesDisponiveis;
 	}
+	 
+	
+	public void definiContratoDisponivel() {
+		System.out.println("");
+	}
+	
+	public void CarregarContratoDisponivel(Contrato contratodisponivelSelecionado) {
+		
+		 
+		try {
+			contratodisponivelSelecionado= getContratofacade().getContratoEager(contratodisponivelSelecionado.getCodigo());
+			//contratodisponivelSelecionado.setInclusao(new Date());
+			setItem(contratodisponivelSelecionado);
+			setContratoCarregado(true);
+			resetarList();
+			
+			 
 
+		} catch (Exception e) {
+			JsfUtil.addErrorMessage(e, "carregarContrato");
+			// TODO: handle exception
+		}
+		
+	}
+ 
+	
+	
+	public void prepararConsultarContratoDisponivel() {
+		try {
+			//setListaContratosDisponiveis(listaContratosDisponiveis);
+			//setListaContratosDisponiveis( getContratofacade().contratosDisponiveis(null));
+			if(getContratoCarregado()) {
+				setContratoCarregado(false);
+				prepararNovo();
+				FacesContext.getCurrentInstance().validationFailed();
+			}else {
+				Contrato c = getItem();
+				if(c.getCodigocontrato()!=null) {
+					List<Contrato> contratosDisponiveis = getContratofacade().contratosDisponiveis(null,c.getCodigocontrato());
+					if(contratosDisponiveis!=null && !contratosDisponiveis.isEmpty()) {
+						CarregarContratoDisponivel(contratosDisponiveis.get(0));
+						 
+					}else {
+						JsfUtil.addErrorMessage("O contrato digitado não foi localizado", "Contrato não Encontrado");
+						c.setCodigocontrato(null);
+						
+						
+					}
+					FacesContext.getCurrentInstance().validationFailed();
+				}else {
+					setListaContratosDisponiveis(null);
+				}
+			}
+				 
+		} catch (Exception e) {
+			JsfUtil.addErrorMessage(e, "carregarContrato");
+			// TODO: handle exception
+		} 
+		
+		 
+	}
+	
 	public void setBrindesDisponiveis(List<Brinde> brindesDisponiveis) {
 		this.brindesDisponiveis = brindesDisponiveis;
 	}
@@ -735,6 +1078,124 @@ public class ContratoController implements AbstractController<Contrato> {
 		 
 		
 	}
+	
+	public List<BandeiraCartao> getBandeiraCartaos() {
+		if(bandeiraCartaos==null) {
+			bandeiraCartaos = getBandeiraCartaoFacade().findAll("ativos");
+		}
+		return bandeiraCartaos;
+	}
+
+	public void setBandeiraCartaos(List<BandeiraCartao> bandeiraCartaos) {
+		this.bandeiraCartaos = bandeiraCartaos;
+	}
+
+	public BandeiraCartaoFacade getBandeiraCartaoFacade() {
+		 
+		return bandeiraCartaoFacade;
+	}
+
+	public void setBandeiraCartaoFacade(BandeiraCartaoFacade bandeiraCartaoFacade) {
+		this.bandeiraCartaoFacade = bandeiraCartaoFacade;
+	}
+	public List<Relatorio> getRelatoriosDisponiveis() {
+		if(relatoriosDisponiveis==null) {
+			relatoriosDisponiveis=getRelatorioFacade().findAll();
+		}
+		return relatoriosDisponiveis;
+	}
+
+	public void setRelatoriosDisponiveis(List<Relatorio> relatoriosDisponiveis) {
+		this.relatoriosDisponiveis = relatoriosDisponiveis;
+	}
+
+	public List<Equipe> getEquipesDisponiveis() {
+		if(equipesDisponiveis==null) {
+			equipesDisponiveis = getEquipeFacade().findAll();
+		}
+		return equipesDisponiveis;
+	}
+	
+
+	public void setEquipesDisponiveis(List<Equipe> equipesDisponiveis) {
+		this.equipesDisponiveis = equipesDisponiveis;
+	}
+
+	public List<Canal> getCanaisdisponiveis() {
+		if(canaisdisponiveis==null) {
+			canaisdisponiveis=getCanalFacade().findAll();
+		}
+		return canaisdisponiveis;
+	}
+
+	public void setCanaisdisponiveis(List<Canal> canaisdisponiveis) {
+		this.canaisdisponiveis = canaisdisponiveis;
+	}
+
+	public List<Subcanal> getSubcanaisdisponiveis() {
+		if(subcanaisdisponiveis==null) {
+			subcanaisdisponiveis=getSubcanalFacade().findAll();
+		}
+		return subcanaisdisponiveis;
+	}
+
+	public void setSubcanaisdisponiveis(List<Subcanal> subcanaisdisponiveis) {
+		this.subcanaisdisponiveis = subcanaisdisponiveis;
+	}
+
+ 
+	public List<String> getCamposInvalidos() {
+		return camposInvalidos;
+	}
+
+	public void setCamposInvalidos(List<String> camposInvalidos) {
+		this.camposInvalidos = camposInvalidos;
+	}
+
+	public Boolean getContratoCarregado() {
+		return (Boolean)getFlash().getValoresPorID("contratoForm").get("contratoCarregado");
+		 
+	}
+
+	public void setContratoCarregado(Boolean contratoCarregado) {
+		 
+		getFlash().getValoresPorID("contratoForm").put("contratoCarregado",contratoCarregado);
+	}
+
+	public void atualizarGridContratosDisponiveis() {
+		System.out.println("");
+	}
+	public List<Contrato> getListaContratosDisponiveis() {
+		List<Contrato> listaContratosDisponiveis = (List<Contrato>) getFlash().getValoresPorID("contratoForm").get("ListaContratosDisponiveis");
+		if(listaContratosDisponiveis==null) {
+			setListaContratosDisponiveis(getContratofacade().contratosDisponiveis(getLoginInfo().getCodigoEquipeVinculada(),null));
+		}
+		return listaContratosDisponiveis;
+	}
+
+	public void setListaContratosDisponiveis(List<Contrato> listaContratosDisponiveis) {
+		getFlash().getValoresPorID("contratoForm").put("ListaContratosDisponiveis",listaContratosDisponiveis);
+	}
+
+	//private List<Contrato> listaContratosDisponiveis;
+
+	public LoginInfo getLoginInfo() {
+		return loginInfo;
+	}
+
+	public void setLoginInfo(LoginInfo loginInfo) {
+		this.loginInfo = loginInfo;
+	}
+
+	private List<Relatorio> relatoriosDisponiveis;
+
+	private List<BandeiraCartao> bandeiraCartaos;
+	
+	private List<Equipe> equipesDisponiveis;
+	
+	private List<Canal> canaisdisponiveis;
+	
+	private List<Subcanal> subcanaisdisponiveis;
 	/*private final static List<String> VALID_COLUMN_KEYS = Arrays.asList("vez1", "vez2", "vez3");
 	private List<ColumnModel> columns=new ArrayList<>();
 	private String colunasVisiveis = "";

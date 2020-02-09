@@ -186,13 +186,20 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 		
 
 	public ArrayList<Double> informacaoFaixa(ContratoEntrada item){
-		ArrayList<Double> ret = (infoFaixa.get(item.getCodigo()));
+		ArrayList<Double> ret=new ArrayList<>();
+		try {
+			
+		
+		 ret = (infoFaixa.get(item.getCodigo()));
 		if(ret==null) {
 			ret = new ArrayList<>();
+			
+			HashMap<String, Integer> situacaoDosContratosNaFaixa = getContratoEntradaFacade().situacaoDosContratosNaFaixa(item.getFaixainicial(), item.getFaixafinal());
 			Double calcularTamanhoFaixa =Double.valueOf(calcularTamanhoFaixa(item));
-			Double saidas =  Double.valueOf((item.getSaidas()==null ? 0 :  item.getSaidas()));
-			Double cancelamentos = Double.valueOf(item.getCancelamentos()==null ? 0 : item.getCancelamentos() ); 
-			Double qtDisponibilidade =Double.valueOf(calcularTamanhoFaixa - saidas - cancelamentos);
+		
+			Double saidas =  Double.valueOf(situacaoDosContratosNaFaixa.get("saidas"));
+			Double cancelamentos = Double.valueOf(situacaoDosContratosNaFaixa.get("cancelados")); 
+			Double qtDisponibilidade =Double.valueOf(situacaoDosContratosNaFaixa.get("disponivel"));
 			 
 			
 			ret.add(Double.valueOf(calcularTamanhoFaixa));
@@ -206,6 +213,10 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 			infoFaixa.put(item.getCodigo(), ret);
 		}	
 		
+		} catch (Exception e) {
+			JsfUtil.addErrorMessage(e, "informacaoFaixa");
+			// TODO: handle exception
+		}
 		return ret;
 	}
 	public ContratoEntradaFacade getContratoEntradaFacade() {

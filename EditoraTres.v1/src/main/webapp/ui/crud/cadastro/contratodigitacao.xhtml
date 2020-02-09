@@ -50,7 +50,7 @@
 						<h5 style="margin: 10px;" class="card-title">Listagem de contratos</h5>
 						<div style="margin: 5px;" class="card-body">
 
-							<p:dataTable id="datalist"  styleClass="table"
+							<p:dataTable id="datalist"  styleClass="table-editora"
 								value="#{contratoController.itens}" var="item" selectionMode="single"
 								paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"
@@ -58,28 +58,54 @@
 								rowKey="#{item.codigo}" rows="10"
 								rowsPerPageTemplate="10,20,30,40,50">
 
-								<p:column width="10%" sortBy="#{item.codigocartao}">
+								<p:column width="10%" sortBy="#{item.codigocontrato}">
 									<f:facet name="header">
-										<h:outputText value="Código" />
+										<h:outputText value="Cod" />
 									</f:facet>
-									<h:outputText value="#{item.codigocartao}" />
+									<h:outputText value="#{item.codigocontrato}" />
 								</p:column>
-								<p:column width="40%" sortBy="#{item.assinanteBean.nome}">
+								<p:column width="25%" sortBy="#{item.assinanteBean.descricao}">
 									<f:facet name="header">
 										<h:outputText value="Assinante" />
 									</f:facet>
-									<h:outputText value="#{item.codigo}" />
+									<h:outputText value="#{item.assinanteBean.descricao}" />
 								</p:column>
 								
-								<p:column width="10%" sortBy="#{item.assinanteBean.cnpjcpf}">
+								<p:column width="15%" >
 									<f:facet name="header">
 										<h:outputText value="Cpf/Cnpj" />
 									</f:facet>
 									<h:outputText value="#{item.assinanteBean.cnpjcpf}" />
 								</p:column>
+								<p:column width="10%"  >
+									<f:facet name="header">
+										<h:outputText value="Bandeira" />
+									</f:facet>
+									<h:outputText value="#{item.pagamentoBean.bandeiraBean.descricao}" />
+								</p:column>
+								
+								<p:column width="20%"  >
+									<f:facet name="header">
+										<h:outputText value="Cartão" />
+									</f:facet>
+									<h:outputText value="#{item.pagamentoBean.cartao}" />
+								</p:column>
+								
+								<p:column width="10%"  >
+									<f:facet name="header">
+										<h:outputText value="Valor" />
+									</f:facet>
+									<h:outputText value="#{item.pagamentoBean.valor}" />
+								</p:column>
+								<p:column width="10%" sortBy="#{item.datavenda}">
+									<f:facet name="header">
+										<h:outputText value="Dt.Vda" />
+									</f:facet>
+									<h:outputText value="#{item.datavenda}" />
+								</p:column>
 							 
 	
-								<p:column width="20%">
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
@@ -111,6 +137,8 @@
 
 	<ui:include src="contratoDigitacaoForm.xhtml" />
 	<ui:include src="contratoDigitacaoFormDialogos.xhtml" />
+	<ui:include src="contratoDigitacaoFormDialogosContratosDisponiveis.xhtml" />
+	
 
 </ui:composition>
 </html>

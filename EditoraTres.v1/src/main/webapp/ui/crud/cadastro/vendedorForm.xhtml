@@ -10,7 +10,7 @@
 
 	<p:dialog id="vendedorDialog" widgetVar="_vendedorDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="90%" 
+		hideEffect="clip" closeOnEscape="true" width="70%" 
 		header="Vendedor">
 		<p:ajax event="close" listener="#{vendedorController.fecharDialogo()}" />
 		<h:form id="vendedorForm"  >
@@ -67,7 +67,7 @@
 										<label for="cep" class="">CEP</label>
 										
 										<div id="cep" class="input-group mb-3">
-											<p:inputMask mask="99.999-999"  size="15"
+											<p:inputMask mask="99.999-999"  size="9"
 												value="#{vendedorController.item.cep}" id="cep" />
 											<span class="input-group-btn"  > <p:commandLink
 													styleClass="btn btn-outline-secondary" id="id-vendedor-form-btcep" 
@@ -215,11 +215,12 @@
 													styleClass="form-control MyOneMenu"
 													filter="true" filterMatchMode="startsWith" var="t"
 													id="equipe"   
+													
 													value="#{vendedorController.item.equipeBean}">
-													<f:selectItem itemValue="0" itemLabel="Selecione"
-														noSelectionOption="true" />
+														<f:selectItem itemValue="0" itemLabel="Selecione"
+															noSelectionOption="true"  />
 													<f:selectItems
-														value="#{vendedorController.equipeFacade.findAll()}"
+														value="#{vendedorController.equipesDisponiveis}"
 														var="equipes" itemLabel="#{equipes.descricao}"
 														itemValue="#{equipes}" />
 													<p:column style="width:10%">

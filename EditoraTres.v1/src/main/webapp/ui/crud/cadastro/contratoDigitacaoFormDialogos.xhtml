@@ -195,7 +195,7 @@
 								headerText="12 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez12==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez12,12)}">
 									<h:outputText value="#{ofertaItens.vez12}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -275,16 +275,17 @@
 						<f:facet name="header">
 							<h:outputText value="Qtd" />
 						</f:facet>
-						<h:outputText value="#{brindesconsulta.quantidade}" />
+						<h:outputText value="#{contratoController.EstoqueAtual(brindesconsulta)}" />
 					</p:column>
 					<p:column style="align-item: center !important;">
 						<center>
-						<p:commandLink update=":contratoForm:datalistBrindes :contratoForm:idTotalBrindes"
-							actionListener="#{contratoController.NovoItemBrinde(brindesconsulta,null)}"
-							oncomplete="PF('_idConsultaBrindes').hide();"
-							style="font-size: 16px !important;">
-							<i class="fa fa-check-circle" />
-						</p:commandLink>
+							<p:commandLink
+								update=":contratoForm:datalistBrindes :contratoForm:idTotalBrindes"
+								actionListener="#{contratoController.NovoItemBrinde(brindesconsulta,null)}"
+								oncomplete="PF('_idConsultaBrindes').hide();"
+								style="font-size: 16px !important;">
+								<i class="fa fa-check-circle" />
+							</p:commandLink>
 						</center>
 					</p:column>
 				</p:dataTable>

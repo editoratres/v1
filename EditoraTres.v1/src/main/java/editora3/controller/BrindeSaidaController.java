@@ -311,11 +311,11 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 		    	return;
 			}
 			
-			if(item.getVendedorBean()==null) {
+			/*if(item.getVendedorBean()==null) {
 				JsfUtil.addErrorMessage("Informe o Vendedor", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
-			}
+			}*/
 			if(getQuantidadeTotalSaidaItens()==0d) {
 				JsfUtil.addErrorMessage("Saída sem brinde(s) não são permitidas", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();

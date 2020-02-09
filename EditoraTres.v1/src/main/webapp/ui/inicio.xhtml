@@ -1,13 +1,399 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:p="http://primefaces.org/ui"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-	<ui:composition>
-	  <h:form id="_Formulario" >
-			  </h:form>
-	</ui:composition>
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition>
+	<h:form id="_Formulario">
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+
+							<i class="fas fa-chart-line icon-gradient  bg-premium-dark">
+							</i>
+						</div>
+						<div>
+							<h4>
+								<b> PAINEL DE GERENCIAMENTO </b>
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-xl-4">
+					<div class="card mb-3 widget-content bg-midnight-bloom">
+						<div class="widget-content-wrapper text-white">
+							<div class="widget-content-left">
+								<div class="widget-heading">Contratos Disponíveis</div>
+								<div class="widget-subheading">Total de contratos
+									disponíveis</div>
+							</div>
+							<div class="widget-content-right">
+								<div class="widget-numbers text-white">
+									<span>
+										<p:outputLabel value="#{painelGerenciamentoController.totalContratosDisponiveis}"/>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-xl-4">
+					<div class="card mb-3 widget-content bg-arielle-smile">
+						<div class="widget-content-wrapper text-white">
+							<div class="widget-content-left">
+								<div class="widget-heading">Contratos efetivados</div>
+								<div class="widget-subheading">Total de contratos no mês</div>
+							</div>
+							<div class="widget-content-right">
+								<div class="widget-numbers text-white">
+									<span><p:outputLabel value="#{painelGerenciamentoController.contratosEfetivados.size()}"/></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-xl-4">
+					<div class="card mb-3 widget-content bg-grow-early">
+						<div class="widget-content-wrapper text-white">
+							<div class="widget-content-left">
+								<div class="widget-heading">Brindes</div>
+								<div class="widget-subheading">Total de brindes em estoque</div>
+							</div>
+							<div class="widget-content-right">
+								<div class="widget-numbers text-white">
+									<span><p:outputLabel value="#{painelGerenciamentoController.totalBrindesEmEstoque}"/></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row" style="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? '' : 'display: none;'}">
+				<div class="col-md-12 col-lg-12">
+					<div class="mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i> Faixa de Contratos disponíveis
+							</div>
+
+						</div>
+						<div class="card-body">
+							<div class="tab-content">
+								<div class="tab-pane fade show active" id="tabs-eg-77">
+									<p:dataTable id="datalist" styleClass="table-editora"
+										value="#{painelGerenciamentoController.itens}" var="item"
+										selectionMode="single" paginatorPosition="bottom"
+										emptyMessage="Nenhum registro localizado" paginator="true"
+										rowKey="#{item.codigo}" rows="10"
+										rowsPerPageTemplate="10,20,30,40,50">
+
+									<!-- 	<p:column width="10%" sortBy="#{item.codigo}">
+											<f:facet name="header">
+												<h:outputText value="Codigo" />
+											</f:facet>
+											<h:outputText value="#{item.codigo}" style="font-size: 12px;" />
+
+										</p:column> -->
+										<p:column width="15%" sortBy="#{item.data}" style="text-align: center !important;">
+											<f:facet name="header">
+												<h:outputText value="Data" />
+											</f:facet>
+											<h:outputText value="#{item.data}" style="font-size: 12px;">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column width="15%" style="text-align: center !important;">
+											<f:facet name="header">
+												<h:outputText value="Faixa Inicial" />
+											</f:facet>
+											<h:outputText value="#{item.faixainicial}"
+												style="font-size: 12px;" />
+										</p:column>
+										<p:column width="15%" style="text-align: center !important;">
+											<f:facet name="header">
+												<h:outputText value="Faixa Final" />
+											</f:facet>
+											<h:outputText value="#{item.faixafinal}"
+												style="font-size: 12px;" />
+										</p:column>
+										<p:column width="10%" style="text-align: center !important;">
+											<f:facet name="header">
+												<h:outputText value="Quant" />
+											</f:facet>
+											<h:outputText
+												value="#{contratoEntradaController.informacaoFaixa(item).get(0)}"
+												style="font-size: 12px;">
+												<f:convertNumber maxFractionDigits="0" />
+											</h:outputText>
+										</p:column>
+										<p:column  width="30%"  style="text-align: center !important;" >
+									<f:facet name="header" >
+										<div class="form-row" >
+											<div class="col-md-6">
+												<div class="mb-2 mr-2 badge badge-info">Dispon.</div>
+											</div>	
+											<div class="col-md-6">	
+												<div class="mb-2 mr-2 badge badge-success">Saida</div>
+											</div>
+										</div>
+										<div class="mb-2 mr-2 badge badge-danger">Cancelamento</div>
+										<!-- <h:outputText value="Disponivel/Saida" style="font-size: 14px !important;"/> -->
+									</f:facet>
+									 
+								 	<br/>
+									<div class="mb-3 progress">
+											 <div class="progress-bar bg-info" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(1)}" 
+											 aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+											 style="width: #{contratoEntradaController.informacaoFaixa(item).get(4)}%; font-size: 12px !important;">
+												 <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(1)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+											 </div>
+                                             <div class="progress-bar bg-success" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(2)}"
+                                              aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+                                              style="width: #{contratoEntradaController.informacaoFaixa(item).get(5)}%;font-size: 12px !important;">
+	                                             <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(2)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+                                             </div>
+                                             <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="#{contratoEntradaController.informacaoFaixa(item).get(3)}" 
+                                             aria-valuemin="0" aria-valuemax="#{contratoEntradaController.informacaoFaixa(item).get(0)}" 
+                                             style="width: #{contratoEntradaController.informacaoFaixa(item).get(6)}%;font-size: 12px !important;">
+	                                             <h:outputText value="#{contratoEntradaController.informacaoFaixa(item).get(3)}" >
+												 		<f:convertNumber  maxFractionDigits="0"/>
+												 </h:outputText>
+                                             </div>
+									</div>
+									
+								</p:column>
+								</p:dataTable>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="mb-3 card">
+						<div class="card-header-tab card-header">
+							<div class="card-header-title">
+								<i class="card-header-tab card-header-tab-animation card-header">
+								</i> Contratos efetivados no ultimos 6(seis) meses
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="tab-content">
+								<div class="tab-pane fade active show" id="tab-eg-55">
+									<p:chart type="bar"
+										model="#{painelGerenciamentoController.barModel}"
+										style="height:300px" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="row">
+				<div class="col-md-12 col-lg-12">
+					<div class="mb-3 card">
+						<div class="card-header-tab card-header">
+							<div class="card-header-title">
+								<i class="card-header-tab card-header-tab-animation card-header">
+								</i> Brindes disponíveis
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="tab-content">
+								<div class="tab-pane fade active show" id="tab-eg-55">
+
+									<p:dataTable id="datalistBrindes" styleClass="table-editora"
+										value="#{painelGerenciamentoController.brindesDisponiveis}"
+										var="itemBrinde" selectionMode="single" paginatorPosition="bottom"
+										emptyMessage="Nenhum registro localizado"
+										rowExpandMode="single"
+										 paginator="true"
+										rowKey="#{itemBrinde.codigo}" rows="10"
+										rowsPerPageTemplate="10,20,30,40,50">
+										<p:column style="width=5%"  rendered="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? true : false}">
+											<p:rowToggler />
+										</p:column>
+										<p:rowExpansion >
+											<br />
+											<center>
+												<h5>
+													<b>Estoque disponivel na(s) equipe(s)</b>
+												</h5>
+											</center>
+											<p:dataTable styleClass="table-editora" style="margin: 25px !important;"
+												id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
+												selectionMode="single" paginatorPosition="bottom"
+												emptyMessage="Nenhum registro localizado"
+												rowExpandMode="single" paginator="false"
+												rowKey="#{itemBrindeEquipe.id}" rows="10"
+												value="#{itemBrinde.brindeEstoqueEquipe}">
+												<p:column width="70%" >
+													<f:facet name="header">
+														<h:outputText value="Equipe" />
+													</f:facet>
+													<h:outputText value="#{itemBrindeEquipe.equipeBean.descricao}" />
+												</p:column>
+												<p:column width="30%" >
+													<f:facet name="header">
+														<h:outputText value="Quantidade" />
+													</f:facet>
+													<h:outputText value="#{itemBrindeEquipe.quantidade}" />
+												</p:column>
+											</p:dataTable>
+										</p:rowExpansion>
+
+										<p:column width="10%" sortBy="#{itemBrinde.codigo}">
+											<f:facet name="header">
+												<h:outputText value="Código" />
+											</f:facet>
+											<h:outputText value="#{itemBrinde.codigo}" />
+										</p:column>
+										<p:column width="55%" filterBy="#{itemBrinde.descricao}"
+											filterMatchMode="contains">
+											<f:facet name="header">
+												<h:outputText value="Descrição" />
+											</f:facet>
+											<h:outputText value="#{itemBrinde.descricao}" />
+										</p:column>
+										<p:column style="text-align: center !important;"> 
+											<f:facet name="header">
+												<h:outputText value="Quant" />
+											</f:facet>
+											<h:outputText value="#{painelGerenciamentoController.EstoqueAtual(itemBrinde)}" />
+										</p:column>
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Valor" />
+											</f:facet>
+											<h:outputText value="#{itemBrinde.valor}">
+												<f:convertNumber type="currency" currencySymbol="R$" />
+											</h:outputText>
+										</p:column>
+
+										<p:column>
+											<f:facet name="header">
+												<h:outputText value="Status" />
+											</f:facet>
+											<h:outputText
+												value="#{itemBrinde.status==true  ? 'ATIVO' : 'INATIVO'}" />
+										</p:column>
+									</p:dataTable>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		
+			<div class="row">
+				<div class="col-md-12">
+					<div class="mb-3 card">
+						<div class="card-header-tab card-header">
+							<div class="card-header-title">
+								<i class="card-header-tab card-header-tab-animation card-header">
+								</i>Listagem de Contratos efetivados
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="tab-content">
+								<div class="tab-pane fade active show" id="tab-eg-55">
+									<p:dataTable id="datalistContratosDisponiveis"
+										styleClass="table table-editora"
+										value="#{painelGerenciamentoController.contratosEfetivados}"
+										var="contratos" selectionMode="single"
+										paginatorPosition="bottom"
+										emptyMessage="Nenhum registro localizado" paginator="true"
+										rowKey="#{contratos.codigo}" rows="10"
+										rowsPerPageTemplate="10,20,30,40,50">
+
+										<p:column width="10%" sortBy="#{contratos.codigocartao}">
+											<f:facet name="header">
+												<h:outputText value="Cod" />
+											</f:facet>
+											<h:outputText value="#{contratos.codigocontrato}" />
+										</p:column>
+										<p:column width="30%"
+											sortBy="#{contratos.assinanteBean.descricao}">
+											<f:facet name="header">
+												<h:outputText value="Assinante" />
+											</f:facet>
+											<h:outputText value="#{contratos.assinanteBean.descricao}" />
+										</p:column>
+										<!-- <p:column width="15%"
+											sortBy="#{contratos.assinanteBean.cnpjcpf}">
+											<f:facet name="header">
+												<h:outputText value="Cpf/Cnpj" />
+											</f:facet>
+											<h:outputText value="#{contratos.assinanteBean.cnpjcpf}" />
+										</p:column> -->
+										<p:column width="15%"
+											sortBy="#{contratos.pagamentoBean.bandeiraBean.descricao}">
+											<f:facet name="header">
+												<h:outputText value="Bandeira" />
+											</f:facet>
+											<h:outputText
+												value="#{contratos.pagamentoBean.bandeiraBean.descricao}" />
+										</p:column>
+
+										<p:column width="20%"
+											sortBy="#{contratos.pagamentoBean.cartao}">
+											<f:facet name="header">
+												<h:outputText value="Cartão" />
+											</f:facet>
+											<h:outputText value="#{contratos.pagamentoBean.cartao}" />
+										</p:column>
+										<p:column width="20%"
+											sortBy="#{contratos.equipeBean.descricao}">
+											<f:facet name="header">
+												<h:outputText value="Equipe" />
+											</f:facet>
+											<h:outputText value="#{contratos.equipeBean.descricao}" />
+										</p:column>
+										<p:column width="20%"
+											sortBy="#{contratos.vendedorBean.nome}">
+											<f:facet name="header">
+												<h:outputText value="Vendedor" />
+											</f:facet>
+											<h:outputText value="#{contratos.vendedorBean.nome}" />
+										</p:column>
+										<p:column width="10%">
+											<f:facet name="header">
+												<h:outputText value="Valor" />
+											</f:facet>
+											<h:outputText value="#{contratos.pagamentoBean.valor}" />
+										</p:column>
+										<p:column width="10%" sortBy="#{contratos.datavenda}">
+											<f:facet name="header">
+												<h:outputText value="Dt.Vda" />
+											</f:facet>
+											<h:outputText value="#{contratos.datavenda}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</h:form>
+</ui:composition>
 </html>
 

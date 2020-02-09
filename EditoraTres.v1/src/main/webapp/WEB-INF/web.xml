@@ -19,7 +19,7 @@
     </welcome-file-list>
      <session-config>
         <session-timeout>
-            5
+           15
         </session-timeout>
     </session-config> 
     <filter>

@@ -32,6 +32,16 @@ public class VendedorFacade extends AbstractFacade<Vendedor> implements Serializ
 		// TODO Auto-generated method stub
 		return em;
 	}
+	
+	public List<Vendedor> findAllPorEquipe(Integer codigoEquipe){
+		List<Vendedor>  ret= null;
+		Query createNativeQuery = getEntityManager().createQuery("select v from Vendedor v " + ( codigoEquipe==null ? "":  "where v.equipeBean.codigo=:codigoEquipe"), Vendedor.class);
+		if(codigoEquipe!=null) {
+			createNativeQuery.setParameter("codigoEquipe", codigoEquipe);
+		}
+		 ret= (ArrayList<Vendedor>) createNativeQuery.getResultList();
+		return ret;
+	}
 	public Vendedor localizarCPF( String cpf) {
 		Vendedor v = null;
 		

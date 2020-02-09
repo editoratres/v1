@@ -9,9 +9,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import editora3.entidades.Equipe;
 import editora3.entidades.InfraUsuario;
+import editora3.facade.EquipeFacade;
  
 
 /**
@@ -22,6 +25,8 @@ import editora3.entidades.InfraUsuario;
 @SessionScoped
 public class LoginInfo implements Serializable {
 
+	@Inject
+	private EquipeFacade equipeFacade;
     private static final long serialVersionUID = 4582254362630538481L;
     private String IdSessao;
     private String usuariologado;
@@ -74,6 +79,25 @@ public class LoginInfo implements Serializable {
     /**
      * @return the usuario_logado
      */
+    
+    public Integer getCodigoEquipeVinculada() {
+    	Integer ret = null;
+    	
+    	equipeVinculada = getEquipeVinculada(); 
+    	if(equipeVinculada!=null) {
+    		ret=equipeVinculada.getCodigo();
+    	}
+    	
+    	return ret;
+    }
+    private Equipe equipeVinculada ;
+    public Equipe getEquipeVinculada() {
+		if(equipeVinculada==null) {
+		
+			equipeVinculada = getEquipeFacade().localizarEquipePorUsuario(usuario_logado.getIdusuario());
+		}
+		return equipeVinculada;
+	}
     public InfraUsuario getUsuario_logado() {
         return usuario_logado;
     }
@@ -135,5 +159,13 @@ public class LoginInfo implements Serializable {
     	FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     	return "/login.xhtml?faces-redirect=true";
     }
+
+	public EquipeFacade getEquipeFacade() {
+		return equipeFacade;
+	}
+
+	public void setEquipeFacade(EquipeFacade equipeFacade) {
+		this.equipeFacade = equipeFacade;
+	}
 
 }

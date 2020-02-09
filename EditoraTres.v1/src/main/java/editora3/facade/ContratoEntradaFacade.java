@@ -1,5 +1,6 @@
 package editora3.facade;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -80,6 +81,8 @@ public class ContratoEntradaFacade extends AbstractFacade<ContratoEntrada> {
 			Contrato contrato = new Contrato();
 			contrato.setDatageracao(contratoEntrada.getData());
 			contrato.setCodigocontrato(i);
+			//contrato.setEquipeBean(contrato.getEquipeBean());
+			//contrato.setVendedorBean(contrato.getVendedorBean());
 			getEntityManager().persist(contrato);
 			
 			ContratoEntradaIten entradaIten = new ContratoEntradaIten();
@@ -97,6 +100,37 @@ public class ContratoEntradaFacade extends AbstractFacade<ContratoEntrada> {
 		createNativeQuery.setParameter("faixainicial", faixainicial);
 		createNativeQuery.setParameter("faixafinal", faixaFinal);
 		return createNativeQuery.getResultList();
+		  
+
+	}
+	
+	public HashMap<String, Integer> situacaoDosContratosNaFaixa(Integer faixainicial, Integer faixaFinal) {
+		 HashMap<String, Integer>  ret= new HashMap<>();
+		 
+		 Query nativeQuery = getEntityManager().createNativeQuery("select count(*) from contrato c where c.codigocontrato >= :faixainicial and c.codigocontrato <= :faixafinal and  c.datasaida is null and c.datacancelamento is null");
+		 nativeQuery.setParameter("faixainicial", faixainicial);
+		 nativeQuery.setParameter("faixafinal", faixaFinal);
+		 Object singleResult = nativeQuery.getSingleResult();		
+		 if(singleResult!=null) {
+			 ret.put("disponivel", Integer.parseInt(singleResult.toString()));
+		 }
+		  
+		 nativeQuery = getEntityManager().createNativeQuery("select count(*) from contrato c where c.codigocontrato >= :faixainicial and c.codigocontrato <= :faixafinal and not c.datasaida is null  and c.datacancelamento is null");
+		 nativeQuery.setParameter("faixainicial", faixainicial);
+		 nativeQuery.setParameter("faixafinal", faixaFinal);
+		 singleResult = nativeQuery.getSingleResult();		
+		 if(singleResult!=null) {
+			 ret.put("saidas", Integer.parseInt(singleResult.toString()));
+		 }
+		 nativeQuery = getEntityManager().createNativeQuery("select count(*) from contrato c where c.codigocontrato >= :faixainicial and c.codigocontrato <= :faixafinal and not c.datacancelamento is null");
+		 nativeQuery.setParameter("faixainicial", faixainicial);
+		 nativeQuery.setParameter("faixafinal", faixaFinal);
+		 singleResult = nativeQuery.getSingleResult();		
+		 if(singleResult!=null) {
+			 ret.put("cancelados", Integer.parseInt(singleResult.toString()));
+		 }
+		 
+		 return ret;
 		  
 
 	}

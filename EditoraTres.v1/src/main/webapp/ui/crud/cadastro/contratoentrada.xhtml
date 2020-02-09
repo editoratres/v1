@@ -28,7 +28,7 @@
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px"
+								<p:commandLink style="font-size:   20px !important;"
 									onstart="PF('_id-blockui_contratoentradabrinde').show();"
 										oncomplete ="PF('_id-blockui_contratoentradabrinde').hide();"
 									actionListener="#{contratoEntradaController.atualizar()}" update="datalist"
@@ -37,7 +37,7 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":contratoEntradaForm"
+								<p:commandLink style="font-size: 20px !important;" update=":contratoEntradaForm"
 									actionListener="#{contratoEntradaController.prepararNovo()}"
 									oncomplete="PF('_entradaContratoDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />

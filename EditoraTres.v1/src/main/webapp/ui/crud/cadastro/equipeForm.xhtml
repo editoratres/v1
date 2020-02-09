@@ -9,7 +9,7 @@
 <ui:composition>
 	<p:dialog id="equipeDialog" widgetVar="_equipeDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="90%" header="Equipe">
+		hideEffect="clip" closeOnEscape="true" width="70%" header="Equipe">
 		<p:ajax event="close" listener="#{equipeController.fecharDialogo()}" />
 			<h:form id="equipeForm">
 			<ul class="tabs-animated-shadow tabs-animated nav">
@@ -68,7 +68,7 @@
 									<div class="position-relative form-group">
 										<label for ="cep" class="">Cep</label>
 										<div id="cep" class="input-group mb-3">
-											<p:inputMask mask="99.999-999"  size="15"
+											<p:inputMask mask="99.999-999"  size="8"
 												value="#{equipeController.item.cep}" id="cep" />
 											<span class="input-group-btn"  > <p:commandLink
 													styleClass="btn btn-outline-secondary" id="id-equipeform-btcep" 
@@ -84,7 +84,7 @@
 
 									</div>
 								</div>
-								<div class="col-md-6">
+								<div class="col-md-7">
 									<div class="position-relative form-group">
 										<label for="exampleAddress" class="">Endereço</label>
 										<p:inputText value="#{equipeController.item.endereco}"
@@ -92,7 +92,7 @@
 											styleClass="form-control" />
 									</div>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="position-relative form-group">
 										<label for="exampleAddress2" class="">Complemento</label>
 										<p:inputText value="#{equipeController.item.complemento}"
@@ -240,7 +240,33 @@
 									</div>
 								</div>
 							</div>
-
+							<h5>SEGURANÇA</h5>
+							<div class="form-row">
+								<div class="col-md-2">
+									<div class="position-relative form-group">
+										<label for="idusuario" class="">Usuário vinculado</label>
+										<h:selectOneMenu styleClass="form-control" 
+											converter="editora3.converter.ConversorInfraUsuario"
+											value="#{equipeController.item.infraUsuarioBean}"
+											 var="u" id="idusuario">
+											<f:selectItem itemValue="0" itemLabel="Selecione"
+												noSelectionOption="true" />
+											<f:selectItems value="#{equipeController.usuarioDisponiveis}"
+												var="usuarios" itemLabel="#{usuarios.nome}"
+			 									itemValue="#{usuarios}" />
+											<p:column style="width:10%">
+												<h:outputText value="#{u.usuario}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{u.nome}" />
+											</p:column>
+											
+										 
+										</h:selectOneMenu>
+									</div>
+								
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

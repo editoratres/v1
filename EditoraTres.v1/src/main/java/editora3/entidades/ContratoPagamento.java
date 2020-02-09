@@ -21,7 +21,9 @@ public class ContratoPagamento implements Serializable {
 
 	private String autorizacao;
 
-	private String bandeira;
+	@ManyToOne()
+	@JoinColumn(name="bandeiraBean", referencedColumnName="codigo")
+	private BandeiraCartao bandeiraBean;
 
 	private String cartao;
 
@@ -72,13 +74,7 @@ public class ContratoPagamento implements Serializable {
 		this.autorizacao = autorizacao;
 	}
 
-	public String getBandeira() {
-		return this.bandeira;
-	}
-
-	public void setBandeira(String bandeira) {
-		this.bandeira = bandeira;
-	}
+	
 
 	public String getCartao() {
 		return this.cartao;
@@ -182,6 +178,14 @@ public class ContratoPagamento implements Serializable {
 
 	public void setContrato(Contrato contrato) {
 		this.contrato = contrato;
+	}
+
+	public BandeiraCartao getBandeiraBean() {
+		return bandeiraBean;
+	}
+
+	public void setBandeiraBean(BandeiraCartao bandeiraBean) {
+		this.bandeiraBean = bandeiraBean;
 	}
 
 }

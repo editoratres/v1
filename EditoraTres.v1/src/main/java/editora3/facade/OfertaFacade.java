@@ -52,8 +52,8 @@ public class OfertaFacade extends AbstractFacade<Oferta> {
 		List<Oferta> ret = null;
 		try {
 		
-			TypedQuery<Oferta> createQuery = getEntityManager().createQuery("select o from Oferta o"+ 
-			(!status.equalsIgnoreCase("todos") ? " inner join fetch o.ofertaItens io where o.ativa=TRUE and io.ativa=TRUE ":"") + " order by o.produtoBean.descricao"  ,
+			TypedQuery<Oferta> createQuery = getEntityManager().createQuery("select DISTINCT  o from Oferta o"+ 
+			(!status.equalsIgnoreCase("todos") ? " inner join fetch o.ofertaItens io where o.ativa=TRUE and io.ativa=TRUE ":"")   ,
 					Oferta.class);
 			 
 			ret = createQuery.getResultList();

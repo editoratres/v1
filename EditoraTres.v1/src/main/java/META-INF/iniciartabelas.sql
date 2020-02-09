@@ -37,6 +37,7 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('subcanal','SubCan
 insert into menu(nome,descricao, icone,  id, nomepai) values ('origemvenda','Origem Venda',null,18,15);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('maquinetapos','Maquineta POS',null,19,15);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('tipomov','Tipo Movimento',null,20,15);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('bandeiraCartao','Bandeira de cartão',null,37,15);
 
 insert into menu(nome,descricao, icone,  id, nomepai) values ('configuracao','Configuração','pe-7s-tools',21,0);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('parametros','Parâmetros',null,22,21);
@@ -75,6 +76,7 @@ insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (28,'ContratoCancel',null,'/ui/crud/cadastro/contratocancelamento.xhtml','Cancelamento de contratos');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (29,'ContratoDigit',null,'/ui/crud/cadastro/contratodigitacao.xhtml','Digitação de contratos');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (30,'ContratoAssinante',null,'/ui/crud/cadastro/contratoassinante.xhtml','Assinantes dos contratos');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (31,'BandeiraCartao',null,'/ui/crud/tabela/bandeiraCartao.xhtml','Bandeira de Cartão');
 
 
 insert into menu_opcoes(id,idmodulo,menu) values (1,1,'brinde');
@@ -106,4 +108,4 @@ insert into menu_opcoes(id,idmodulo,menu) values (27,27,'contratossaida');
 insert into menu_opcoes(id,idmodulo,menu) values (28,28,'contratoscancelamento');
 insert into menu_opcoes(id,idmodulo,menu) values (29,29,'contratosdigitacao');
 insert into menu_opcoes(id,idmodulo,menu) values (30,30,'contratosassinantes');
- 
+ insert into menu_opcoes(id,idmodulo,menu) values (31,31,'bandeiraCartao');

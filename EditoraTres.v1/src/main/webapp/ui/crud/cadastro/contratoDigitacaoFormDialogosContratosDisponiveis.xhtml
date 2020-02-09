@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<p:dialog modal="true" appendTo="@(body)" appendToBody="true"
+		width="65%" height="400" header="Contratos Disponíveis"
+		id="idConsultaCtoDisponiveis" closeOnEscape="true" 
+		widgetVar="_idConsultaCtoDisponiveis" >
+		 
+		<h:form id="formConsultaCtoDisponiveis">
+			<p:outputPanel id="painelContratosDisponiveis">
+				<p:dataTable styleClass="table" id="datalistCtoDisponiveis"
+					widgetVar="_datalistCtoDisponiveis"
+					value="#{contratoController.listaContratosDisponiveis}"
+					var="contratoDis" emptyMessage="Nenhum registro localizado"
+					scrollable="true" rowKey="#{contratoDis.codigo}"
+					disabled="#{contratoController.editar}" scrollRows="10"
+					scrollHeight="330">
+					<p:column width="10%" filterMatchMode="contains"
+						filterBy="#{contratoDis.codigocontrato}">
+						<f:facet name="header">
+							<h:outputText value="Código" />
+						</f:facet>
+						<h:outputText value="#{contratoDis.codigocontrato}" />
+					</p:column>
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="Dt. Geração" />
+						</f:facet>
+						<h:outputText value="#{contratoDis.datageracao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column width="30%" filterMatchMode="contains"
+						filterBy="#{contratoDis.equipeBean.descricao}">
+						<f:facet name="header">
+							<h:outputText value="Equipe" />
+						</f:facet>
+						<h:outputText value="#{contratoDis.equipeBean.descricao}" />
+					</p:column>
+					<p:column width="30%" filterMatchMode="contains"
+						filterBy="#{contratoDis.vendedorBean.nome}">
+						<f:facet name="header">
+							<h:outputText value="Vendedor" />
+						</f:facet>
+						<h:outputText value="#{contratoDis.vendedorBean.nome}" />
+					</p:column>
+					<p:column width="5%" style="align-item: center !important;">
+						<center>
+							<p:commandLink id="idbtcarregarcontratoDis"
+								update=":contratoForm"
+								oncomplete="PF('_idConsultaCtoDisponiveis').hide();"
+								actionListener="#{contratoController.CarregarContratoDisponivel(contratoDis)}"
+								style="font-size: 16px !important;">
+								<i class="fa fa-check-circle" />
+							</p:commandLink>
+						</center>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

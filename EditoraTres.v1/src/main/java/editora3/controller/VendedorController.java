@@ -22,6 +22,7 @@ import editora3.entidades.Equipe;
 import editora3.entidades.Vendedor;
 import editora3.facade.EquipeFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.LoginInfo;
 import editora3.util.CepWebService;
 import editora3.util.JsfUtil;
 import editora3.util.CepWebService.Estados;
@@ -35,13 +36,20 @@ public class VendedorController implements Serializable, AbstractController<Vend
 	/**
 	 * 
 	 */
+	
+	
+	@Inject
+	private LoginInfo loginInfor;
+	
+	
 	private static final long serialVersionUID = -3093663958472481537L;
 	@Inject
 	private EquipeFacade equipeFacade;
 	
 	@Inject
 	private VendedorFacade vendedorFacade;
-	 
+	
+	private List<Equipe> equipesDisponiveis;
 
 	@Override
 	public FlashApp getFlash() {
@@ -144,7 +152,7 @@ public class VendedorController implements Serializable, AbstractController<Vend
 	public List<Vendedor> getItens() {
 		List<Vendedor>  ret = (List<Vendedor>) getFlash().getValores().get("vendedores");
 		if(ret==null) {
-			ret = getVendedorFacade().findAll();
+			ret = getVendedorFacade().findAllPorEquipe(getLoginInfor().getCodigoEquipeVinculada());
 		}
 		return ret;
 		 
@@ -164,6 +172,7 @@ public class VendedorController implements Serializable, AbstractController<Vend
 	 
 	
     public EquipeFacade getEquipeFacade() {
+    	
 		return equipeFacade;
 	}
 	public void setEquipeFacade(EquipeFacade equipeFacade) {
@@ -289,6 +298,21 @@ public class VendedorController implements Serializable, AbstractController<Vend
 
 	public void setMunicipios(ArrayList<Municipio> municipio) {
 		this.municipio = municipio;
+	}
+	public LoginInfo getLoginInfor() {
+		return loginInfor;
+	}
+	public void setLoginInfor(LoginInfo loginInfor) {
+		this.loginInfor = loginInfor;
+	}
+	public List<Equipe> getEquipesDisponiveis() {
+		if(equipesDisponiveis==null) {
+			equipesDisponiveis = getEquipeFacade().findAllEquipes(getLoginInfor().getCodigoEquipeVinculada());
+		}
+		return equipesDisponiveis;
+	}
+	public void setEquipesDisponiveis(List<Equipe> equipesDisponiveis) {
+		this.equipesDisponiveis = equipesDisponiveis;
 	}
 
 

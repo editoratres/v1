@@ -9,20 +9,24 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@Table(name="brinde_saida_itens")
-@NamedQuery(name="BrindeSaidaIten.findAll", query="SELECT b FROM BrindeSaidaIten b")
-public class BrindeSaidaIten implements Serializable {
+@Table(name="brinde_estoque_equipe")
+@NamedQuery(name="BrindeEstoqueEquipe.findAll", query="SELECT b FROM BrindeEstoqueEquipe b")
+public class BrindeEstoqueEquipe implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	
 	@ManyToOne()
 	@JoinColumn(name="brindeBean", referencedColumnName="codigo")
 	private Brinde brindeBean;
-
 	 
-
+	
+	@ManyToOne()
+	@JoinColumn(name="equipelBean", referencedColumnName="codigo")
+	private Equipe equipeBean;
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -39,7 +43,7 @@ public class BrindeSaidaIten implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BrindeSaidaIten other = (BrindeSaidaIten) obj;
+		BrindeEstoqueEquipe other = (BrindeEstoqueEquipe) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -48,16 +52,11 @@ public class BrindeSaidaIten implements Serializable {
 		return true;
 	}
 
-	private String descricao;
-
+ 
 	private double quantidade=0d;
 
-	//bi-directional many-to-one association to BrindeSaida
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="codigobrindesaida")
-	private BrindeSaida brindeSaida;
-
-	public BrindeSaidaIten() {
+	 
+	public BrindeEstoqueEquipe() {
 	}
 
 	public Integer getId() {
@@ -67,15 +66,7 @@ public class BrindeSaidaIten implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 	 
-	public String getDescricao() {
-		return this.descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
 
 	public double getQuantidade() {
 		return this.quantidade;
@@ -85,12 +76,12 @@ public class BrindeSaidaIten implements Serializable {
 		this.quantidade = quantidade;
 	}
 
-	public BrindeSaida getBrindeSaida() {
-		return this.brindeSaida;
+	public Equipe getEquipeBean() {
+		return equipeBean;
 	}
 
-	public void setBrindeSaida(BrindeSaida brindeSaida) {
-		this.brindeSaida = brindeSaida;
+	public void setEquipeBean(Equipe equipeBean) {
+		this.equipeBean = equipeBean;
 	}
 
 	public Brinde getBrindeBean() {
@@ -101,4 +92,6 @@ public class BrindeSaidaIten implements Serializable {
 		this.brindeBean = brindeBean;
 	}
 
+	 
+	 
 }

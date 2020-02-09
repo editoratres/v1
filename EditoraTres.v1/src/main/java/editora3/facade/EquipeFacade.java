@@ -44,6 +44,32 @@ public class EquipeFacade  extends AbstractFacade<Equipe> implements Serializabl
 		return ret;
 	}
 	
+	public List<Equipe> findAllEquipes(Integer idequipe){
+		List<Equipe> ret = null;
+		Query createNativeQuery = getEntityManager().createQuery("from Equipe e"  + (idequipe!=null ? " where e.codigo=:idequipe": ""),
+				Equipe.class);
+		if(idequipe!=null) {
+			createNativeQuery.setParameter("idequipe", idequipe);
+		}
+			ret = (ArrayList<Equipe>) createNativeQuery.getResultList();
+		
+
+		return ret;
+	}
+	
+	public Equipe localizarEquipePorUsuario(Integer idusuario){
+		Equipe ret = null;
+		Query createNativeQuery = getEntityManager().createQuery("from Equipe e where e.infraUsuarioBean.idusuario=:idusuario",
+				Equipe.class);
+		createNativeQuery.setParameter("idusuario", idusuario);
+		List<Equipe> lista = (ArrayList<Equipe>) createNativeQuery.getResultList();
+		if(lista!=null && !lista.isEmpty()) {
+			ret = lista.get(0);
+		}
+
+		return ret;
+	}
+	
 	public Equipe localizarCPF( String cpf) {
 		Equipe v = null;
 		

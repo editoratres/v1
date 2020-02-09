@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import editora3.infra.InterfaceMenuHtml;
 import editora3.seguranca.LoginInfo;
@@ -29,9 +30,18 @@ public class DashboardController implements Serializable {
 	private FlashApp flashApp;
 	private static final long serialVersionUID = 1L;
 	private String paginaAtual="/ui/inicio.xhtml";
-
+	private HttpSession sessaoAtual;
+	
 	public String getPaginaAtual() {
 		return paginaAtual;
+	}
+	public void keepAlive() {
+		System.out.println("teste");
+	    //logger.info("User " + loggedInUser.getUserLogin() + " requested the Session " + getCurrentHttpSessionId() + "  to be kept alive at " + new Date().toString());
+
+	    /**
+	     * Do nothing
+	     */
 	}
 
 	public void setPaginaAtual(String paginaAtual) {
@@ -60,6 +70,27 @@ public class DashboardController implements Serializable {
 	public void reload() throws IOException {
 	    ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 	    ec.redirect(((HttpServletRequest) ec.getRequest()).getRequestURI());
+	    if(sessaoAtual==null) {
+	    	sessaoAtual=getHttpSession();
+	    }
+	}
+	
+	
+	public void refreshPagina() {
+		System.out.println("");
+	}
+	public  HttpSession getHttpSession() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
+		int maxInactiveInterval = session.getMaxInactiveInterval();
+		return session;
+
+	}
+	public HttpSession getSessaoAtual() {
+		return sessaoAtual;
+	}
+	public void setSessaoAtual(HttpSession sessaoAtual) {
+		this.sessaoAtual = sessaoAtual;
 	}
 	
 }

@@ -3,6 +3,8 @@ package editora3.entidades;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +56,12 @@ public class Contrato implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date nascimento;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date datacancelamento;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date datasaida;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datageracao;
@@ -63,9 +71,9 @@ public class Contrato implements Serializable {
 	
 	@ManyToOne()
 	@JoinColumn(name="relatorioBean", referencedColumnName="codigo")
-	private Relatorio relatorioBean=new Relatorio();
+	private Relatorio relatorioBean;
 	
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="assinanteBean", referencedColumnName="codigo")
 	private Assinante assinanteBean=new Assinante();
 	
@@ -77,20 +85,22 @@ public class Contrato implements Serializable {
 	@JoinColumn(name="vendedorBean", referencedColumnName="codigo")
 	private Vendedor vendedorBean;
 	
-	@ManyToOne() 
+	@ManyToOne(cascade = CascadeType.ALL) 
 	@JoinColumn(name="pagamentoBean", referencedColumnName="id")
 	private ContratoPagamento pagamentoBean=new  ContratoPagamento();
 	 
 
 	//bi-directional many-to-one association to ContratoBrinde
-	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	//@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ContratoBrinde> contratoBrindes=new ArrayList<>();
 
 	//bi-directional many-to-one association to ContratoPagamento
 	
 
 	//bi-directional many-to-one association to ContratoProduto
-	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY , cascade = CascadeType.ALL, orphanRemoval=true)
+	//@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ContratoProduto> contratoProdutos=new ArrayList<>();
 
 	public Contrato() {
@@ -272,6 +282,22 @@ public class Contrato implements Serializable {
 
 	public void setPagamentoBean(ContratoPagamento pagamentoBean) {
 		this.pagamentoBean = pagamentoBean;
+	}
+
+	public Date getDatacancelamento() {
+		return datacancelamento;
+	}
+
+	public void setDatacancelamento(Date datacancelamento) {
+		this.datacancelamento = datacancelamento;
+	}
+
+	public Date getDatasaida() {
+		return datasaida;
+	}
+
+	public void setDatasaida(Date datasaida) {
+		this.datasaida = datasaida;
 	}
 
 }

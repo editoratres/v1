@@ -24,9 +24,11 @@
 }
 
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
-	height: 25px !important;
+	height: 23px !important;
 }
-
+.card-body{
+	/* padding: 0.1rem !important; */
+}
 .form-group {
 	 
 	margin-bottom: 0.5rem !important;

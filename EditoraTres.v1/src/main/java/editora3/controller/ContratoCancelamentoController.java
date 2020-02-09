@@ -138,12 +138,12 @@ public class ContratoCancelamentoController implements AbstractController<Contra
 		    	return;
 			}
 		    
-			List<ContratoSaida> localizarPorFaixaSida = getContratoCancelamentoFacade().verificarFaixasDeSaida(item.getFaixainicial(),item.getFaixafinal());
+			/*List<ContratoSaida> localizarPorFaixaSida = getContratoCancelamentoFacade().verificarFaixasDeSaida(item.getFaixainicial(),item.getFaixafinal());
 			if(localizarPorFaixaSida!=null && !localizarPorFaixaSida.isEmpty()) {
 				JsfUtil.addErrorMessage("A faixa informada não pode possuir valores contidos em saida(s)  já cadastradas", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
-			}
+			}*/
 			
 		    int tamanhoFaixa =   item.getFaixafinal() -item.getFaixainicial()+1;
 		    int contratosDisponiveisNaFaixa = getContratoCancelamentoFacade().verificarQuantidadeDeContratosDisponiveis(item.getFaixainicial(), item.getFaixafinal());

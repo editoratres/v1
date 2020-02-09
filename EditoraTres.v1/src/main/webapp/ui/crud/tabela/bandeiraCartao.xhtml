@@ -8,7 +8,7 @@
 
 <ui:composition>
 	<f:metadata>
-		<f:viewAction action="#{equipeController.atualizar()}" />
+		<f:viewAction action="#{bandeiraCartaoController.atualizar()}" />
 	</f:metadata>
 	<h:form id="_Formulario">
 
@@ -17,27 +17,27 @@
 				<div class="page-title-wrapper">
 					<div class="page-title-heading" style="width: 90%">
 						<div class="page-title-icon">
-							<i class="fa fa-users icon-gradient bg-premium-dark"> </i>
+							<i class="fas fa-credit-card icon-gradient bg-premium-dark"> </i>
 						</div>
 						<div>
 							<h3><b>
-							Equipes
+							Bandeiras de cartão
 							</b></h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;"
-									actionListener="#{equipeController.atualizar()}" update="datalist"
+								<p:commandLink style="font-size: 20px"
+									actionListener="#{bandeiraCartaoController.atualizar()}" update="datalist"
 									id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":equipeForm"
-									actionListener="#{equipeController.prepararNovo()}"
-									oncomplete="PF('_equipeDialog').show();" id="btAdicionar">
+								<p:commandLink style="font-size: 20px" update=":bandeiraCartaoForm"
+									actionListener="#{bandeiraCartaoController.prepararNovo()}"
+									oncomplete="PF('_bandeiraCartaoDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -50,53 +50,53 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div   class="main-card mb-3 card">
-						<h5   style="margin: 10px;" class="card-title">Listagem de equipes</h5>
+						<h5 style="margin: 10px;" class="card-title">Listagem de bandeiras de cartão</h5>
 						<div style="margin: 5px;" class="card-body">
 
 							<p:dataTable id="datalist" styleClass="table"
-								value="#{equipeController.itens}" var="item" selectionMode="single"
+								value="#{bandeiraCartaoController.itens}" var="item" selectionMode="single"
 								paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"
-								selection="#{equipeController.item}" paginator="true"
+								selection="#{bandeiraCartaoController.item}" paginator="true"
 								rowKey="#{item.codigo}" rows="10"
 								rowsPerPageTemplate="10,20,30,40,50">
 
-								<p:column width="10%" sortBy="#{item.codigo}">
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Código" />
 									</f:facet>
 									<h:outputText value="#{item.codigo}" />
 								</p:column>
-								<p:column  width="50%" filterBy="#{item.descricao}" filterMatchMode="contains"  >
+
+								<p:column  >
 									<f:facet name="header">
 										<h:outputText value="Descrição" />
 									</f:facet>
 									<h:outputText value="#{item.descricao}" />
 								</p:column>
 								
-								<p:column filterBy="#{item.cnpjcpf}" filterMatchMode="contains"  >
+								<p:column  >
 									<f:facet name="header">
-										<h:outputText value="Cnpj/CPF" />
+										<h:outputText value="Status" />
 									</f:facet>
-									<h:outputText value="#{item.cnpjcpf}" />
+									<h:outputText value="#{item.status==true ? 'Ativo' : 'Inativo'}" />
 								</p:column>
-								 
-
-								<p:column width="10%">
+	
+								<p:column width="20%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink actionListener="#{equipeController.excluir(item)}"
+										<p:commandLink actionListener="#{bandeiraCartaoController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
-											<p:confirm header="Excluir equipe"
+											<p:confirm header="Excluir bandeira cartão"
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":equipeForm"
-											actionListener="#{equipeController.prepararEditar(item)}"
-											oncomplete="PF('_equipeDialog').show();" style="font-size: 20px">
+										<p:commandLink update=":bandeiraCartaoForm"
+											actionListener="#{bandeiraCartaoController.prepararEditar(item)}"
+											oncomplete="PF('_bandeiraCartaoDialog').show();" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>
@@ -112,7 +112,7 @@
 		</div>
 	</h:form>
 
-	<ui:include src="equipeForm.xhtml" />
+	<ui:include src="bandeiraCartaoForm.xhtml" />
 
 </ui:composition>
 </html>

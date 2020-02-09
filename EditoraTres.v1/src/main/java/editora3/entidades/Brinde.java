@@ -1,6 +1,9 @@
 package editora3.entidades;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -46,12 +49,15 @@ public class Brinde implements Serializable {
 
 	private String descricao;
 
-	private Integer quantidade;
+	private Integer quantidade=0;
 
 	private double valor;
 	
 	private Boolean status;
 
+	@OneToMany(mappedBy="brindeBean", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
+	private List<BrindeEstoqueEquipe> brindeEstoqueEquipe=new ArrayList<BrindeEstoqueEquipe>();
+	
 	public Brinde() {
 	}
 
@@ -101,6 +107,14 @@ public class Brinde implements Serializable {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+
+	public List<BrindeEstoqueEquipe> getBrindeEstoqueEquipe() {
+		return brindeEstoqueEquipe;
+	}
+
+	public void setBrindeEstoqueEquipe(List<BrindeEstoqueEquipe> brindeEstoqueEquipe) {
+		this.brindeEstoqueEquipe = brindeEstoqueEquipe;
 	}
 
 }

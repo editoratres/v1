@@ -16,6 +16,31 @@ import java.util.Set;
 @Table(name="infra_usuario")
 @NamedQuery(name="InfraUsuario.findAll", query="SELECT i FROM InfraUsuario i")
 public class InfraUsuario implements Serializable {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idusuario == null) ? 0 : idusuario.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InfraUsuario other = (InfraUsuario) obj;
+		if (idusuario == null) {
+			if (other.idusuario != null)
+				return false;
+		} else if (!idusuario.equals(other.idusuario))
+			return false;
+		return true;
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

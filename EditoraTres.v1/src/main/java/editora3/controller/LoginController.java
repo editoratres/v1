@@ -11,7 +11,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
+import editora3.entidades.Equipe;
 import editora3.entidades.InfraUsuario;
 import editora3.util.JsfUtil;
 import editora3.facade.InfraUsuarioFacade;
@@ -21,7 +23,8 @@ import editora3.seguranca.LoginInfo;
 @RequestScoped
 public class LoginController {
 
-	 
+	@Inject
+	private DashboardController DashboardController;
 	@Inject
 	private LoginInfo loginInfo;
 	@Inject
@@ -54,6 +57,7 @@ public class LoginController {
 		setUsuario(usuario);
 		return usuario;
 	}
+	
 	public void setUsuario(InfraUsuario usuario) {
 		getFlashApp().getValores().put("usuario",usuario);
 		
@@ -75,6 +79,13 @@ public class LoginController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
+			HttpSession ultimaSessaoValida = getDashboardController().getSessaoAtual(); 
+			Long tempo =session.getLastAccessedTime();
+			System.out.println(tempo);
+			
 		}
 	}
 	public String login() {
@@ -130,6 +141,14 @@ public class LoginController {
  
 	public void setLoginInfo(LoginInfo loginInfo) {
 		this.loginInfo = loginInfo;
+	}
+
+	public DashboardController getDashboardController() {
+		return DashboardController;
+	}
+
+	public void setDashboardController(DashboardController dashboardController) {
+		DashboardController = dashboardController;
 	}
 
 	 

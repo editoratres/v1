@@ -29,14 +29,14 @@
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink   style="font-size: 20px"
+								<p:commandLink   style="font-size: 20px !important;"
 									actionListener="#{vendedorController.atualizar()}"
 									update="datalist" id="btAtualizar">
 									<i class="fas fa-sync-alt btn-black" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":vendedorForm"
+								<p:commandLink style="font-size: 20px !important;" update=":vendedorForm"
 									actionListener="#{vendedorController.prepararNovo()}"
 									oncomplete="PF('_vendedorDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
@@ -52,9 +52,9 @@
 				<div class="col-md-12">
 					<div  class="main-card mb-3 card">
 						<h5  style="margin: 10px;" class="card-title">Listagem de vendedores</h5>
-						<div style="margin: 5px;" class="card-body">
+						<div  class="card-body">
 							<div class="row">
-								<p:dataTable id="datalist" tableStyleClass="table table-striped table-bordered dt-responsive nowrap"
+								<p:dataTable id="datalist" tableStyleClass="table-editora"
 									value="#{vendedorController.itens}" var="item"
 									selectionMode="single" paginatorPosition="bottom"
 									emptyMessage="Nenhum registro localizado"

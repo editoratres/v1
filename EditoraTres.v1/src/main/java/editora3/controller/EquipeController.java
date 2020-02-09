@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import editora3.entidades.Equipe;
+import editora3.entidades.InfraUsuario;
 import editora3.entidades.Vendedor;
 import editora3.facade.EquipeFacade;
+import editora3.facade.InfraUsuarioFacade;
 import editora3.util.CepWebService;
 import editora3.util.CepWebService.Estados;
 import editora3.util.CepWebService.Municipio;
@@ -25,6 +27,8 @@ import editora3.util.ValidacoesDiversas;
 @RequestScoped
 public class EquipeController implements AbstractController<Equipe>{
 
+	@Inject
+	private InfraUsuarioFacade InfraUsuarioFacade; 
 	
 	@Inject
 	private CepWebService cepWebService;
@@ -32,6 +36,9 @@ public class EquipeController implements AbstractController<Equipe>{
 	private String mascaraCPF="999.999.999-99" ;
 	@Inject
 	private EquipeFacade EquipeFacade; 
+	
+	
+	private List<InfraUsuario> usuarioDisponiveis;
 	
 	public EquipeFacade getEquipeFacade() {
 		return EquipeFacade;
@@ -107,6 +114,7 @@ public class EquipeController implements AbstractController<Equipe>{
 	@Override
 	public void prepararEditar(Equipe item) {
 		// TODO Auto-generated method stub
+		setUsuarioDisponiveis(null);
 		setItem(item);
 		
 	}
@@ -121,6 +129,7 @@ public class EquipeController implements AbstractController<Equipe>{
 	@Override
 	public void prepararNovo() {
 		// TODO Auto-generated method stub
+		setUsuarioDisponiveis(null);
 		setItem(new Equipe());
 		getItem().setTipopessoa("fisica");
 		
@@ -151,11 +160,38 @@ public class EquipeController implements AbstractController<Equipe>{
 				}
 			}
 			
+			
 			if(equipe.getCodigo()==null) {
+				if(equipe.getInfraUsuarioBean()!=null) {
+					if(equipe.getInfraUsuarioBean().isUsuarioadm()) {
+						JsfUtil.addErrorMessage("O usuário Administrador não pode ser vinculado a uma equipe", "Procedimento OK");
+						FacesContext.getCurrentInstance().validationFailed();
+						return;
+					}
+					Equipe localizarVendedoresEquipe = getEquipeFacade().localizarEquipePorUsuario(equipe.getInfraUsuarioBean().getIdusuario());
+					if(localizarVendedoresEquipe!=null ) {
+						JsfUtil.addErrorMessage("O usuário informadao já esta vinculado a outra equipe", "Procedimento OK");
+						FacesContext.getCurrentInstance().validationFailed();
+						return;
+					}
+				}
 				getEquipeFacade().create(equipe);
 				JsfUtil.addSuccessMessage("Equipe criada com sucesso", "Procedimento OK");
 				
 			}else {
+				Equipe localizarVendedoresEquipe = getEquipeFacade().localizarEquipePorUsuario(equipe.getInfraUsuarioBean().getIdusuario());
+				if(equipe.getInfraUsuarioBean()!=null) {
+					if(equipe.getInfraUsuarioBean().isUsuarioadm()) {
+						JsfUtil.addErrorMessage("O usuário Administrador não pode ser vinculado a uma equipe", "Procedimento OK");
+						FacesContext.getCurrentInstance().validationFailed();
+						return;
+					}
+					if(localizarVendedoresEquipe!=null || (localizarVendedoresEquipe!=null && localizarVendedoresEquipe.getCodigo().intValue()!=equipe.getCodigo().intValue() )  ) {
+						JsfUtil.addErrorMessage("O usuário informadao já esta vinculado a outra equipe", "Procedimento OK");
+						FacesContext.getCurrentInstance().validationFailed();;
+						return;
+					}
+				}
 				getEquipeFacade().edit(equipe);	
 				JsfUtil.addSuccessMessage("Equipe alterada com sucesso", "Procedimento OK");
 			}
@@ -307,5 +343,24 @@ public class EquipeController implements AbstractController<Equipe>{
 
 	public void setMunicipios(ArrayList<Municipio> municipio) {
 		this.municipio = municipio;
+	}
+
+	public InfraUsuarioFacade getInfraUsuarioFacade() {
+		return InfraUsuarioFacade;
+	}
+
+	public void setInfraUsuarioFacade(InfraUsuarioFacade infraUsuarioFacade) {
+		InfraUsuarioFacade = infraUsuarioFacade;
+	}
+
+	public List<InfraUsuario> getUsuarioDisponiveis() {
+		if(usuarioDisponiveis==null) {
+			usuarioDisponiveis= getInfraUsuarioFacade().findAll();
+		}
+		return usuarioDisponiveis;
+	}
+
+	public void setUsuarioDisponiveis(List<InfraUsuario> usuarioDisponiveis) {
+		this.usuarioDisponiveis = usuarioDisponiveis;
 	}
 }

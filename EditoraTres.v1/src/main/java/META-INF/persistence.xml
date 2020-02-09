@@ -24,6 +24,9 @@
     <class>editora3.entidades.Relatorio</class>
     <class>editora3.entidades.ContratoEntrada</class>
     <class>editora3.entidades.ContratoEntradaIten</class>
+    <class>editora3.entidades.BrindeEstoqueEquipe</class>
+    
+    
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.show_sql" value="true"/>

@@ -115,11 +115,11 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 		    	return;
 			}
 			
-			if(item.getVendedorBean()==null) {
+			/*if(item.getVendedorBean()==null) {
 				JsfUtil.addErrorMessage("O vendedor é obrigatório", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
-			}
+			}*/
 			
 			if(item.getFaixainicial()==null) {
 		    	JsfUtil.addErrorMessage("A Faixa inicial não pode ser vazia", "Procedimento não realizado");
@@ -150,12 +150,14 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 			}
 		    
 		    int tamanhoFaixa =   item.getFaixafinal() -item.getFaixainicial()+1;
+		    
 		    int contratosDisponiveisNaFaixa = getContratoSaidaFacade().verificarQuantidadeDeContratosDisponiveis(item.getFaixainicial(), item.getFaixafinal());
 		    if (tamanhoFaixa > contratosDisponiveisNaFaixa) {
 		    	JsfUtil.addErrorMessage("A faixa de contrato informada precisa de ["+ tamanhoFaixa +"] contratos disponíveis, porém existem apenas [ "+  contratosDisponiveisNaFaixa+" ] contratos disponiveis nessa faixa", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 		    }
+		    
 		    
 		    if(item.getCodigo()==null) {
 		    	item.setData(new Date());

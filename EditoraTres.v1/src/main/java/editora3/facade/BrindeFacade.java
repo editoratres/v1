@@ -45,7 +45,7 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 	public List<Brinde> findAll(String status){
 		List<Brinde> ret =null;
 		try {
-			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("from Brinde c "+ (status.equalsIgnoreCase("todos") ? "": " where c.status=TRUE") + " order by c.descricao",Brinde.class);
+			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("from Brinde c "+ (status.equalsIgnoreCase("todos") ? "": " where c.quantidade>0 and c.status=TRUE") + " order by c.descricao",Brinde.class);
 			 
 			 ret = createQuery.getResultList();
 		} catch (Exception e) {
@@ -57,6 +57,35 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 		
 		return ret;
 	}
+	
+	@Transactional
+	public List<Brinde> findAllDisponivel(){
+		
+		return findAllDisponivel(null);
+	}
+	
+	
+	public List<Brinde> findAllDisponivel(Integer CodigoEquipe){
+		List<Brinde> ret =null;
+		try {
+			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("select distinct c from Brinde c  inner join fetch c.brindeEstoqueEquipe bee " +
+			 (CodigoEquipe==null ? " where c.quantidade>0" : " where bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
+			 
+			 ,Brinde.class);
+			 if(CodigoEquipe!=null) {
+			 createQuery.setParameter("codigoEquipe", CodigoEquipe);
+			 }
+			 ret = createQuery.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	
+		
+		
+		return ret;
+	}
+	
 	
 	@Transactional
 	public Integer movimentacoesBrinde(Integer id) {
