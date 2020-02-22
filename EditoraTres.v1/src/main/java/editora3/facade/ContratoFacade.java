@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
@@ -29,7 +30,9 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 		super(Contrato.class);
 		// TODO Auto-generated constructor stub
 	}
-
+	@Inject
+	private BrindeEstoqueFacade brindeEstoqueFacade;
+	
 	@PersistenceContext(unitName = "EditoraTres.v1")
 	private EntityManager em;
 
@@ -105,21 +108,22 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 					Brinde find = getEntityManager().find(Brinde.class, contratoBrinde.getBrindBean().getCodigo() , LockModeType.PESSIMISTIC_READ);
 				
 					if(find!=null ) {
-						Integer novaQT =
+						Double novaQT =
 								 (find.getQuantidade()==null ? 0 : find.getQuantidade().intValue())
 								+
-								1;
+								contratoBrinde.getQuantidade();
 						find.setQuantidade(novaQT);
 						getEntityManager().merge(find);
 					}
 				}else {
 				
-					MovimentarEstoqueBrindeEquipe(contratoBrinde.getBrindBean(),c.getEquipeBean(),"cancelamento");
+					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),-contratoBrinde.getQuantidade());
 								
 				}
 				
 			}
 			c.setInclusao(null);
+			c.setRelatorioBean(null);
 			c.setNascimento(null);
 			c.setCartaobeneficio(null);
 			c.setDatavenda(null);
@@ -139,7 +143,7 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 			assinanteBean.setFone3("");
 			
 			c.setAssinanteBean(assinanteBean);
-			c.setCanalBean(null);
+			//c.setCanalBean(null);
 			c.setSubcanlBean(null);
 			ContratoPagamento pagamentoBean = c.getPagamentoBean();
 			pagamentoBean.setAutorizacao("");
@@ -174,16 +178,16 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 					Brinde find = getEntityManager().find(Brinde.class, contratoBrinde.getBrindBean().getCodigo() , LockModeType.PESSIMISTIC_READ);
 				
 					if(find!=null ) {
-						Integer novaQT =
-								 (find.getQuantidade()==null ? 0 : find.getQuantidade().intValue())
+						Double novaQT =
+								 (find.getQuantidade()==null ? 0d : find.getQuantidade().intValue())
 								-
-								1;
+								contratoBrinde.getQuantidade();
 						find.setQuantidade(novaQT);
 						getEntityManager().merge(find);
 					}
 				}else {
 				
-					MovimentarEstoqueBrindeEquipe(contratoBrinde.getBrindBean(),c.getEquipeBean(),"venda");
+					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),contratoBrinde.getQuantidade());
 								
 				}
 				
@@ -204,7 +208,7 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 		 
 		
 	}
-	private void MovimentarEstoqueBrindeEquipe(Brinde brinde, Equipe equipe , String tipomov) {
+	private void MovimentarEstoqueBrindeEquipe(Brinde brinde, Equipe equipe , String tipomov, Integer quantidade) {
 
 		List<BrindeEstoqueEquipe> resultList = RetornarEstoqueEquipe(brinde.getCodigo(),equipe.getCodigo());
 
@@ -214,12 +218,12 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 				brindeEstoqueEquipe  = new BrindeEstoqueEquipe();
 				brindeEstoqueEquipe.setBrindeBean(brinde);
 				brindeEstoqueEquipe.setEquipeBean(equipe);
-				brindeEstoqueEquipe.setQuantidade(tipomov.equalsIgnoreCase("venda") ? -1 : 1);
+				brindeEstoqueEquipe.setQuantidade(tipomov.equalsIgnoreCase("venda") ? -quantidade : quantidade);
 				getEntityManager().persist(brindeEstoqueEquipe);
 			}else {
 				brindeEstoqueEquipe=resultList.get(0);
 			 
-				brindeEstoqueEquipe.setQuantidade(brindeEstoqueEquipe.getQuantidade() + (tipomov.equalsIgnoreCase("venda") ? -1 : 1) );
+				brindeEstoqueEquipe.setQuantidade(brindeEstoqueEquipe.getQuantidade() + (tipomov.equalsIgnoreCase("venda") ? -quantidade : quantidade) );
 				getEntityManager().merge(brindeEstoqueEquipe);
 			}
 		}
@@ -337,6 +341,15 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 		}
 
 		return c;
+	}
+
+	public BrindeEstoqueFacade getBrindeEstoqueFacade() {
+		brindeEstoqueFacade.setEntityManager(getEntityManager());
+		return brindeEstoqueFacade;
+	}
+
+	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
+		this.brindeEstoqueFacade = brindeEstoqueFacade;
 	}
 
 }

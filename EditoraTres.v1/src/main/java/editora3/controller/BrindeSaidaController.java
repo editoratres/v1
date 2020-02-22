@@ -2,8 +2,10 @@ package editora3.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -19,13 +21,16 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 
 import editora3.entidades.Brinde;
+import editora3.entidades.BrindeEstoqueEquipe;
 import editora3.entidades.BrindeSaida;
 import editora3.entidades.BrindeSaidaIten;
+import editora3.entidades.ContratoBrinde;
+import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Vendedor;
- 
+import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
 import editora3.facade.BrindeSaidaFacade;
-import editora3.facade.CanalFacade;
+import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
@@ -38,6 +43,9 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	@Inject
 	FlashApp flashapp;
 
+	@Inject
+	private BrindeEstoqueFacade brindeEstoqueFacade;
+	
 	@Inject
 	private EquipeFacade equipeFacade; 
 
@@ -53,11 +61,11 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	public void setVendedorFacade(VendedorFacade vendedorFacade) {
 		this.vendedorFacade = vendedorFacade;
 	}
-	public CanalFacade getCanalFacade() {
-		return canalFacade;
+	public PontoDeVendaFacade getPontoDeVendaFacade() {
+		return pontoDeVendaFacade;
 	}
-	public void setCanalFacade(CanalFacade canalFacade) {
-		this.canalFacade = canalFacade;
+	public void setPontoDeVendaFacade(PontoDeVendaFacade pontoDeVendaFacade) {
+		this.pontoDeVendaFacade = pontoDeVendaFacade;
 	}
 	public SubCanalFacade getSubcanalFacade() {
 		return subcanalFacade;
@@ -70,7 +78,7 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	private VendedorFacade vendedorFacade;	
 	
 	@Inject
-	private CanalFacade canalFacade;	
+	private PontoDeVendaFacade pontoDeVendaFacade;	
 	
 	@Inject
 	private SubCanalFacade subcanalFacade;	
@@ -103,6 +111,8 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	public void setVendedoresDaEquipe(List<Vendedor> vendedoresEquipe) {
 		this.vendedoresEquipe = vendedoresEquipe;
 	}
+	
+	private  List<PontoDeVenda> pontosDeVendaEquipe;
 	
 	
 	@Override
@@ -172,9 +182,7 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	public void excluirItem(BrindeSaidaIten item) {
 		// TODO Auto-generated method stub
 		getItem().getBrindeSaidaItens().remove(item);
-		if(getItem().getBrindeSaidaItens().isEmpty()) {
-			getItem().getBrindeSaidaItens().add(new BrindeSaidaIten());
-		}
+		
 	 
 		
 	}
@@ -298,6 +306,52 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 		
 	}
 
+	
+	private boolean validarBrindes(Integer codigoEquipe, List<BrindeSaidaIten> brindeSaidaItens, Integer codigoPontoVenda) {
+		HashMap<Integer, Double> quantidadesSumarizadas = new HashMap<>();
+		Integer codigoBrinde = 0;
+		Double qtArmazenada=0d;
+		
+		
+		for (Iterator iterator = brindeSaidaItens.iterator(); iterator.hasNext();) {
+			BrindeSaidaIten brindeSaidaIten = (BrindeSaidaIten) iterator.next();
+			codigoBrinde = brindeSaidaIten.getBrindeBean().getCodigo();
+			qtArmazenada = quantidadesSumarizadas.get(codigoBrinde)==null ? 0d : quantidadesSumarizadas.get(codigoBrinde); 
+			if(quantidadesSumarizadas.containsKey(codigoBrinde)) {
+				quantidadesSumarizadas.replace(codigoBrinde, qtArmazenada +brindeSaidaIten.getQuantidade());
+			}else {
+			   quantidadesSumarizadas.put(codigoBrinde, qtArmazenada +brindeSaidaIten.getQuantidade());
+			}
+			
+		}
+		Integer codigoBrindeSumarizado=0;
+		Double QuantidadeSumarizada=0d;
+		Double QuantidadeEstoque=0d;
+		if(!quantidadesSumarizadas.isEmpty()) {
+			Set<Integer> keySet = quantidadesSumarizadas.keySet();
+			for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
+				codigoBrindeSumarizado = (Integer) iterator.next();
+				 QuantidadeSumarizada = quantidadesSumarizadas.get(codigoBrindeSumarizado);
+				Brinde findLocalizado = getBrindeFacade().find(codigoBrindeSumarizado);
+				if(findLocalizado!=null) {
+					QuantidadeEstoque =findLocalizado.getQuantidade()==null ? 0d : findLocalizado.getQuantidade();
+				/*}else {
+					List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(findLocalizado.getCodigo(),codigoEquipe,codigoPontoVenda);
+					if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+						QuantidadeEstoque = (Double) retornarEstoqueEquipe.get(0).getQuantidade();
+					}*/
+				}
+				if(QuantidadeEstoque<QuantidadeSumarizada) {
+					JsfUtil.addErrorMessage("O Estoque ["+ QuantidadeEstoque.intValue() +"] do brinde [ "+ findLocalizado.getDescricao()  +" ] não é suficiente para realizar esta operação", "Procedimento não realizado");
+					return false;
+				}
+				
+			}
+		}
+		
+		return true;
+	}
+
 	@Override
 	public void create() {
 		// TODO Auto-generated method stub
@@ -311,6 +365,14 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 		    	return;
 			}
 			
+			if(item.getPontoDeVendaBean()==null) {
+				JsfUtil.addErrorMessage("Informe o ponto de venda", "Procedimento não realizado");
+		    	FacesContext.getCurrentInstance().validationFailed();
+		    	return;
+			}
+			
+			
+			
 			/*if(item.getVendedorBean()==null) {
 				JsfUtil.addErrorMessage("Informe o Vendedor", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
@@ -319,6 +381,10 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 			if(getQuantidadeTotalSaidaItens()==0d) {
 				JsfUtil.addErrorMessage("Saída sem brinde(s) não são permitidas", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
+		    	return;
+			}
+			if(!validarBrindes(item.getEquipeBean().getCodigo(),item.getBrindeSaidaItens(),item.getPontoDeVendaBean().getCodigo())) {
+				FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}
 			 
@@ -338,12 +404,12 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 		    	for (int i = 0; i < item.getBrindeSaidaItens().size(); i++) {
 		    		BrindeSaidaIten BrindeDevolucaoItem = item.getBrindeSaidaItens().get(i);
 		    		if(BrindeDevolucaoItem.getBrindeBean()==null) {
-		    			JsfUtil.addErrorMessage("Não foi especificao o brinde para o  item ["+ (i+1) + "]", "Procedimento não realizado");
+		    			JsfUtil.addErrorMessage("Não foi especificado o brinde para o  item ["+ (i+1) + "]", "Procedimento não realizado");
 		    			FacesContext.getCurrentInstance().validationFailed();
 		    			return;
 		    		}
 		    		if(BrindeDevolucaoItem.getQuantidade()==0) {
-		    			JsfUtil.addErrorMessage("Não foi especificao a quantidade do brinde para o  item ["+ (i+1) + "]", "Procedimento não realizado");
+		    			JsfUtil.addErrorMessage("Não foi especificado a quantidade do brinde para o  item ["+ (i+1) + "]", "Procedimento não realizado");
 		    			FacesContext.getCurrentInstance().validationFailed();
 		    			return;
 		    		}
@@ -515,5 +581,26 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	}
 	public void setBrindaSaidaIten(BrindeSaidaIten brindaSaidaIten) {
 		this.brindaSaidaIten = brindaSaidaIten;
+	}
+	public List<PontoDeVenda> getPontosDeVendaEquipe() {
+		BrindeSaida item = getItem(); 
+		if(item!=null && item.getEquipeBean()!=null) {
+			pontosDeVendaEquipe =getPontoDeVendaFacade().findAllPorEquipe(item.getEquipeBean().getCodigo());
+			 
+		}else {
+			pontosDeVendaEquipe=null;
+		}
+		 
+		return pontosDeVendaEquipe;
+	}
+	public void setPontosDeVendaEquipe(List<PontoDeVenda> pontosDeVendaEquipe) {
+		this.pontosDeVendaEquipe = pontosDeVendaEquipe;
+	}
+	public BrindeEstoqueFacade getBrindeEstoqueFacade() {
+		 
+		return brindeEstoqueFacade;
+	}
+	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
+		this.brindeEstoqueFacade = brindeEstoqueFacade;
 	}
 }

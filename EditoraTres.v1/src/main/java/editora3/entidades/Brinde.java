@@ -49,7 +49,7 @@ public class Brinde implements Serializable {
 
 	private String descricao;
 
-	private Integer quantidade=0;
+	private Double quantidade=0d;
 
 	private double valor;
 	
@@ -85,11 +85,11 @@ public class Brinde implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Integer getQuantidade() {
+	public Double getQuantidade() {
 		return this.quantidade;
 	}
 
-	public void setQuantidade(Integer quantidade) {
+	public void setQuantidade(Double quantidade) {
 		this.quantidade = quantidade;
 	}
 

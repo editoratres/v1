@@ -7,18 +7,18 @@ import javax.faces.convert.FacesConverter;
 
 import editora3.controller.CanalController;
  
-import editora3.entidades.Canal;
+import editora3.entidades.PontoDeVenda;
  
 
  
  
  
-@FacesConverter("editora3.converter.ConversorCanal")
-public  class ConversorCanal implements Converter  { 
+@FacesConverter("editora3.converter.ConversorPontoDeVenda")
+public  class ConversorPontoDeVenda implements Converter  { 
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-    	Canal find = null;
+    	PontoDeVenda find = null;
 		try {				
 			if (value == null || value.length() == 0) {
 				return null;
@@ -55,8 +55,8 @@ public  class ConversorCanal implements Converter  {
         if (object == null) {
             return null;
         }
-        if (object instanceof Canal) {
-        	Canal o = (Canal) object;
+        if (object instanceof PontoDeVenda) {
+        	PontoDeVenda o = (PontoDeVenda) object;
             return getStringKey(o.getCodigo());
         } else {
             //Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), InfraUsuario.class.getName()});

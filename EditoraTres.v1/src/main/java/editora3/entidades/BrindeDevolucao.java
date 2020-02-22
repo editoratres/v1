@@ -25,7 +25,7 @@ public class BrindeDevolucao implements Serializable {
 
 	@ManyToOne()
 	@JoinColumn(name="canalBean", referencedColumnName="codigo")
-	private Canal canalBean;
+	private PontoDeVenda canalBean;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date data; 
@@ -37,6 +37,12 @@ public class BrindeDevolucao implements Serializable {
 	@JoinColumn(name="equipelBean", referencedColumnName="codigo")
 	private Equipe equipeBean;
 
+ 
+	@ManyToOne()
+	@JoinColumn(name="pontoDeVendaBean", referencedColumnName="codigo")
+	private PontoDeVenda pontoDeVendaBean;
+
+	
 	private Boolean naocontabilizar;
 
 	private String obs;
@@ -116,11 +122,11 @@ public class BrindeDevolucao implements Serializable {
 	}
 
 	 
-	public Canal getCanalBean() {
+	public PontoDeVenda getCanalBean() {
 		return canalBean;
 	}
 
-	public void setCanalBean(Canal canalBean) {
+	public void setCanalBean(PontoDeVenda canalBean) {
 		this.canalBean = canalBean;
 	}
 
@@ -176,6 +182,14 @@ public class BrindeDevolucao implements Serializable {
 
 	public void setDataCancelamento(Date dataCancelamento) {
 		this.dataCancelamento = dataCancelamento;
+	}
+
+	public PontoDeVenda getPontoDeVendaBean() {
+		return pontoDeVendaBean;
+	}
+
+	public void setPontoDeVendaBean(PontoDeVenda pontoDeVendaBean) {
+		this.pontoDeVendaBean = pontoDeVendaBean;
 	}
 
 }

@@ -179,8 +179,9 @@ public class EquipeController implements AbstractController<Equipe>{
 				JsfUtil.addSuccessMessage("Equipe criada com sucesso", "Procedimento OK");
 				
 			}else {
-				Equipe localizarVendedoresEquipe = getEquipeFacade().localizarEquipePorUsuario(equipe.getInfraUsuarioBean().getIdusuario());
 				if(equipe.getInfraUsuarioBean()!=null) {
+					Equipe localizarVendedoresEquipe = getEquipeFacade().localizarEquipePorUsuario(equipe.getInfraUsuarioBean().getIdusuario());
+					
 					if(equipe.getInfraUsuarioBean().isUsuarioadm()) {
 						JsfUtil.addErrorMessage("O usuário Administrador não pode ser vinculado a uma equipe", "Procedimento OK");
 						FacesContext.getCurrentInstance().validationFailed();

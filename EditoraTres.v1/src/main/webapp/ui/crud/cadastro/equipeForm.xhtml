@@ -4,282 +4,273 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
- 
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <ui:composition>
 	<p:dialog id="equipeDialog" widgetVar="_equipeDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
 		hideEffect="clip" closeOnEscape="true" width="70%" header="Equipe">
 		<p:ajax event="close" listener="#{equipeController.fecharDialogo()}" />
-			<h:form id="equipeForm">
+		<h:form id="equipeForm">
 			<ul class="tabs-animated-shadow tabs-animated nav">
 				<li class="nav-item"><a role="tab" class="nav-link active"
-					id="equipe-tab-0" data-toggle="tab" href="#equipe-tab-content-0"> <span>BÁSICO</span>
+					id="equipe-tab-0" data-toggle="tab" href="#equipe-tab-content-0">
+						<span>BÁSICO</span>
 				</a></li>
-				<li class="nav-item"><a role="tab" class="nav-link" id="equipe-tab-1"
-					data-toggle="tab" href="#equipe-tab-content-1"> <span>COMPLEMENTO</span>
+				<li class="nav-item"><a role="tab" class="nav-link"
+					id="equipe-tab-1" data-toggle="tab" href="#equipe-tab-content-1">
+						<span>COMPLEMENTO</span>
 				</a></li>
 			</ul>
-			<div class="tab-content" >
-				<div class="tab-pane active"
-					id="equipe-tab-content-0" role="tabpanel">
-					<div class="main-card mb-3 card">
-						<div class="card-body">
-							<div class="form-row">
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="tipoconta" class="">Tipo</label>
-										<p:selectOneRadio id="tipopessoa" styleClass="form-control"
-											value="#{equipeController.item.tipopessoa}">
-											<f:selectItem itemLabel="Física" itemValue="fisica" />
-											<f:selectItem itemLabel="Jurídica" itemValue="juridica" />
-											<p:ajax event="change" update="cnpjcpf"
-												process="@this,tipopessoa" />
-
-										</p:selectOneRadio>
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="cpf" class="">CPF/CNPJ</label>
-										<p:inputMask mask="#{equipeController.mascaraPessoa}"
-											required="true" requiredMessage="CNPJ/CPF obrigatório"
-											value="#{equipeController.item.cnpjcpf}" id="cnpjcpf"
-											type="text" styleClass="form-control">
-											<p:ajax listener="#{equipeController.ValidarCNPJ}"
-												event="change" update="cnpjcpf,:growl"
-												process="@this,cnpjcpf" />
-										</p:inputMask>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="position-relative form-group">
-										<label for="nome" class="">Descrição</label>
-										<p:inputText value="#{equipeController.item.descricao}"
-											required="true" maxlength="150"
-											requiredMessage="A descrição é obrigatório" id="nome"
-											type="text" styleClass="form-control" />
-									</div>
-								</div>
-
-							</div>
-							<div class="form-row">
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for ="cep" class="">Cep</label>
-										<div id="cep" class="input-group mb-3">
-											<p:inputMask mask="99.999-999"  size="8"
-												value="#{equipeController.item.cep}" id="cep" />
-											<span class="input-group-btn"  > <p:commandLink
-													styleClass="btn btn-outline-secondary" id="id-equipeform-btcep" 
-													actionListener="#{equipeController.pesquisarCep()}" 
-													onstart="PF('_id-blockui_equipe').show();"
-													oncomplete="PF('_id-blockui_equipe').hide();"
-													onerror="PF('_id-blockui_equipe').hide();"
-													process="@this,cep" update ="exampleAddress,exampleAddress2, cidade, estado,:growl" type="button">
-													<i class="fa fa-search " />
-												</p:commandLink>
-											</span>
-										</div>
-
-									</div>
-								</div>
-								<div class="col-md-7">
-									<div class="position-relative form-group">
-										<label for="exampleAddress" class="">Endereço</label>
-										<p:inputText value="#{equipeController.item.endereco}"
-											maxlength="200" id="exampleAddress" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="position-relative form-group">
-										<label for="exampleAddress2" class="">Complemento</label>
-										<p:inputText value="#{equipeController.item.complemento}"
-											maxlength="100" id="exampleAddress2" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-
-							</div>
-							<div class="form-row">
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="numero" class="">Número</label>
-										<p:inputText value="#{equipeController.item.numero}"
-											maxlength="50" id="numero" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="estado" class="">Estado</label>
-										<h:selectOneMenu styleClass="form-control" 
-											value="#{equipeController.item.estado}"
-											 var="t" id="estado">
-											<f:selectItem itemValue="0" itemLabel="Selecione"
-												noSelectionOption="true" />
-											<f:selectItems value="#{equipeController.estados}"
-												var="estados" itemLabel="#{estados.nome}"
-			 									itemValue="#{estados.sigla}" />
-											<p:column style="width:10%">
-												<h:outputText value="#{t.sigla}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{t.nome}" />
-											</p:column>
-											
-											<p:ajax event="change" 
-													onstart="PF('_id-blockui_equipe').show();"
-													oncomplete="PF('_id-blockui_equipe').hide();"
-													onerror="PF('_id-blockui_equipe').hide();"
-													update="cidade"
-												process="estado" />
-										</h:selectOneMenu>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="position-relative form-group">
-										<label for="cidade" class="">Cidade</label>
-										
-										<h:selectOneMenu styleClass="form-control"
-											value="#{equipeController.item.cidade}"
-											 var="c" id="cidade">
-											<f:selectItem itemValue="0" itemLabel="Selecione"
-												noSelectionOption="true" />
-											<f:selectItems value="#{equipeController.municipios}"
-												var="cidades" itemLabel="#{cidades.nome}"
-			 									itemValue="#{cidades.codigo}" />
-											<p:column style="width:10%">
-												<h:outputText value="#{c.codigo}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{c.nome}" />
-											</p:column>
-										</h:selectOneMenu>
-										 
-									</div>
-								</div>
-								
-							</div>
-							<div class="form-row">
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="fone1" class="">Fone1</label>
-										<p:inputMask mask="(99) 99999-9999"
-											value="#{equipeController.item.fone1}" id="fone1" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="fone2" class="">Fone2</label>
-										<p:inputMask mask="(99) 99999-9999"
-											value="#{equipeController.item.fone2}" id="fone2" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-
-							</div>
-
-
-						</div>
-					</div>
-				</div>
-				<div class="tab-pane" id="equipe-tab-content-1"
+			<div class="tab-content">
+				<div class="tab-pane active" id="equipe-tab-content-0"
 					role="tabpanel">
-					<div class="main-card mb-3 card">
-						<div class="card-body">
-							<h5>DADOS BANCARIOS</h5>
-							<div class="form-row">
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="tipoconta" class="">Tipo de conta</label>
-										<p:selectOneRadio id="console" styleClass="form-control"
-											value="#{equipeController.item.tipoconta}"
-											unselectable="true">
-											<f:selectItem itemLabel="Conta-corrente"
-												itemValue="conta-corrente" />
-											<f:selectItem itemLabel="Poupança" itemValue="Poupanca" />
 
-										</p:selectOneRadio>
-									</div>
-								</div>
-								<div class="col-md-8">
-									<div class="position-relative form-group">
-										<label for="titular" class="">Titular</label>
-										<p:inputText value="#{equipeController.item.favorecido}"
-											maxlength="150" id="titular" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
+					<div class="form-row">
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="tipoconta" class="">Tipo</label>
+								<p:selectOneRadio id="tipopessoa" styleClass="form-control"
+									value="#{equipeController.item.tipopessoa}">
+									<f:selectItem itemLabel="Física" itemValue="fisica" />
+									<f:selectItem itemLabel="Jurídica" itemValue="juridica" />
+									<p:ajax event="change" update="cnpjcpf"
+										process="@this,tipopessoa" />
+
+								</p:selectOneRadio>
 							</div>
-							<div class="form-row">
-								<div class="col-md-6">
-									<div class="position-relative form-group">
-										<label for="banco" class="">Banco</label>
-										<p:inputText value="#{equipeController.item.banco}"
-											maxlength="100" id="banco" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="position-relative form-group">
-										<label for="agencia" class="">Agência</label>
-										<p:inputText value="#{equipeController.item.agencia}"
-											maxlength="50" id="agencia" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
-								<div class="col-md-3">
-									<div class="position-relative form-group">
-										<label for="conta" class="">Conta</label>
-										<p:inputText value="#{equipeController.item.conta}"
-											maxlength="50" id="conta" type="text"
-											styleClass="form-control" />
-									</div>
-								</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="cpf" class="">CPF/CNPJ</label>
+								<p:inputMask mask="#{equipeController.mascaraPessoa}"
+									required="true" requiredMessage="CNPJ/CPF obrigatório"
+									value="#{equipeController.item.cnpjcpf}" id="cnpjcpf"
+									type="text" styleClass="form-control">
+									<p:ajax listener="#{equipeController.ValidarCNPJ}"
+										event="change" update="cnpjcpf,:growl" process="@this,cnpjcpf" />
+								</p:inputMask>
 							</div>
-							<h5>SEGURANÇA</h5>
-							<div class="form-row">
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="idusuario" class="">Usuário vinculado</label>
-										<h:selectOneMenu styleClass="form-control" 
-											converter="editora3.converter.ConversorInfraUsuario"
-											value="#{equipeController.item.infraUsuarioBean}"
-											 var="u" id="idusuario">
-											<f:selectItem itemValue="0" itemLabel="Selecione"
-												noSelectionOption="true" />
-											<f:selectItems value="#{equipeController.usuarioDisponiveis}"
-												var="usuarios" itemLabel="#{usuarios.nome}"
-			 									itemValue="#{usuarios}" />
-											<p:column style="width:10%">
-												<h:outputText value="#{u.usuario}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{u.nome}" />
-											</p:column>
-											
-										 
-										</h:selectOneMenu>
-									</div>
-								
+						</div>
+						<div class="col-md-6">
+							<div class="position-relative form-group">
+								<label for="nome" class="">Descrição</label>
+								<p:inputText value="#{equipeController.item.descricao}"
+									required="true" maxlength="150"
+									requiredMessage="A descrição é obrigatório" id="nome"
+									type="text" styleClass="form-control" />
+							</div>
+						</div>
+
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="cep" class="">Cep</label>
+								<div id="cep" class="input-group mb-3">
+									<p:inputMask mask="99.999-999" size="8"
+										value="#{equipeController.item.cep}" id="cep" />
+									<span class="input-group-btn"> <p:commandLink
+											styleClass="btn btn-outline-secondary"
+											id="id-equipeform-btcep"
+											actionListener="#{equipeController.pesquisarCep()}"
+											onstart="PF('_id-blockui_equipe').show();"
+											oncomplete="PF('_id-blockui_equipe').hide();"
+											onerror="PF('_id-blockui_equipe').hide();"
+											process="@this,cep"
+											update="exampleAddress,exampleAddress2, cidade, estado,:growl"
+											type="button">
+											<i class="fa fa-search " />
+										</p:commandLink>
+									</span>
 								</div>
+
+							</div>
+						</div>
+						<div class="col-md-7">
+							<div class="position-relative form-group">
+								<label for="exampleAddress" class="">Endereço</label>
+								<p:inputText value="#{equipeController.item.endereco}"
+									maxlength="200" id="exampleAddress" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="position-relative form-group">
+								<label for="exampleAddress2" class="">Complemento</label>
+								<p:inputText value="#{equipeController.item.complemento}"
+									maxlength="100" id="exampleAddress2" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="numero" class="">Número</label>
+								<p:inputText value="#{equipeController.item.numero}"
+									maxlength="50" id="numero" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="estado" class="">Estado</label>
+								<h:selectOneMenu styleClass="form-control"
+									value="#{equipeController.item.estado}" var="t" id="estado">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems value="#{equipeController.estados}"
+										var="estados" itemLabel="#{estados.nome}"
+										itemValue="#{estados.sigla}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{t.sigla}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{t.nome}" />
+									</p:column>
+
+									<p:ajax event="change"
+										onstart="PF('_id-blockui_equipe').show();"
+										oncomplete="PF('_id-blockui_equipe').hide();"
+										onerror="PF('_id-blockui_equipe').hide();" update="cidade"
+										process="estado" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="position-relative form-group">
+								<label for="cidade" class="">Cidade</label>
+
+								<h:selectOneMenu styleClass="form-control"
+									value="#{equipeController.item.cidade}" var="c" id="cidade">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems value="#{equipeController.municipios}"
+										var="cidades" itemLabel="#{cidades.nome}"
+										itemValue="#{cidades.codigo}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{c.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{c.nome}" />
+									</p:column>
+								</h:selectOneMenu>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="fone1" class="">Fone1</label>
+								<p:inputMask mask="(99) 99999-9999"
+									value="#{equipeController.item.fone1}" id="fone1" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="fone2" class="">Fone2</label>
+								<p:inputMask mask="(99) 99999-9999"
+									value="#{equipeController.item.fone2}" id="fone2" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+				<div class="tab-pane" id="equipe-tab-content-1" role="tabpanel">
+
+					<h5>DADOS BANCARIOS</h5>
+					<div class="form-row">
+						<div class="col-md-4">
+							<div class="position-relative form-group">
+								<label for="tipoconta" class="">Tipo de conta</label>
+								<p:selectOneRadio id="console" styleClass="form-control"
+									value="#{equipeController.item.tipoconta}" unselectable="true">
+									<f:selectItem itemLabel="Conta-corrente"
+										itemValue="conta-corrente" />
+									<f:selectItem itemLabel="Poupança" itemValue="Poupanca" />
+
+								</p:selectOneRadio>
+							</div>
+						</div>
+						<div class="col-md-8">
+							<div class="position-relative form-group">
+								<label for="titular" class="">Titular</label>
+								<p:inputText value="#{equipeController.item.favorecido}"
+									maxlength="150" id="titular" type="text"
+									styleClass="form-control" />
 							</div>
 						</div>
 					</div>
+					<div class="form-row">
+						<div class="col-md-6">
+							<div class="position-relative form-group">
+								<label for="banco" class="">Banco</label>
+								<p:inputText value="#{equipeController.item.banco}"
+									maxlength="100" id="banco" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="position-relative form-group">
+								<label for="agencia" class="">Agência</label>
+								<p:inputText value="#{equipeController.item.agencia}"
+									maxlength="50" id="agencia" type="text"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="position-relative form-group">
+								<label for="conta" class="">Conta</label>
+								<p:inputText value="#{equipeController.item.conta}"
+									maxlength="50" id="conta" type="text" styleClass="form-control" />
+							</div>
+						</div>
+					</div>
+					<h5>SEGURANÇA</h5>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label for="idusuario" class="">Usuário vinculado</label>
+								<h:selectOneMenu styleClass="form-control"
+									converter="editora3.converter.ConversorInfraUsuario"
+									value="#{equipeController.item.infraUsuarioBean}" var="u"
+									id="idusuario">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems value="#{equipeController.usuarioDisponiveis}"
+										var="usuarios" itemLabel="#{usuarios.nome}"
+										itemValue="#{usuarios}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{u.usuario}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{u.nome}" />
+									</p:column>
+
+
+								</h:selectOneMenu>
+							</div>
+
+						</div>
+					</div>
+
 				</div>
 			</div>
-			<p:blockUI widgetVar="_id-blockui_equipe"  id="id-blockui_equipe"
-							block=":equipeForm">
-							<ui:include src="/ui/carregando.xhtml" />
-						</p:blockUI>
+			<p:blockUI widgetVar="_id-blockui_equipe" id="id-blockui_equipe"
+				block=":equipeForm">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
 			<hr />
 			<center>
 				<p:commandLink actionListener="#{equipeController.create()}"
-					update=":_Formulario:datalist :growl"
-					id="idEquipe-button-create"
+					update=":_Formulario:datalist :growl" id="idEquipe-button-create"
 					onstart="PF('_id-blockui_equipe').show();"
 					oncomplete="if (!args.validationFailed) {PF('_equipeDialog').hide() ; PF('_id-blockui_equipe').hide();}"
 					onsuccess="PF('_id-blockui_equipe').hide();"
@@ -299,7 +290,7 @@
 			</p:confirmDialog>
 		</h:form>
 	</p:dialog>
-	
+
 
 </ui:composition>
 </html>

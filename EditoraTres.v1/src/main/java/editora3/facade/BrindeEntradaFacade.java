@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeEntrada;
 import editora3.entidades.BrindeEntradaItens;
-import editora3.entidades.Canal;
+import editora3.entidades.PontoDeVenda;
  
 
 public class BrindeEntradaFacade extends AbstractFacade<BrindeEntrada> {
@@ -42,8 +42,8 @@ public class BrindeEntradaFacade extends AbstractFacade<BrindeEntrada> {
 				BrindeEntradaItens brindeEntradaItem = (BrindeEntradaItens) iterator.next();
 				Brinde find = getEntityManager().find(Brinde.class, brindeEntradaItem.getBrindeBean().getCodigo(), LockModeType.PESSIMISTIC_READ);
 				if(find!=null ) {
-					Integer novaQT =((Double) brindeEntradaItem.getQuantidade()).intValue()
-							+ (find.getQuantidade()==null ? 0 : find.getQuantidade().intValue());
+					Double novaQT =((Double) brindeEntradaItem.getQuantidade()) 
+							+ (find.getQuantidade()==null ? 0d : find.getQuantidade());
 					find.setQuantidade(novaQT);
 					getEntityManager().merge(find);
 				}
@@ -62,8 +62,8 @@ public class BrindeEntradaFacade extends AbstractFacade<BrindeEntrada> {
 			BrindeEntradaItens brindeEntradaItem = (BrindeEntradaItens) iterator.next();
 			Brinde find = getEntityManager().find(Brinde.class, brindeEntradaItem.getBrindeBean().getCodigo(), LockModeType.PESSIMISTIC_READ);
 			if(find!=null ) {
-				Integer novaQT =
-						 (find.getQuantidade()==null ? 0 : find.getQuantidade().intValue())-  ((Double) brindeEntradaItem.getQuantidade()).intValue();
+				Double novaQT =
+						 (find.getQuantidade()==null ? 0d : find.getQuantidade())-  ((Double) brindeEntradaItem.getQuantidade());
 				find.setQuantidade(novaQT);
 				getEntityManager().merge(find);
 			}

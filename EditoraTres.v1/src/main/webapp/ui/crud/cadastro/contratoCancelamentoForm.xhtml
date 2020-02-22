@@ -15,59 +15,58 @@
 		<p:ajax event="close"
 			listener="#{contratoCancelamentoController.fecharDialogo()}" />
 		<h:form id="contratoCancelamentoForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
-					<div class="form-row">
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<label for="faixainicial" class="">Faixa inicial</label>
-								<p:inputNumber decimalPlaces="0" maxValue="9999999"
-									inputStyleClass="form-control"
-									inputStyle="text-align : center !important;"
-									value="#{contratoCancelamentoController.item.faixainicial}"
-									required="true" maxlength="20"
-									requiredMessage="A faixa inicial é obrigatória"
-									id="faixainicial" type="text">
-									<p:ajax event="change" process="faixafinal faixainicial"
-										update="quantidade" />
 
-								</p:inputNumber>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<label for="faixafinal" class="">Faixa Final</label>
-								<p:inputNumber decimalPlaces="0" maxValue="9999999"
-									inputStyleClass="form-control"
-									inputStyle="text-align : center !important;"
-									value="#{contratoCancelamentoController.item.faixafinal}"
-									required="true" maxlength="20"
-									requiredMessage="A faixa final é obrigatória" id="faixafinal"
-									type="text">
-									<p:ajax event="change" process="faixafinal faixainicial"
-										update="quantidade" />
+			<div class="form-row">
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<label for="faixainicial" class="">Faixa inicial</label>
+						<p:inputNumber decimalPlaces="0" maxValue="9999999"
+							inputStyleClass="form-control"
+							inputStyle="text-align : center !important;"
+							value="#{contratoCancelamentoController.item.faixainicial}"
+							required="true" maxlength="20"
+							requiredMessage="A faixa inicial é obrigatória" id="faixainicial"
+							type="text">
+							<p:ajax event="change" process="faixafinal faixainicial"
+								update="quantidade" />
 
-								</p:inputNumber>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<label for="quantidade" class="">Quantidade</label>
-								<p:inputNumber inputStyleClass="form-control" decimalPlaces="0"
-									inputStyle="text-align : center !important;" maxValue="9999999"
-									readonly="true"
-									value="#{contratoCancelamentoController.calcularTamanhoFaixa(contratoCancelamentoController.item)}"
-									required="true" maxlength="20"
-									requiredMessage="A faixa final é obrigatória" id="quantidade"
-									type="text" />
-							</div>
-						</div>
+						</p:inputNumber>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<label for="faixafinal" class="">Faixa Final</label>
+						<p:inputNumber decimalPlaces="0" maxValue="9999999"
+							inputStyleClass="form-control"
+							inputStyle="text-align : center !important;"
+							value="#{contratoCancelamentoController.item.faixafinal}"
+							required="true" maxlength="20"
+							requiredMessage="A faixa final é obrigatória" id="faixafinal"
+							type="text">
+							<p:ajax event="change" process="faixafinal faixainicial"
+								update="quantidade" />
+
+						</p:inputNumber>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<label for="quantidade" class="">Quantidade</label>
+						<p:inputNumber inputStyleClass="form-control" decimalPlaces="0"
+							inputStyle="text-align : center !important;" maxValue="9999999"
+							readonly="true"
+							value="#{contratoCancelamentoController.calcularTamanhoFaixa(contratoCancelamentoController.item)}"
+							required="true" maxlength="20"
+							requiredMessage="A faixa final é obrigatória" id="quantidade"
+							type="text" />
 					</div>
 				</div>
 			</div>
+
 			<hr />
 			<center>
-				<p:commandLink actionListener="#{contratoCancelamentoController.create()}"
+				<p:commandLink
+					actionListener="#{contratoCancelamentoController.create()}"
 					update=":_Formulario:datalist :growl"
 					onstart="PF('_id-blockui_entradabrinde').show();"
 					onsuccess="PF('_id-blockui_entradabrinde').hide();"

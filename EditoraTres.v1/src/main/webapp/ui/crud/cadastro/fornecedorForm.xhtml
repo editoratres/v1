@@ -8,13 +8,11 @@
 <ui:composition>
 	<p:dialog id="fornecedorDialog" widgetVar="_fornecedorDialog"
 		modal="true" resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="90%"
+		hideEffect="clip" closeOnEscape="true" width="70%"
 		header="Fornecedor">
 		<p:ajax event="close"
 			listener="#{fornecedorController.fecharDialogo()}" />
 		<h:form id="fornecedorForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
 					<div class="form-row">
 						<div class="col-md-4">
 							<div class="position-relative form-group">
@@ -57,7 +55,7 @@
 							<div class="position-relative form-group">
 								<label for="cep" class="">Cep</label>
 								<div id="cep" class="input-group mb-3">
-									<p:inputMask mask="99.999-999" size="15"
+									<p:inputMask mask="99.999-999" size="9"
 										value="#{fornecedorController.item.cep}" id="cep" />
 									<span class="input-group-btn"> <p:commandLink
 											styleClass="btn btn-outline-secondary"
@@ -172,9 +170,6 @@
 						</div>
 
 					</div>
-				</div>
-			</div>
-			 
 			<p:blockUI widgetVar="_id-blockui_fornecedor"
 				id="id-blockui_fornecedor" block=":fornecedorForm">
 				<ui:include src="/ui/carregando.xhtml" />

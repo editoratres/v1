@@ -1,9 +1,8 @@
 package editora3.controller;
 
-import java.io.Serializable;
+ 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+ 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,30 +10,27 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
+ 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.validator.ValidatorException;
+ 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.LockModeType;
-import javax.transaction.Transactional;
-
-import org.hibernate.Hibernate;
+ 
+ 
 import org.primefaces.PrimeFaces;
 import org.primefaces.context.PrimeFacesContext;
 
 import editora3.entidades.Assinante;
 import editora3.entidades.BandeiraCartao;
 import editora3.entidades.Brinde;
-import editora3.entidades.BrindeDevolucao;
-import editora3.entidades.BrindeDevolucaoIten;
+ 
 import editora3.entidades.BrindeEstoqueEquipe;
-import editora3.entidades.BrindeSaida;
-import editora3.entidades.Canal;
+ 
+import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Contrato;
 import editora3.entidades.ContratoBrinde;
 import editora3.entidades.ContratoPagamento;
@@ -47,8 +43,9 @@ import editora3.entidades.Relatorio;
 import editora3.entidades.Subcanal;
 import editora3.entidades.Vendedor;
 import editora3.facade.BandeiraCartaoFacade;
+import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
-import editora3.facade.CanalFacade;
+import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.ContratoFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.OfertaFacade;
@@ -69,6 +66,9 @@ import editora3.util.CepWebService.cep;
 public class ContratoController implements AbstractController<Contrato> {
 
 	@Inject
+	private BrindeEstoqueFacade brindeEstoqueFacade;
+	
+	@Inject
 	private LoginInfo loginInfo;
 	
 	@Inject
@@ -86,7 +86,7 @@ public class ContratoController implements AbstractController<Contrato> {
 	private RelatorioFacade relatorioFacade;
 	
 	@Inject
-	private CanalFacade canalFacade;
+	private PontoDeVendaFacade pontoDeVendaFacade;
 	
 	@Inject
 	private SubCanalFacade subcanalFacade;	
@@ -127,13 +127,7 @@ public class ContratoController implements AbstractController<Contrato> {
 	private ArrayList<Municipio> municipio=null;
 	private ArrayList<Estados> estados=null;
 	
-	public CanalFacade getCanalFacade() {
-		return canalFacade;
-	}
-
-	public void setCanalFacade(CanalFacade canalFacade) {
-		this.canalFacade = canalFacade;
-	}
+	 
 
 	public SubCanalFacade getSubcanalFacade() {
 		return subcanalFacade;
@@ -282,9 +276,9 @@ public class ContratoController implements AbstractController<Contrato> {
 			invalidarComponente("idvendedor",viewRoot);
 			ret=false;
 		}
-		if(item.getCanalBean()==null) {
+		if(item.getPontoDeVendaBean()==null) {
 			
-			invalidarComponente("idcanal",viewRoot);
+			invalidarComponente("idpontodevenda",viewRoot);
 			ret=false;
 		}
 		if(item.getSubcanlBean()==null) {
@@ -345,21 +339,25 @@ public class ContratoController implements AbstractController<Contrato> {
 		
 		return true;
 	}
-	private boolean validarBrindes(Integer codigoEquipe, List<ContratoBrinde> contratoBrindes) {
-		HashMap<Integer, Integer> quantidadesSumarizadas = new HashMap<>();
+	private boolean validarBrindes(Integer codigoEquipe, List<ContratoBrinde> contratoBrindes, Integer codigoPontoVenda) {
+		HashMap<Integer, Double> quantidadesSumarizadas = new HashMap<>();
 		Integer codigoBrinde = 0;
-		Integer qtArmazenada=0;
+		Double qtArmazenada=0d;
 		
 		for (Iterator iterator = contratoBrindes.iterator(); iterator.hasNext();) {
 			ContratoBrinde contratoBrinde = (ContratoBrinde) iterator.next();
 			codigoBrinde = contratoBrinde.getBrindBean().getCodigo();
-			qtArmazenada = quantidadesSumarizadas.get(codigoBrinde)==null ? 0 : quantidadesSumarizadas.get(codigoBrinde); 
-			quantidadesSumarizadas.put(codigoBrinde, qtArmazenada +1);
+			qtArmazenada = quantidadesSumarizadas.get(codigoBrinde)==null ? 0d : quantidadesSumarizadas.get(codigoBrinde); 
+			if(quantidadesSumarizadas.containsKey(codigoBrinde)) {
+				quantidadesSumarizadas.replace(codigoBrinde, qtArmazenada +contratoBrinde.getQuantidade());
+			}else {
+			   quantidadesSumarizadas.put(codigoBrinde, qtArmazenada +contratoBrinde.getQuantidade());
+			}
 			
 		}
 		Integer codigoBrindeSumarizado=0;
-		Integer QuantidadeSumarizada=0;
-		Integer QuantidadeEstoque=0;
+		Double QuantidadeSumarizada=0d;
+		Double QuantidadeEstoque=0d;
 		if(!quantidadesSumarizadas.isEmpty()) {
 			Set<Integer> keySet = quantidadesSumarizadas.keySet();
 			for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
@@ -367,11 +365,11 @@ public class ContratoController implements AbstractController<Contrato> {
 				 QuantidadeSumarizada = quantidadesSumarizadas.get(codigoBrindeSumarizado);
 				Brinde findLocalizado = getBrindeFacade().find(codigoBrindeSumarizado);
 				if(codigoEquipe==null) {
-					QuantidadeEstoque =findLocalizado.getQuantidade()==null ? 0 : findLocalizado.getQuantidade();
+					QuantidadeEstoque =findLocalizado.getQuantidade()==null ? 0d : findLocalizado.getQuantidade();
 				}else {
-					List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getContratofacade().RetornarEstoqueEquipe(findLocalizado.getCodigo(),codigoEquipe);
+					List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(findLocalizado.getCodigo(),codigoEquipe,codigoPontoVenda);
 					if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
-						QuantidadeEstoque = (int) retornarEstoqueEquipe.get(0).getQuantidade();
+						QuantidadeEstoque = retornarEstoqueEquipe.get(0).getQuantidade();
 					}
 				}
 				if(QuantidadeEstoque<QuantidadeSumarizada) {
@@ -402,7 +400,7 @@ public class ContratoController implements AbstractController<Contrato> {
 				return;
 			}
 			
-			if(!validarBrindes((item.getEquipeBean()==null ? null : item.getEquipeBean().getCodigo()), item.getContratoBrindes())) {
+			if(!validarBrindes((item.getEquipeBean()==null ? null : item.getEquipeBean().getCodigo()), item.getContratoBrindes(), item.getPontoDeVendaBean().getCodigo())) {
 				PrimeFacesContext.getCurrentInstance().validationFailed();
 				return;
 			}
@@ -469,8 +467,8 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	}
 	
-	public Integer EstoqueAtual(Brinde b) {
-		Integer ret =0;
+	public Double EstoqueAtual(Brinde b) {
+		Double ret =0d;
 		
 		Contrato item = getItem();
 		if(item.getEquipeBean()==null) {
@@ -478,7 +476,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		}else {
 			List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getContratofacade().RetornarEstoqueEquipe(b.getCodigo(),item.getEquipeBean().getCodigo());
 			if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
-				ret = (int) retornarEstoqueEquipe.get(0).getQuantidade();
+				ret =  retornarEstoqueEquipe.get(0).getQuantidade();
 			}
 		}
 		
@@ -861,6 +859,20 @@ public class ContratoController implements AbstractController<Contrato> {
 
 		    getItem().getPagamentoBean().setValor(getQuantidadeTotalProdutos());
 		    
+		    List<ContratoBrinde> contratoBrindes = getItem().getContratoBrindes();
+		    if(contratoBrindes!=null && !contratoBrindes.isEmpty()) {
+		    	for (Iterator iterator = contratoBrindes.iterator(); iterator.hasNext();) {
+					ContratoBrinde contratoBrinde = (ContratoBrinde) iterator.next();
+					if(contratoBrinde.getContratoProdutoBean()!=null &&
+							contratoBrinde.getContratoProdutoBean().getId()==contratoProduto.getId()) {
+							//atualizar a quantidade de brindes
+						contratoBrinde.setQuantidade(contratoProduto.getQuantidade().doubleValue());
+						break;
+					}
+						
+				}
+		    }
+		    
 			
 		} catch (Exception e) {
 			JsfUtil.addErrorMessage(e, "atualizarValorTotalProduto");
@@ -933,6 +945,7 @@ public class ContratoController implements AbstractController<Contrato> {
 			novoItem.setContratoProdutoBean(contratoproduto);
 			novoItem.setBrindBean(brinde);
 			novoItem.setContrato(item);
+			novoItem.setQuantidade(1d);
 			novoItem.setId(-(item.getContratoBrindes().size()+1));
 			 
 			item.getContratoBrindes().add(novoItem);
@@ -1121,15 +1134,18 @@ public class ContratoController implements AbstractController<Contrato> {
 		this.equipesDisponiveis = equipesDisponiveis;
 	}
 
-	public List<Canal> getCanaisdisponiveis() {
-		if(canaisdisponiveis==null) {
-			canaisdisponiveis=getCanalFacade().findAll();
+	public List<PontoDeVenda> getPontosDeVendadisponiveis() {
+		if(pontosDeVendadisponiveis==null) {
+			Contrato item = getItem();
+			if(item.getEquipeBean()!=null) {
+				pontosDeVendadisponiveis=getPontoDeVendaFacade().findAllPorEquipe(item.getEquipeBean().getCodigo());
+			}
 		}
-		return canaisdisponiveis;
+		return pontosDeVendadisponiveis;
 	}
 
-	public void setCanaisdisponiveis(List<Canal> canaisdisponiveis) {
-		this.canaisdisponiveis = canaisdisponiveis;
+	public void setPontosDeVendadisponiveis(List<PontoDeVenda> pontosDeVendadisponiveis) {
+		this.pontosDeVendadisponiveis = pontosDeVendadisponiveis;
 	}
 
 	public List<Subcanal> getSubcanaisdisponiveis() {
@@ -1166,6 +1182,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		System.out.println("");
 	}
 	public List<Contrato> getListaContratosDisponiveis() {
+		
 		List<Contrato> listaContratosDisponiveis = (List<Contrato>) getFlash().getValoresPorID("contratoForm").get("ListaContratosDisponiveis");
 		if(listaContratosDisponiveis==null) {
 			setListaContratosDisponiveis(getContratofacade().contratosDisponiveis(getLoginInfo().getCodigoEquipeVinculada(),null));
@@ -1187,13 +1204,29 @@ public class ContratoController implements AbstractController<Contrato> {
 		this.loginInfo = loginInfo;
 	}
 
+	public PontoDeVendaFacade getPontoDeVendaFacade() {
+		return pontoDeVendaFacade;
+	}
+
+	public void setPontoDeVendaFacade(PontoDeVendaFacade pontoDeVendaFacade) {
+		this.pontoDeVendaFacade = pontoDeVendaFacade;
+	}
+
+	public BrindeEstoqueFacade getBrindeEstoqueFacade() {
+		return brindeEstoqueFacade;
+	}
+
+	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
+		this.brindeEstoqueFacade = brindeEstoqueFacade;
+	}
+
 	private List<Relatorio> relatoriosDisponiveis;
 
 	private List<BandeiraCartao> bandeiraCartaos;
 	
 	private List<Equipe> equipesDisponiveis;
 	
-	private List<Canal> canaisdisponiveis;
+	private List<PontoDeVenda> pontosDeVendadisponiveis;
 	
 	private List<Subcanal> subcanaisdisponiveis;
 	/*private final static List<String> VALID_COLUMN_KEYS = Arrays.asList("vez1", "vez2", "vez3");

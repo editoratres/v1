@@ -25,17 +25,17 @@
 							</b></h3>
 						</div>
 					</div>
-					<div class="container" style="width: 10%">
+					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px"
+								<p:commandLink style="font-size: 20px  !important;"
 									actionListener="#{brindeDevolucaoController.atualizar()}" update="datalist"
 									id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":brindeDevolucaoForm"
+								<p:commandLink style="font-size: 20px !important;" update=":brindeDevolucaoForm"
 									actionListener="#{brindeDevolucaoController.prepararNovo()}"
 									oncomplete="PF('_brindeDevolucaoDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
@@ -50,10 +50,16 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div   class="main-card mb-3 card">
-						<h5 style="margin: 10px;" class="card-title">Listagem de devolução de brindes</h5>
-						<div style="margin: 5px;" class="card-body">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i>Listagem de devolução de brindes
+							</div>
+						</div>
+						 
+						<div   class="card-body">
 
-							<p:dataTable id="datalist" styleClass="table"
+							<p:dataTable id="datalist" styleClass="table-editora"
 								value="#{brindeDevolucaoController.itens}" var="item" selectionMode="single"
 								paginatorPosition="bottom"
 									 

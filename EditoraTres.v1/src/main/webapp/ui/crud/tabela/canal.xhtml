@@ -17,25 +17,25 @@
 				<div class="page-title-wrapper">
 					<div class="page-title-heading" style="width: 90%">
 						<div class="page-title-icon">
-							<i class="fa fa-project-diagram icon-gradient bg-premium-dark"> </i>
+							<i class="fa fa-shopping-cart icon-gradient bg-premium-dark"> </i>
 						</div>
 						<div>
 							<h3><b>
-							Canal
+							Ponto de Venda
 							</b></h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px"
+								<p:commandLink style="font-size: 20px !important;"
 									actionListener="#{canalController.atualizar()}" update="datalist"
 									id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":canalForm"
+								<p:commandLink style="font-size: 20px !important;" update=":canalForm"
 									actionListener="#{canalController.prepararNovo()}"
 									oncomplete="PF('_canalDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
@@ -49,11 +49,16 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div   class="main-card mb-3 card">
-						<h5 style="margin: 10px;" class="card-title">Listagem de Canais</h5>
-						<div style="margin: 5px;" class="card-body">
+					<div   class="mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i> Listagem de pontos de venda 
+							</div>
 
-							<p:dataTable id="datalist" styleClass="table"
+						</div>
+						<div class="card-body">
+							<p:dataTable id="datalist" styleClass="table-editora"
 								value="#{canalController.itens}" var="item" selectionMode="single"
 								paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"
@@ -73,6 +78,12 @@
 										<h:outputText value="Descrição" />
 									</f:facet>
 									<h:outputText value="#{item.descricao}" />
+								</p:column>
+								<p:column  >
+									<f:facet name="header">
+										<h:outputText value="Equipe" />
+									</f:facet>
+									<h:outputText value="#{item.equipeBean.descricao}" />
 								</p:column>
 	
 								<p:column width="20%">
@@ -97,7 +108,6 @@
 								</p:column>
 
 							</p:dataTable>
-
 						</div>
 					</div>
 				</div>

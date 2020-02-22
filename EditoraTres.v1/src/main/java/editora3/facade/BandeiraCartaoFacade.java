@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import editora3.entidades.BandeiraCartao;
-import editora3.entidades.Canal;
+import editora3.entidades.PontoDeVenda;
  
 
 public class BandeiraCartaoFacade extends AbstractFacade<BandeiraCartao> {

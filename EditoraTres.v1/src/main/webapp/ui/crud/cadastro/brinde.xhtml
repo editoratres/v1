@@ -8,7 +8,8 @@
 
 <ui:composition>
 	<f:metadata>
-		<f:viewAction  action="#{brindeController.atualizar()}" onPostBack="true"  />
+		<f:viewAction action="#{brindeController.atualizar()}"
+			onPostBack="true" />
 	</f:metadata>
 	<h:form id="_Formulario">
 
@@ -20,22 +21,23 @@
 							<i class="fa fa-gift icon-gradient bg-premium-dark"> </i>
 						</div>
 						<div>
-							<h3><b>
-							Brinde
-							</b></h3>
+							<h3>
+								<b> Brinde </b>
+							</h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px"
-									actionListener="#{brindeController.atualizar()}" update="datalist"
-									id="btAtualizar">
+								<p:commandLink style="font-size: 20px !important;"
+									actionListener="#{brindeController.atualizar()}"
+									update="datalist" id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":brindeForm"
+								<p:commandLink style="font-size: 20px !important;"
+									update=":brindeForm"
 									actionListener="#{brindeController.prepararNovo()}"
 									oncomplete="PF('_brindeDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
@@ -49,17 +51,99 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div   class="main-card mb-3 card">
-						<h5 style="margin: 10px;" class="card-title">Listagem de brindes</h5>
-						<div style="margin: 5px;" class="card-body">
+					<div class="main-card mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i> Listagem de brindes
+							</div>
+						</div>
 
-							<p:dataTable id="datalist" styleClass="table"
-								value="#{brindeController.itens}" var="item" selectionMode="single"
-								paginatorPosition="bottom"
+						<div class="card-body">
+
+							<p:dataTable id="datalist" styleClass="table-editora"
+								value="#{brindeController.itens}" var="item"
+								selectionMode="single" paginatorPosition="bottom"
+								rowExpandMode="single"
 								emptyMessage="Nenhum registro localizado"
 								selection="#{brindeController.item}" paginator="true"
 								rowKey="#{item.codigo}" rows="10"
 								rowsPerPageTemplate="10,20,30,40,50">
+								<p:ajax event="rowToggle"  onstart="PF('_id-blockui_brinde').show();"  onerror="PF('_id-blockui_brinde').hide();" oncomplete="PF('_id-blockui_brinde').hide();"/>
+
+								<p:column style="width=5%"
+									rendered="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? true : false}">
+									<p:rowToggler />
+								</p:column>
+								<p:rowExpansion>
+									<div class="row" style="border-top: thin;">
+										<div class="col-md-5">
+											<h6 style="text-align: center !important;">
+												<b>Estoque disponivel na(s) equipe/ponto de venda</b>
+											</h6>
+										</div>
+									</div>
+									<div class="row">
+
+										<div class="col-md-12">
+											<p:dataGrid var="estoquequipe"
+												
+												value="#{brindeController.equipeDisponiveis}" columns="3"
+												layout="grid" rows="12">
+
+												<p:dataTable styleClass="table-editora"
+													rendered="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo).isEmpty() ? false : true}"
+													style="margin: 5px !important;"
+													id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
+													selectionMode="single" paginatorPosition="bottom"
+													emptyMessage="Nenhum registro localizado"
+													rowExpandMode="single" paginator="false"
+													rowKey="#{itemBrindeEquipe.id}" rows="10"
+													expandableRowGroups="false" expandedRow="false"
+													sortBy="#{itemBrindeEquipe.equipeBean.descricao}"
+													value="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo)}">
+													<p:headerRow>
+														<p:column colspan="2">
+															<h:outputText
+																value="#{itemBrindeEquipe.equipeBean.descricao}" />
+														</p:column>
+													</p:headerRow>
+
+													<p:column width="70%">
+														<f:facet name="header">
+															<h:outputText value="Ponto de Venda" />
+														</f:facet>
+														<h:outputText
+															value="#{itemBrindeEquipe.pontoDeVendaBean.descricao}" />
+													</p:column>
+													<p:column width="30%"
+														style="text-align: center !important;">
+														<f:facet name="header">
+															<h:outputText value="Quant" />
+														</f:facet>
+														<h:outputText value="#{itemBrindeEquipe.quantidade}">
+															<f:convertNumber type="number" pattern="#####" />
+														</h:outputText>
+													</p:column>
+													<p:summaryRow
+														listener="#{brindeController.sumarizarEstoqueEquipe(item.codigo,estoquequipe.codigo)}">
+														<p:column style="text-align:right">
+															<h:outputText value="Total:" />
+														</p:column>
+														<p:column style="text-align: center !important;">
+															<h:outputText
+																value="#{brindeController.totalEquipe(estoquequipe.codigo)}">
+																<f:convertNumber type="number" pattern="#####" />
+															</h:outputText>
+														</p:column>
+													</p:summaryRow>
+												</p:dataTable>
+											</p:dataGrid>
+										</div>
+									</div>
+								</p:rowExpansion>
+
+
 
 								<p:column width="10%" sortBy="#{item.codigo}">
 									<f:facet name="header">
@@ -67,32 +151,37 @@
 									</f:facet>
 									<h:outputText value="#{item.codigo}" />
 								</p:column>
-								<p:column width="40%" filterBy="#{item.descricao}" filterMatchMode="contains">
+								<p:column width="40%" filterBy="#{item.descricao}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Descrição" />
 									</f:facet>
 									<h:outputText value="#{item.descricao}" />
 								</p:column>
-								<p:column >
+								<p:column style="text-align : center !important;">
 									<f:facet name="header">
-										<h:outputText value="Quantidade" />
+										<h:outputText value="Quant" />
 									</f:facet>
-									<h:outputText value="#{item.quantidade}" />
+									<h:outputText value="#{item.quantidade}">
+										<f:convertNumber type="number" pattern="####" />
+									</h:outputText>
+
 								</p:column>
 								<p:column>
 									<f:facet name="header">
 										<h:outputText value="Valor" />
 									</f:facet>
-									<h:outputText value="#{item.valor}" >
-									<f:convertNumber type="currency" currencySymbol="R$" />
+									<h:outputText value="#{item.valor}">
+										<f:convertNumber type="currency" currencySymbol="R$" />
 									</h:outputText>
 								</p:column>
-								
+
 								<p:column>
 									<f:facet name="header">
 										<h:outputText value="Status" />
 									</f:facet>
-									 <h:outputText value="#{item.status==true  ? 'ATIVO' : 'INATIVO'}" />
+									<h:outputText
+										value="#{item.status==true  ? 'ATIVO' : 'INATIVO'}" />
 								</p:column>
 
 								<p:column width="20%">
@@ -100,7 +189,8 @@
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink actionListener="#{brindeController.excluir(item)}"
+										<p:commandLink
+											actionListener="#{brindeController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir brinde"
@@ -109,7 +199,8 @@
 										</p:commandLink>
 										<p:commandLink update=":brindeForm"
 											actionListener="#{brindeController.prepararEditar(item)}"
-											oncomplete="PF('_brindeDialog').show();" style="font-size: 20px">
+											oncomplete="PF('_brindeDialog').show();"
+											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>
@@ -124,6 +215,10 @@
 			</div>
 		</div>
 	</h:form>
+	<p:blockUI widgetVar="_id-blockui_brinde"
+		id="id-blockui_brinde" block=":_Formulario">
+		<ui:include src="/ui/carregando.xhtml" />
+	</p:blockUI>
 
 	<ui:include src="brindeForm.xhtml" />
 

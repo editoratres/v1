@@ -62,7 +62,7 @@
 								</f:facet>
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez1==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez1,1)}">
 									<h:outputText value="#{ofertaItens.vez1}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -75,7 +75,7 @@
 
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez2==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+								update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez2,2)}">
 									<h:outputText value="#{ofertaItens.vez2}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -87,7 +87,7 @@
 								headerText="3 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez3==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez3,3)}">
 									<h:outputText value="#{ofertaItens.vez3}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -99,7 +99,7 @@
 								headerText="4 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez4==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez4,4)}">
 									<h:outputText value="#{ofertaItens.vez4}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -111,7 +111,7 @@
 								headerText="5 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez5==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez5,5)}">
 									<h:outputText value="#{ofertaItens.vez5}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -123,7 +123,7 @@
 								headerText="6 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez6==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez6,6)}">
 									<h:outputText value="#{ofertaItens.vez6}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -135,7 +135,7 @@
 								headerText="7 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez7==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez7,7)}">
 									<h:outputText value="#{ofertaItens.vez7}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -147,7 +147,7 @@
 								headerText="8 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez8==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez8,8)}">
 									<h:outputText value="#{ofertaItens.vez8}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -159,7 +159,7 @@
 								headerText="9 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez9==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez9,9)}">
 									<h:outputText value="#{ofertaItens.vez9}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -171,7 +171,7 @@
 								headerText="10 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez10==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez10,10)}">
 									<h:outputText value="#{ofertaItens.vez10}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -183,7 +183,7 @@
 								headerText="11 Parc." width="8%">
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez11==0 ? true : false}"
-									update=":contratoForm:datalistitens :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez11,11)}">
 									<h:outputText value="#{ofertaItens.vez11}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">

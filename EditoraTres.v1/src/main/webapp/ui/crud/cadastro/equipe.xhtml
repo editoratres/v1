@@ -20,22 +20,23 @@
 							<i class="fa fa-users icon-gradient bg-premium-dark"> </i>
 						</div>
 						<div>
-							<h3><b>
-							Equipes
-							</b></h3>
+							<h3>
+								<b> Equipes </b>
+							</h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
-									actionListener="#{equipeController.atualizar()}" update="datalist"
-									id="btAtualizar">
+									actionListener="#{equipeController.atualizar()}"
+									update="datalist" id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":equipeForm"
+								<p:commandLink style="font-size: 20px !important;"
+									update=":equipeForm"
 									actionListener="#{equipeController.prepararNovo()}"
 									oncomplete="PF('_equipeDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
@@ -49,13 +50,18 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div   class="main-card mb-3 card">
-						<h5   style="margin: 10px;" class="card-title">Listagem de equipes</h5>
-						<div style="margin: 5px;" class="card-body">
+					<div class="main-card mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i> Listagem de equipes
+							</div>
+						</div>
+						<div class="card-body">
 
-							<p:dataTable id="datalist" styleClass="table"
-								value="#{equipeController.itens}" var="item" selectionMode="single"
-								paginatorPosition="bottom"
+							<p:dataTable id="datalist" styleClass="table-editora"
+								value="#{equipeController.itens}" var="item"
+								selectionMode="single" paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"
 								selection="#{equipeController.item}" paginator="true"
 								rowKey="#{item.codigo}" rows="10"
@@ -67,27 +73,29 @@
 									</f:facet>
 									<h:outputText value="#{item.codigo}" />
 								</p:column>
-								<p:column  width="50%" filterBy="#{item.descricao}" filterMatchMode="contains"  >
+								<p:column width="50%" filterBy="#{item.descricao}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Descrição" />
 									</f:facet>
 									<h:outputText value="#{item.descricao}" />
 								</p:column>
-								
-								<p:column filterBy="#{item.cnpjcpf}" filterMatchMode="contains"  >
+
+								<p:column filterBy="#{item.cnpjcpf}" filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Cnpj/CPF" />
 									</f:facet>
 									<h:outputText value="#{item.cnpjcpf}" />
 								</p:column>
-								 
+
 
 								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink actionListener="#{equipeController.excluir(item)}"
+										<p:commandLink
+											actionListener="#{equipeController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir equipe"
@@ -96,7 +104,8 @@
 										</p:commandLink>
 										<p:commandLink update=":equipeForm"
 											actionListener="#{equipeController.prepararEditar(item)}"
-											oncomplete="PF('_equipeDialog').show();" style="font-size: 20px">
+											oncomplete="PF('_equipeDialog').show();"
+											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>

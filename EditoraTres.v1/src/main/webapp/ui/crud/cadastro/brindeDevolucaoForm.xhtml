@@ -8,15 +8,14 @@
 <ui:composition>
 	<p:dialog
 	    id="brindeDevolucaoDialog"
-		width="80%" height="560"
+		width="70%" height="430"
 		widgetVar="_brindeDevolucaoDialog" modal="true" resizable="false"
 		appendTo="@(body)" showEffect="clip" draggable="false"
 		hideEffect="clip" closeOnEscape="true" header="Devolucao de brindes">
 		<p:ajax event="close"
 			listener="#{brindeDevolucaoController.fecharDialogo()}" />
 		<h:form id="brindeDevolucaoForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
+			 
 					<div class="form-row">
 						<div class="col-md-5">
 							<div class="position-relative form-group">
@@ -45,7 +44,7 @@
 										onstart="PF('_id-blockui_entradabrinde').show();"
 										oncomplete="PF('_id-blockui_entradabrinde').hide();"
 										onerror="PF('_id-blockui_entradabrinde').hide();"
-										update="idvendedor" process="idEquipe" />
+										update="idvendedor idpontodevenda" process="idEquipe" />
 								</p:selectOneMenu>
 							</div>
 						</div>
@@ -89,29 +88,29 @@
 					<div class="form-row">
 						<div class="col-md-5">
 							<div class="position-relative form-group">
-								<b><label for="idcanal" class="">Canal</label></b>
+								<b><label for="idpontodevenda" class="">Ponto de venda</label></b>
 								<p:selectOneMenu autoWidth="false"
 									disabled="#{brindeDevolucaoController.editar}"
 									styleClass="form-control MyOneMenu" filter="true"
-									filterMatchMode="startsWith" var="c" id="idcanal"
-									converter="editora3.converter.ConversorCanal"
-									value="#{brindeDevolucaoController.item.canalBean}">
+									filterMatchMode="startsWith" var="p" id="idpontodevenda"
+									converter="editora3.converter.ConversorPontoDeVenda"
+									value="#{brindeDevolucaoController.item.pontoDeVendaBean}">
 									<f:selectItem itemValue="0" itemLabel="Selecione"
 										noSelectionOption="true" />
 									<f:selectItems
-										value="#{brindeDevolucaoController.canalFacade.findAll()}"
-										var="canal" itemLabel="#{canal.descricao}"
-										itemValue="#{canal}" />
+										value="#{brindeDevolucaoController.pontosDeVendaEquipe}"
+										var="pdv" itemLabel="#{pdv.descricao}"
+										itemValue="#{pdv}" />
 									<p:column style="width:10%">
-										<h:outputText value="#{c.codigo}" />
+										<h:outputText value="#{p.codigo}" />
 									</p:column>
 									<p:column>
-										<h:outputText value="#{c.descricao}" />
+										<h:outputText value="#{p.descricao}" />
 									</p:column>
 								</p:selectOneMenu>
 							</div>
 						</div>
-						<div class="col-md-5">
+						<!-- <div class="col-md-5">
 							<div class="position-relative form-group">
 								<b><label for="idsubcanal" class="">SubCanal</label></b>
 								<p:selectOneMenu autoWidth="false"
@@ -134,7 +133,7 @@
 									</p:column>
 								</p:selectOneMenu>
 							</div>
-						</div>
+						</div> -->
 						<div class="col-md-2">
 							<div class="position-relative form-group">
 								<b><label for="idnaocontabilizar" class="">Não
@@ -166,6 +165,7 @@
 									<h3>
 										<b> <p:outputLabel id="idTotalDevolucaos"
 												value="#{brindeDevolucaoController.quantidadeTotalDevolucaoItens}">
+												<f:convertNumber type="number"  pattern="####" />
 											</p:outputLabel>
 										</b>
 									</h3>
@@ -211,6 +211,7 @@
 							</p:column>
 							<p:column headerText="Quantidade">
 								<p:inputNumber maxValue="99999" size="10" minValue="0"
+									onfocus="this.select();"
 									inputStyle="text-align: center !important;"
 									disabled="#{brindeDevolucaoController.editar}"
 									id="idQuantidadeBrinde" decimalPlaces="0"
@@ -257,7 +258,7 @@
 										Inserir brinde
 									</p:commandLink>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-3" style="text-align: right !important;">
 							<p:commandLink
 								actionListener="#{brindeDevolucaoController.create()}"
 								update=":_Formulario:datalist :growl"
@@ -276,9 +277,7 @@
 						</div>
 					</div>
 
-				</div>
-			</div>
-
+			 
 			<p:blockUI widgetVar="_id-blockui_entradabrinde"
 				id="id-blockui_entradabrinde" block=":brindeDevolucaoForm">
 				<ui:include src="/ui/carregando.xhtml" />
@@ -319,18 +318,20 @@
 						</f:facet>
 						<h:outputText value="#{brindes.descricao}" />
 					</p:column>
-					<p:column>
+					<p:column style="text-align: center !important;">
 						<f:facet name="header">
 							<h:outputText value="Qtd" />
 						</f:facet>
-						<h:outputText value="#{brindes.quantidade}" />
+						<h:outputText value="#{brindeDevolucaoController.EstoqueAtual(brindes)}" >
+							<f:convertNumber type="number"  pattern="####" />
+						</h:outputText>
 					</p:column>
-					<p:column>
+					<p:column  style="text-align: center !important;">
 						<p:commandLink update=":brindeDevolucaoForm:datalistItens"
 							actionListener="#{brindeDevolucaoController.atualizarBrindeConsultadoNoGrid(brindes)}"
 							oncomplete="PF('_idConsultaBrindes').hide();"
-							style="font-size: 20px">
-							<i class="fa fa-check" />
+							style="font-size: 20px !important;">
+							<i class="fa fa-check-circle" />
 						</p:commandLink>
 					</p:column>
 				</p:dataTable>

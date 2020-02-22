@@ -21,6 +21,7 @@ public class ContratoBrinde implements Serializable {
 	@JoinColumn(name="brindeBean", referencedColumnName="codigo")
 	private Brinde brindBean;
 
+	private Double quantidade;
 	private double valor;
 
 	//bi-directional many-to-one association to Contrato
@@ -96,6 +97,14 @@ public class ContratoBrinde implements Serializable {
 
 	public void setContratoProdutoBean(ContratoProduto contratoProdutoBean) {
 		this.contratoProdutoBean = contratoProdutoBean;
+	}
+
+	public Double getQuantidade() {
+		return quantidade;
+	}
+
+	public void setQuantidade(Double quantidade) {
+		this.quantidade = quantidade;
 	}
 
 	@ManyToOne()

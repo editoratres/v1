@@ -2,8 +2,10 @@ package editora3.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -21,10 +23,16 @@ import org.primefaces.event.CellEditEvent;
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeDevolucao;
 import editora3.entidades.BrindeDevolucaoIten;
+import editora3.entidades.BrindeEstoqueEquipe;
+import editora3.entidades.BrindeSaida;
+import editora3.entidades.BrindeSaidaIten;
+import editora3.entidades.Contrato;
+import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Vendedor;
 import editora3.facade.BrindeDevolucaoFacade;
+import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
-import editora3.facade.CanalFacade;
+import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
@@ -36,6 +44,9 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 
 	@Inject
 	FlashApp flashapp;
+	
+	@Inject
+	private BrindeEstoqueFacade brindeEstoqueFacade;
 
 	@Inject
 	private EquipeFacade equipeFacade; 
@@ -52,12 +63,12 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	public void setVendedorFacade(VendedorFacade vendedorFacade) {
 		this.vendedorFacade = vendedorFacade;
 	}
-	public CanalFacade getCanalFacade() {
+	/*public PontoDeVendaFacade getCanalFacade() {
 		return canalFacade;
 	}
-	public void setCanalFacade(CanalFacade canalFacade) {
+	public void setCanalFacade(PontoDeVendaFacade canalFacade) {
 		this.canalFacade = canalFacade;
-	}
+	}*/
 	public SubCanalFacade getSubcanalFacade() {
 		return subcanalFacade;
 	}
@@ -69,7 +80,7 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	private VendedorFacade vendedorFacade;	
 	
 	@Inject
-	private CanalFacade canalFacade;	
+	private PontoDeVendaFacade pontoDeVendaFacade;	
 	
 	@Inject
 	private SubCanalFacade subcanalFacade;	
@@ -286,6 +297,24 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 		getBrindeConsultar().setBrindeBean(brinde);
 		
 	}
+	
+	public Double EstoqueAtual(Brinde b) {
+		Double ret =0d;
+		
+		BrindeDevolucao item = getItem();
+		if(item.getPontoDeVendaBean()==null) {
+			ret=b.getQuantidade();
+		}else {
+			List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(b.getCodigo(),item.getEquipeBean().getCodigo(),item.getPontoDeVendaBean().getCodigo());
+			if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+				ret =  retornarEstoqueEquipe.get(0).getQuantidade();
+			}
+		}
+		
+		return ret;
+	}
+
+	
 	@Override
 	public void fecharDialogo() {
 		PrimeFaces.current().resetInputs("brindeDevolucaoForm");
@@ -295,6 +324,51 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 		
 		// TODO Auto-generated method stub
 		
+	}
+
+	private boolean validarBrindes(Integer codigoEquipe, List<BrindeDevolucaoIten> brindeDevolucaoItens, Integer codigoPontoVenda) {
+		HashMap<Integer, Double> quantidadesSumarizadas = new HashMap<>();
+		Integer codigoBrinde = 0;
+		Double qtArmazenada=0d;
+		
+		
+		for (Iterator iterator = brindeDevolucaoItens.iterator(); iterator.hasNext();) {
+			BrindeDevolucaoIten brindeSaidaIten = (BrindeDevolucaoIten) iterator.next();
+			codigoBrinde = brindeSaidaIten.getBrindeBean().getCodigo();
+			qtArmazenada = quantidadesSumarizadas.get(codigoBrinde)==null ? 0d : quantidadesSumarizadas.get(codigoBrinde); 
+			if(quantidadesSumarizadas.containsKey(codigoBrinde)) {
+				quantidadesSumarizadas.replace(codigoBrinde, qtArmazenada +brindeSaidaIten.getQuantidade());
+			}else {
+			   quantidadesSumarizadas.put(codigoBrinde, qtArmazenada +brindeSaidaIten.getQuantidade());
+			}
+			
+		}
+		Integer codigoBrindeSumarizado=0;
+		Double QuantidadeSumarizada=0d;
+		Double QuantidadeEstoque=0d;
+		if(!quantidadesSumarizadas.isEmpty()) {
+			Set<Integer> keySet = quantidadesSumarizadas.keySet();
+			for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
+				codigoBrindeSumarizado = (Integer) iterator.next();
+				 QuantidadeSumarizada = quantidadesSumarizadas.get(codigoBrindeSumarizado);
+				Brinde findLocalizado = getBrindeFacade().find(codigoBrindeSumarizado);
+				if(findLocalizado!=null) {
+				/*	QuantidadeEstoque =findLocalizado.getQuantidade()==null ? 0d : findLocalizado.getQuantidade();
+				}else {*/
+					List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(findLocalizado.getCodigo(),codigoEquipe,codigoPontoVenda);
+					if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+						QuantidadeEstoque = (Double) retornarEstoqueEquipe.get(0).getQuantidade();
+					}
+				}
+				if(QuantidadeEstoque<QuantidadeSumarizada) {
+					JsfUtil.addErrorMessage("O Estoque ["+ QuantidadeEstoque.intValue() +"] do brinde [ "+ findLocalizado.getDescricao()  +" ] não é suficiente para realizar esta operação", "Procedimento não realizado");
+					return false;
+				}
+				
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -310,14 +384,25 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 		    	return;
 			}
 			
-			if(item.getVendedorBean()==null) {
+			/*if(item.getVendedorBean()==null) {
 				JsfUtil.addErrorMessage("Informe o Vendedor", "Procedimento não realizado");
+		    	FacesContext.getCurrentInstance().validationFailed();
+		    	return;
+			}
+			*/
+			if(item.getPontoDeVendaBean()==null) {
+				JsfUtil.addErrorMessage("Informe o ponto de venda", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}
 			if(getQuantidadeTotalDevolucaoItens()==0d) {
 				JsfUtil.addErrorMessage("Devoluções sem brinde(s) não são permitidas", "Procedimento não realizado");
 		    	FacesContext.getCurrentInstance().validationFailed();
+		    	return;
+			}
+			
+			if(!validarBrindes(item.getEquipeBean().getCodigo(),item.getBrindeDevolucaoItens(),item.getPontoDeVendaBean().getCodigo())) {
+				FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}
 			 
@@ -519,4 +604,35 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 		 getFlash().getValoresPorID("brindeDevolucaoForm").put("brindeConsultar",brindeConsultar);
 		//this.brindeConsultar = brindeConsultar;
 	}
+	
+	public List<PontoDeVenda> getPontosDeVendaEquipe() {
+		BrindeDevolucao item = getItem(); 
+		if(item!=null && item.getEquipeBean()!=null) {
+			pontosDeVendaEquipe =getPontoDeVendaFacade().findAllPorEquipe(item.getEquipeBean().getCodigo());
+			 
+		}else {
+			pontosDeVendaEquipe=null;
+		}
+		 
+		return pontosDeVendaEquipe;
+	}
+	public void setPontosDeVendaEquipe(List<PontoDeVenda> pontosDeVendaEquipe) {
+		this.pontosDeVendaEquipe = pontosDeVendaEquipe;
+	}
+	public BrindeEstoqueFacade getBrindeEstoqueFacade() {
+		return brindeEstoqueFacade;
+	}
+	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
+		this.brindeEstoqueFacade = brindeEstoqueFacade;
+	}
+	public PontoDeVendaFacade getPontoDeVendaFacade() {
+		return pontoDeVendaFacade;
+	}
+	public void setPontoDeVendaFacade(PontoDeVendaFacade pontoDeVendaFacade) {
+		this.pontoDeVendaFacade = pontoDeVendaFacade;
+	}
+
+	private  List<PontoDeVenda> pontosDeVendaEquipe;
+	
+
 }

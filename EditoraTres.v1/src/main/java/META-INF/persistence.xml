@@ -10,7 +10,7 @@
     <class>editora3.entidades.BrindeEntrada</class>
     <class>editora3.entidades.BrindeSaida</class>
     <class>editora3.entidades.BrindeSaidaIten</class>
-    <class>editora3.entidades.Canal</class>
+    <class>editora3.entidades.PontoDeVenda</class>
     <class>editora3.entidades.Equipe</class>
     <class>editora3.entidades.Oferta</class>
     <class>editora3.entidades.OfertaIten</class>
@@ -27,11 +27,13 @@
     <class>editora3.entidades.BrindeEstoqueEquipe</class>
     
     
+    
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>
-      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>  
+         <property name="hibernate.hbm2ddl.auto" value="update" />
+    <!--   <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>   -->
 		<property name="javax.persistence.sql-load-script-source" value="META-INF/iniciartabelas.sql"/>
     </properties>
 	</persistence-unit>

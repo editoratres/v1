@@ -10,89 +10,82 @@
 
 	<p:dialog id="relatorioDialog" widgetVar="_relatorioDialog"
 		modal="true" resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="80%" header="Relatórios">
+		hideEffect="clip" closeOnEscape="true" width="70%" header="Relatórios">
 		<p:ajax event="close"
 			listener="#{relatorioController.fecharDialogo()}" />
 		<h:form id="relatorioForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
-					<div class="form-row">
-						<div class="col-md-2">
-							<div class="position-relative form-group">
-								<b><label for="identificacao" class="">Identificação</label></b>
-								<p:inputMask mask="99/9999"
-									value="#{relatorioController.item.identificacao}"
-									required="true" requiredMessage="A identificaão é obrigatória"
-									id="identificacao" type="text" styleClass="form-control" />
-							</div>
-						</div>
 
-						<div class="col-md-7">
-							<div class="position-relative form-group">
-								<b><label for="nome" class="">Descricao</label></b>
-								<p:inputText value="#{relatorioController.item.descricao}"
-									required="true" maxlength="150"
-									requiredMessage="O nome é obrigatório" id="nome" type="text"
-									styleClass="form-control" />
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="position-relative form-group">
-								<b><label for="datacad" class="">Data</label> <br /></b>
-								<p:calendar converterMessage="A data informada é inválida"
-									showOn="button" pattern="dd/MM/yyyy" mask="true"
-									disabled="#{relatorioController.editar}"
-									
-									value="#{relatorioController.item.data}" id="datacad"
-									type="text" validatorMessage="Data informada inválida">
-
-								</p:calendar>
-							</div>
-						</div>
+			<div class="form-row">
+				<div class="col-md-2">
+					<div class="position-relative form-group">
+						<b><label for="identificacao" class="">Identificação</label></b>
+						<p:inputMask mask="99/9999"
+							value="#{relatorioController.item.identificacao}" required="true"
+							requiredMessage="A identificaão é obrigatória" id="identificacao"
+							type="text" styleClass="form-control" />
 					</div>
-					<div class="form-row">
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<b><label for="idformapagamento" class="">Forma de pagamento</label></b>
-								<p:selectOneRadio id="idformapagamento"
-									columns="3"
-									layout="grid"
-									value="#{relatorioController.item.formapagamento}"
-									unselectable="true">
-									<f:selectItem itemValue="1" itemLabel ="Cartão" />
-									<f:selectItem itemValue="2" itemLabel="Carnê" />
-									<f:selectItem itemValue="3" itemLabel="Fatura" />
-									<f:selectItem itemValue="4" itemLabel="Cheque" />
-									<f:selectItem itemValue="5" itemLabel="Débito C/C" />
-									<f:selectItem itemValue="6" itemLabel="Depósito" />
-								</p:selectOneRadio>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="position-relative form-group">
-								<b><label for="idcomissao" class="">Comissão(%)</label></b>
-								<p:inputNumber minValue="0" maxValue="100"
-									inputStyleClass="form-control"
-									 size="8"
-									 inputStyle="text-align : center !important;"
-									value="#{relatorioController.item.percentual}" id="idcomissao"
-									type="text"   />
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<b><label for="idenviado" class="">Enviado</label> <br /></b>
-								<p:selectBooleanCheckbox
-								   
-									disabled="#{relatorioController.editar}"
-									value="#{relatorioController.item.enviado}" id="idenviado">
-								</p:selectBooleanCheckbox>
-							</div>
-						</div>
-						
+				</div>
+
+				<div class="col-md-7">
+					<div class="position-relative form-group">
+						<b><label for="nome" class="">Descricao</label></b>
+						<p:inputText value="#{relatorioController.item.descricao}"
+							required="true" maxlength="150"
+							requiredMessage="O nome é obrigatório" id="nome" type="text"
+							styleClass="form-control" />
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="position-relative form-group">
+						<b><label for="datacad" class="">Data</label> <br /></b>
+						<p:calendar converterMessage="A data informada é inválida"
+							showOn="button" pattern="dd/MM/yyyy" mask="true"
+							disabled="#{relatorioController.editar}"
+							value="#{relatorioController.item.data}" id="datacad" type="text"
+							validatorMessage="Data informada inválida">
+
+						</p:calendar>
 					</div>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="idformapagamento" class="">Forma de
+								pagamento</label></b>
+						<p:selectOneRadio id="idformapagamento" columns="3" layout="grid"
+							value="#{relatorioController.item.formapagamento}"
+							unselectable="true">
+							<f:selectItem itemValue="1" itemLabel="Cartão" />
+							<f:selectItem itemValue="2" itemLabel="Carnê" />
+							<f:selectItem itemValue="3" itemLabel="Fatura" />
+							<f:selectItem itemValue="4" itemLabel="Cheque" />
+							<f:selectItem itemValue="5" itemLabel="Débito C/C" />
+							<f:selectItem itemValue="6" itemLabel="Depósito" />
+						</p:selectOneRadio>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="position-relative form-group">
+						<b><label for="idcomissao" class="">Comissão(%)</label></b>
+						<p:inputNumber minValue="0" maxValue="100"
+							inputStyleClass="form-control" size="8"
+							inputStyle="text-align : center !important;"
+							value="#{relatorioController.item.percentual}" id="idcomissao"
+							type="text" />
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="idenviado" class="">Enviado</label> <br /></b>
+						<p:selectBooleanCheckbox disabled="#{relatorioController.editar}"
+							value="#{relatorioController.item.enviado}" id="idenviado">
+						</p:selectBooleanCheckbox>
+					</div>
+				</div>
+
+			</div>
+
 			<hr />
 			<center>
 				<p:commandLink actionListener="#{relatorioController.create()}"
@@ -114,8 +107,8 @@
 				<p:commandButton value="Não" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
-			
-		<p:blockUI widgetVar="_id-blockui_entradabrinde"
+
+			<p:blockUI widgetVar="_id-blockui_entradabrinde"
 				id="id-blockui_entradabrinde" block=":relatorioForm">
 				<ui:include src="/ui/carregando.xhtml" />
 			</p:blockUI>

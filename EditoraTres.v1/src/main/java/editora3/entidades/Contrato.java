@@ -26,17 +26,10 @@ public class Contrato implements Serializable {
 	private Integer codigocontrato;
 	
 	@ManyToOne()
-	@JoinColumn(name="CanalBean", referencedColumnName="codigo")
-	private Canal canalBean;
+	@JoinColumn(name="pontoDeVendaBean", referencedColumnName="codigo")
+	private PontoDeVenda pontoDeVendaBean;
 
-	public Canal getCanalBean() {
-		return canalBean;
-	}
-
-	public void setCanalBean(Canal canalBean) {
-		this.canalBean = canalBean;
-	}
-
+	 
 	public Equipe getEquipeBean() {
 		return equipeBean;
 	}
@@ -298,6 +291,14 @@ public class Contrato implements Serializable {
 
 	public void setDatasaida(Date datasaida) {
 		this.datasaida = datasaida;
+	}
+
+	public PontoDeVenda getPontoDeVendaBean() {
+		return pontoDeVendaBean;
+	}
+
+	public void setPontoDeVendaBean(PontoDeVenda pontoDeVendaBean) {
+		this.pontoDeVendaBean = pontoDeVendaBean;
 	}
 
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition>
+	<p:dialog id="perfilDialog" widgetVar="_perfilDialog" modal="true"
+		resizable="false" appendTo="@(body)" showEffect="clip"
+		appendToBody="true" hideEffect="clip" closeOnEscape="true" width="30%"
+		header="Perfil do usuario">
+
+		<h:form id="perfilForm" enctype="multipart/form-data">
+
+
+			<center>
+				<p:graphicImage cache="false" class="rounded-circle" height="100"
+					width="100" value="#{loginInfo.foto}" id="idfoto" />
+
+			
+				<p:fileUpload style="width : 20% !important;"
+					fileUploadListener="#{loginInfo.handleFileUpload}" mode="advanced"
+					update=":growl,idfoto" auto="true" sizeLimit="1048576"
+					allowTypes="/(\.|\/)(gif|jpe?g|png)$/" label="Foto"
+					value="#{loginInfo.fotoupload}" skinSimple="true" />
+
+			</center>
+			<div class="form-row body-editora">
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="usuario" class="">Login</label></b>
+						<p:inputText id="usuario" styleClass="form-control" maxlength="10"
+							required="true" value="#{loginInfo.usuario_logado.usuario}"
+							title="Login" />
+					</div>
+				</div>
+			</div>
+			<div class="form-row body-editora">
+				<div class="col-md-12">
+					<div class="position-relative form-group">
+						<b><label for="nome" class="">Nome do usuário</label></b>
+						<p:inputText id="nome" styleClass="form-control" size="50"
+							required="true" maxlength="100"
+							value="#{loginInfo.usuario_logado.nome}" title="Nome" />
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="form-row body-editora">
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="senhaatual" class="">Senha Atual</label></b>
+						<p:password redisplay="true" styleClass="form-control"
+							  id="senhaatual" feedback="true" 
+							value="#{loginInfo.senhaAtual}" title="Senha" />
+					</div>
+				</div>
+			 
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="senhanova" class="">Nova Senha</label></b>
+						<p:password redisplay="true" styleClass="form-control"
+								validatorMessage="Senhas informadas não conferem"
+							  id="senhanova" feedback="true" match="senharepita"
+							value="#{loginInfo.senhaNova}" title="Senha" />
+					</div>
+				</div>
+			 
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<b><label for="senharepita" class="">Repita a Senha</label></b>
+						<p:password redisplay="true" styleClass="form-control"
+							  id="senharepita" feedback="true"
+							  title="Repita Senha" />
+					</div>
+				</div>
+			</div>
+		 
+
+			<div tabindex="-1" class="dropdown-divider" />
+			<center>
+			<p:commandLink
+				actionListener="#{loginInfo.atualizarPerfil()}"
+				update=":growl :formUsuario:idnomeUsuario :formUsuario:idfoto"
+				styleClass="btn btn-primary btn-lg btn-icon icon-left"
+				oncomplete="if (!args.validationFailed) PF('_perfilDialog').hide();"
+				style="color : white">
+				<i class="entypo-check"></i>Salvar
+					 <p:confirm header="Editar Usuario"
+					message="Deseja confirma esta operação?" icon="ui-icon-alert" />
+			</p:commandLink>
+			</center>
+
+			<p:confirmDialog global="true" showEffect="clip" hideEffect="clip">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

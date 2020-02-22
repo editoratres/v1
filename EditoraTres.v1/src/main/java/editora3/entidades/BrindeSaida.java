@@ -31,7 +31,7 @@ public class BrindeSaida implements Serializable {
 	private Date data;
 	@ManyToOne()
 	@JoinColumn(name="canalBean", referencedColumnName="codigo")
-	private Canal canalBean;
+	private PontoDeVenda canalBean;
 	 
 	@Override
 	public int hashCode() {
@@ -58,11 +58,11 @@ public class BrindeSaida implements Serializable {
 		return true;
 	}
 
-	public Canal getCanalBean() {
+	public PontoDeVenda getCanalBean() {
 		return canalBean;
 	}
 
-	public void setCanalBean(Canal canalBean) {
+	public void setCanalBean(PontoDeVenda canalBean) {
 		this.canalBean = canalBean;
 	}
 	@ManyToOne()
@@ -76,6 +76,11 @@ public class BrindeSaida implements Serializable {
 	@ManyToOne()
 	@JoinColumn(name="vendedorBean", referencedColumnName="codigo")
 	private Vendedor vendedorBean;
+	
+	@ManyToOne()
+	@JoinColumn(name="pontoDeVendaBean", referencedColumnName="codigo")
+	private PontoDeVenda pontoDeVendaBean;
+	 
 	
 	//bi-directional many-to-one association to BrindeSaidaIten
 	@OneToMany(mappedBy="brindeSaida", cascade=CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
@@ -153,6 +158,14 @@ public class BrindeSaida implements Serializable {
 		brindeSaidaIten.setBrindeSaida(null);
 
 		return brindeSaidaIten;
+	}
+
+	public PontoDeVenda getPontoDeVendaBean() {
+		return pontoDeVendaBean;
+	}
+
+	public void setPontoDeVendaBean(PontoDeVenda pontoDeVendaBean) {
+		this.pontoDeVendaBean = pontoDeVendaBean;
 	}
 
 }

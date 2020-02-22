@@ -14,17 +14,28 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1rem;
   font-weight: 600;
-  line-height: 10px	;
+  line-height: 30px	;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+
+.table-editora-contrato {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 20px	;
   color: #212529;
   text-align: left;
   background-color: #fff;
 }
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
-	font-size: 10px;
+	font-size: 13px;
 }
 
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
-	height: 23px !important;
+	height: 28px !important;
 }
 .card-body{
 	/* padding: 0.1rem !important; */
@@ -41,7 +52,7 @@
     padding: 10px 10px !important;
     background-color: #fff !important;
     border: 1px solid #ccc !important;
-  	height: 28px !important;
+  	height: 30px !important;
 }
 .ui-selectonemenu.form-control {
     color: #555 !important;
@@ -50,7 +61,17 @@
     padding: 0px 0px !important;
     background-color: #fff !important;
     border: 2px solid #ccc !important;
-  	height: 27px !important;
+  	height: 30px !important;
+}
+
+.ui-inputmask.form-control {
+    color: #555 !important;
+    display: block !important;
+    margin-bottom: 0 !important;
+    padding: 10px 10px !important;
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+  	height: 28px !important;
 }
 
 .radius-none {
@@ -96,3 +117,59 @@
  .ui-toggleswitch {
         vertical-align: bottom;
     }
+
+.ui-dialog-titlebar {
+		background: white none repeat scroll 0 0 !important;
+		opacity: 1.0 !important;
+		border-bottom: 1px solid #e9ecef !important;;
+		border-top-left-radius: .3rem !important;;
+border-top-right-radius: .3rem !important;
+justify-content: space-between !important;
+align-items: flex-start !important;
+margin-top: .5rem !important;
+	margin-bottom: .5rem !important;
+ 
+	
+	}
+.ui-dialog-title{
+	
+	font-size: 1rem;
+}
+.ui-dialog-titlebar-icon ui-dialog-titlebar-close{
+	font-size: 1rem;
+	margin-top: .5rem !important;
+	margin-bottom: .5rem !important;
+}
+.ui-dialog {
+		 -moz-border-radius: 6px 6px 6px 6px;
+  -webkit-border-radius: 6px;  
+  border-radius: 6px 6px 6px 6px;
+	}	
+	
+	
+
+.row {
+margin-right: 0px;
+margin-left: 0px;
+}
+
+.card-body {
+  padding: 0rem;
+}	
+
+.ui-widget-content{
+ 	 border: 1px solid #0000
+   
+}
+[class^="pe-7s-"], [class*=" pe-7s-"]{
+	font-size: 20px;
+	margin-right: 15px;
+}
+.ui-state-highlight{
+	border: 0px solid #0000;
+}
+ 
+.ui-datatable-summaryrow{
+		margin-bottom: .5rem !important;
+}
+	

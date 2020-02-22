@@ -89,7 +89,7 @@
 								<div class="tab-pane fade show active" id="tabs-eg-77">
 									<p:dataTable id="datalist" styleClass="table-editora"
 										value="#{painelGerenciamentoController.itens}" var="item"
-										selectionMode="single" paginatorPosition="bottom"
+										  paginatorPosition="bottom"
 										emptyMessage="Nenhum registro localizado" paginator="true"
 										rowKey="#{item.codigo}" rows="10"
 										rowsPerPageTemplate="10,20,30,40,50">
@@ -193,7 +193,7 @@
 						<div class="card-body">
 							<div class="tab-content">
 								<div class="tab-pane fade active show" id="tab-eg-55">
-									<p:chart type="bar"
+									<p:chart  type="bar"
 										model="#{painelGerenciamentoController.barModel}"
 										style="height:300px" />
 								</div>
@@ -218,7 +218,7 @@
 
 									<p:dataTable id="datalistBrindes" styleClass="table-editora"
 										value="#{painelGerenciamentoController.brindesDisponiveis}"
-										var="itemBrinde" selectionMode="single" paginatorPosition="bottom"
+										var="itemBrinde"   paginatorPosition="bottom"
 										emptyMessage="Nenhum registro localizado"
 										rowExpandMode="single"
 										 paginator="true"
@@ -316,7 +316,7 @@
 									<p:dataTable id="datalistContratosDisponiveis"
 										styleClass="table table-editora"
 										value="#{painelGerenciamentoController.contratosEfetivados}"
-										var="contratos" selectionMode="single"
+										var="contratos"  
 										paginatorPosition="bottom"
 										emptyMessage="Nenhum registro localizado" paginator="true"
 										rowKey="#{contratos.codigo}" rows="10"
@@ -365,7 +365,7 @@
 											</f:facet>
 											<h:outputText value="#{contratos.equipeBean.descricao}" />
 										</p:column>
-										<p:column width="20%"
+										<p:column width="15%"
 											sortBy="#{contratos.vendedorBean.nome}">
 											<f:facet name="header">
 												<h:outputText value="Vendedor" />
@@ -378,11 +378,13 @@
 											</f:facet>
 											<h:outputText value="#{contratos.pagamentoBean.valor}" />
 										</p:column>
-										<p:column width="10%" sortBy="#{contratos.datavenda}">
+										<p:column width="15%" sortBy="#{contratos.datavenda}">
 											<f:facet name="header">
 												<h:outputText value="Dt.Vda" />
 											</f:facet>
-											<h:outputText value="#{contratos.datavenda}" />
+											<h:outputText value="#{contratos.datavenda}" >
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
 										</p:column>
 									</p:dataTable>
 								</div>

@@ -27,6 +27,10 @@ public class BrindeEstoqueEquipe implements Serializable {
 	@JoinColumn(name="equipelBean", referencedColumnName="codigo")
 	private Equipe equipeBean;
 	
+	@ManyToOne()
+	@JoinColumn(name="pontoDeVendaBean", referencedColumnName="codigo")
+	private PontoDeVenda pontoDeVendaBean;
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -90,6 +94,14 @@ public class BrindeEstoqueEquipe implements Serializable {
 
 	public void setBrindeBean(Brinde brindeBean) {
 		this.brindeBean = brindeBean;
+	}
+
+	public PontoDeVenda getPontoDeVendaBean() {
+		return pontoDeVendaBean;
+	}
+
+	public void setPontoDeVendaBean(PontoDeVenda pontoDeVendaBean) {
+		this.pontoDeVendaBean = pontoDeVendaBean;
 	}
 
 	 

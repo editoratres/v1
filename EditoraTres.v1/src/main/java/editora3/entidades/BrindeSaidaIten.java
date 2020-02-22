@@ -50,7 +50,7 @@ public class BrindeSaidaIten implements Serializable {
 
 	private String descricao;
 
-	private double quantidade=0d;
+	private Double quantidade=0d;
 
 	//bi-directional many-to-one association to BrindeSaida
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -77,11 +77,11 @@ public class BrindeSaidaIten implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public double getQuantidade() {
+	public Double getQuantidade() {
 		return this.quantidade;
 	}
 
-	public void setQuantidade(double quantidade) {
+	public void setQuantidade(Double quantidade) {
 		this.quantidade = quantidade;
 	}
 

@@ -32,8 +32,8 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('fechamento','Fech
 insert into menu(nome,descricao, icone,  id, nomepai) values ('contratorel','Contrato',null,14,9);
 
 insert into menu(nome,descricao, icone,  id, nomepai) values ('tabela','Tabelas','pe-7s-albums',15,0);
-insert into menu(nome,descricao, icone,  id, nomepai) values ('canal','Canal',null,16,15);
-insert into menu(nome,descricao, icone,  id, nomepai) values ('subcanal','SubCanal',null,17,15);
+insert into menu(nome,descricao, icone,  id, nomepai) values ('pdv','Ponto de Venda',null,16,1);
+ 
 insert into menu(nome,descricao, icone,  id, nomepai) values ('origemvenda','Origem Venda',null,18,15);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('maquinetapos','Maquineta POS',null,19,15);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('tipomov','Tipo Movimento',null,20,15);
@@ -60,8 +60,7 @@ insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (12,'Fechamento Rel',null,'/ui/crud/relatorios/fechamento.xhtml','FechamentoRel');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (13,'Pagamento Rel',null,'/ui/crud/relatorios/pagamentos.xhtml','PagamentosRel');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (14,'Producao Rel',null,'/ui/crud/relatorios/producao.xhtml','ProducaoRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (15,'Canal',null,'/ui/crud/tabela/canal.xhtml','Canal');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (16,'SubCanal',null,'/ui/crud/tabela/subcanal.xhtml','Subcanal');
+insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (15,'Pdv',null,'/ui/crud/tabela/canal.xhtml','Ponto de venda');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (17,'Maquineta POs',null,'/ui/crud/tabela/maquinetapos.xhtml','MaquinetaPOS');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (18,'Origem de Venda',null,'/ui/crud/tabela/origemvenda.xhtml','OrigemVenda');
 insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (19,'TipoMov',null,'/ui/crud/tabela/tipomov.xhtml','TipoMov');
@@ -92,8 +91,7 @@ insert into menu_opcoes(id,idmodulo,menu) values (11,11,'contratorel');
 insert into menu_opcoes(id,idmodulo,menu) values (12,12,'fechamento');
 insert into menu_opcoes(id,idmodulo,menu) values (13,13,'pagamento');
 insert into menu_opcoes(id,idmodulo,menu) values (14,14,'producao');
-insert into menu_opcoes(id,idmodulo,menu) values (15,15,'canal');
-insert into menu_opcoes(id,idmodulo,menu) values (16,16,'subcanal');
+insert into menu_opcoes(id,idmodulo,menu) values (15,15,'pdv');
 insert into menu_opcoes(id,idmodulo,menu) values (17,17,'maquinetapos');
 insert into menu_opcoes(id,idmodulo,menu) values (18,18,'origemvenda');
 insert into menu_opcoes(id,idmodulo,menu) values (19,19,'tipomov');

@@ -10,38 +10,35 @@
 
 	<p:dialog id="produtoDialog" widgetVar="_produtoDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="80%" header="Produto">
+		hideEffect="clip" closeOnEscape="true" width="60%" header="Produto">
 		<p:ajax event="close" listener="#{produtoController.fecharDialogo()}" />
 		<h:form id="produtoForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
-					<div class="form-row">
-						<div class="col-md-8">
-							<div class="position-relative form-group">
-								<label for="nome" class="">Nome</label>
-								<p:inputText value="#{produtoController.item.descricao}"
-									required="true" maxlength="150"
-									requiredMessage="O nome é obrigatório" id="nome" type="text"
-									styleClass="form-control" />
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="position-relative form-group">
-								<label for="tipoconta" class="">Tipo assinatura</label>
-								<p:selectOneRadio id="console" 
-									value="#{produtoController.item.tipoassinatura}"
-									unselectable="true">
-									<f:selectItem itemLabel="Mensal" itemValue="Mensal" />
-									<f:selectItem itemLabel="Trimestral" itemValue="Trimestral" />
-									<f:selectItem itemLabel="Semestral" itemValue="Semestral" />
-									<f:selectItem itemLabel="Anual" itemValue="Anual" />
+			<div class="form-row">
+				<div class="col-md-7">
+					<div class="position-relative form-group">
+						<label for="nome" class="">Nome</label>
+						<p:inputText value="#{produtoController.item.descricao}"
+							required="true" maxlength="150"
+							requiredMessage="O nome é obrigatório" id="nome" type="text"
+							styleClass="form-control" />
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+						<label for="tipoconta" class="">Tipo assinatura</label>
+						<p:selectOneRadio id="console"
+							value="#{produtoController.item.tipoassinatura}"
+							unselectable="true">
+							<f:selectItem itemLabel="Mensal" itemValue="Mensal" />
+							<f:selectItem itemLabel="Trimestral" itemValue="Trimestral" />
+							<f:selectItem itemLabel="Semestral" itemValue="Semestral" />
+							<f:selectItem itemLabel="Anual" itemValue="Anual" />
 
-								</p:selectOneRadio>
-							</div>
-						</div>
+						</p:selectOneRadio>
 					</div>
 				</div>
 			</div>
+
 			<hr />
 			<center>
 				<p:commandLink actionListener="#{produtoController.create()}"

@@ -17,7 +17,7 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import editora3.entidades.Brinde;
-import editora3.entidades.Canal;
+import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Contrato;
 import editora3.entidades.ContratoEntrada;
 import editora3.entidades.InfraUsuario;
@@ -25,7 +25,7 @@ import editora3.facade.ContratoEntradaFacade;
 import editora3.facade.ContratoFacade;
 import editora3.seguranca.LoginInfo;
 import editora3.facade.BrindeFacade;
-import editora3.facade.CanalFacade;
+import editora3.facade.PontoDeVendaFacade;
 import editora3.util.JsfUtil;
 @Named("painelGerenciamentoController") 
 @RequestScoped
@@ -73,14 +73,14 @@ public class PainelGerenciamentoController   {
 
 	        getBarModel().setTitle("Valores efetivados no período");
 	        getBarModel().setLegendPosition("ne");
-	 
+	      
 	        Axis xAxis = getBarModel().getAxis(AxisType.X);
 	        xAxis.setLabel("Meses");
 	 
 	        Axis yAxis = getBarModel().getAxis(AxisType.Y);
 	        yAxis.setLabel("Valores");
 	        yAxis.setMin(0);
-	       	
+	       
 		
        // BarChartModel model = new BarChartModel();
 			ChartSeries boys = new ChartSeries();
@@ -97,13 +97,17 @@ public class PainelGerenciamentoController   {
 				 mes = (object[0]!= null ? (Double)object[1]  : 0d);
 				 valor = (object[0]!= null ? (Double)object[2]  : 0d);
 				boys.set((mes<10 ? "0": "")+mes.intValue() + "/" + ano.intValue(), valor);
+				
+		
 			}
 			ValorMaximo=(valor>ValorMaximo ?  valor :ValorMaximo );
 			
 			
 		}
+		 
 		 yAxis.setMax(ValorMaximo);
         model.addSeries(boys);
+        
         
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -156,7 +160,7 @@ public class PainelGerenciamentoController   {
 	public List<Brinde> getBrindesDisponiveis() {
 		ArrayList<Brinde> brindesDisponiveis = (ArrayList<Brinde>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("brindesDisponiveis");
 		if(brindesDisponiveis==null) {
-			brindesDisponiveis = (ArrayList<Brinde>) getBrindefacade().findAllDisponivel(getLoginInfo().getCodigoEquipeVinculada());
+			brindesDisponiveis = (ArrayList<Brinde>) getBrindefacade().findAllDisponivel(getLoginInfo().getCodigoEquipeVinculada(),true);
 			setBrindesDisponiveis(brindesDisponiveis);
 		}
 		// TODO Auto-generated method stub
@@ -187,8 +191,8 @@ public class PainelGerenciamentoController   {
 	public void setContratoFacade(ContratoFacade contratoFacade) {
 		this.contratoFacade = contratoFacade;
 	}
-	public Integer getTotalBrindesEmEstoque() {
-		Integer ret =0;
+	public Double getTotalBrindesEmEstoque() {
+		Double ret =0d;
 		try {
 			List<Brinde> brindesDisponiveis2 = getBrindesDisponiveis();
 			for (Iterator iterator = brindesDisponiveis2.iterator(); iterator.hasNext();) {
@@ -199,7 +203,7 @@ public class PainelGerenciamentoController   {
 					}else {
 						if(brinde.getBrindeEstoqueEquipe()!=null && !brinde.getBrindeEstoqueEquipe().isEmpty()) {
 						   Double estoque =  brinde.getBrindeEstoqueEquipe().get(0).getQuantidade();
-						   ret = estoque.intValue();
+						   ret = estoque;
 						}
 					}
 			}
@@ -213,9 +217,9 @@ public class PainelGerenciamentoController   {
 		return ret;
 	}
 	
-	public Integer EstoqueAtual(Brinde b) {
+	public Double EstoqueAtual(Brinde b) {
 	
-		Integer ret =0;
+		Double ret =0d;
 		
 		try {
 			
@@ -224,7 +228,7 @@ public class PainelGerenciamentoController   {
 			}else {
 				if(b.getBrindeEstoqueEquipe()!=null && !b.getBrindeEstoqueEquipe().isEmpty()) {
 				   Double estoque =  b.getBrindeEstoqueEquipe().get(0).getQuantidade();
-				   ret = estoque.intValue();
+				   ret = estoque;
 				}
 			}
 			

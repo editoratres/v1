@@ -13,55 +13,48 @@
 		hideEffect="clip" closeOnEscape="true" width="60%" header="Brinde">
 		<p:ajax event="close" listener="#{brindeController.fecharDialogo()}" />
 		<h:form id="brindeForm">
-			<div class="main-card mb-3 card">
-				<div class="card-body">
-					<div class="form-row">
-						<div class="col-md-8">
-							<div class="position-relative form-group">
-								<label for="nome" class="">Nome</label>
-								<p:inputText value="#{brindeController.item.descricao}"
-									required="true" maxlength="150"
-									requiredMessage="O nome é obrigatório" id="nome" type="text"
-									styleClass="form-control" />
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="position-relative form-group">
-								<label for="codigoassociado" class="">Código associado</label>
-								<p:inputText value="#{brindeController.item.codigoassociado}"
-									  maxlength="10"
-									  id="codigoassociado" type="text"
-									styleClass="form-control" />
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="position-relative form-group">
-								<label for="valor" class="">Valor</label>
-								<p:inputNumber value="#{brindeController.item.valor}" 
-								inputStyleClass="form-control"
-									style="width : 90%" id="valor" type="text" minValue="0"
-									maxValue="999999.99" decimalPlaces="2" 
-									validatorMessage="Valor inválida . Informe um valor válido entre 0 e R$ 99.999,99">
-								</p:inputNumber>
-							</div>
-						</div>
+
+			<div class="form-row">
+				<div class="col-md-8">
+					<div class="position-relative form-group">
+						<label for="nome" class="">Nome</label>
+						<p:inputText value="#{brindeController.item.descricao}"
+							required="true" maxlength="150"
+							requiredMessage="O nome é obrigatório" id="nome" type="text"
+							styleClass="form-control" />
 					</div>
-					<div class="form-row">
-						<div class="col-md-2">
-							<div class="position-relative form-group">
-								<label for="idstatus" class="">Status</label>
-								<br/>
-								<p:inputSwitch value="#{brindeController.item.status}"
-									offLabel="Inativo"
-									 onLabel="Ativo"
-									id="idstatus">
-									<p:ajax update="idstatus" />
-								</p:inputSwitch>
-							</div>
-						</div>
+				</div>
+				<div class="col-md-2">
+					<div class="position-relative form-group">
+						<label for="codigoassociado" class="">Código associado</label>
+						<p:inputText value="#{brindeController.item.codigoassociado}"
+							maxlength="10" id="codigoassociado" type="text"
+							styleClass="form-control" />
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="position-relative form-group">
+						<label for="valor" class="">Valor</label>
+						<p:inputNumber value="#{brindeController.item.valor}"
+							inputStyleClass="form-control" style="width : 90%" id="valor"
+							type="text" minValue="0" maxValue="999999.99" decimalPlaces="2"
+							validatorMessage="Valor inválida . Informe um valor válido entre 0 e R$ 99.999,99">
+						</p:inputNumber>
 					</div>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="col-md-2">
+					<div class="position-relative form-group">
+						<label for="idstatus" class="">Status</label> <br />
+						<p:inputSwitch value="#{brindeController.item.status}"
+							offLabel="Inativo" onLabel="Ativo" id="idstatus">
+							<p:ajax update="idstatus" />
+						</p:inputSwitch>
+					</div>
+				</div>
+			</div>
+
 			<hr />
 			<center>
 				<p:commandLink actionListener="#{brindeController.create()}"
@@ -83,7 +76,8 @@
 			</p:confirmDialog>
 		</h:form>
 	</p:dialog>
-	<style>
+	
+	<!-- <style>
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-label {
 	font-size: 12px;
 }
@@ -91,7 +85,7 @@
 .MyOneMenu.ui-selectonemenu .ui-selectonemenu-trigger {
 	height: 33px !important;
 }
-</style>
+</style> -->
 
 </ui:composition>
 </html>

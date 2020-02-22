@@ -10,12 +10,11 @@
 
 	<p:dialog id="subcanalDialog" widgetVar="_subcanalDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip" 
-		hideEffect="clip" closeOnEscape="true" width="60%" 
+		hideEffect="clip" closeOnEscape="true" width="50%" 
 		header="SubCanal">
 		<p:ajax event="close" listener="#{subcanalController.fecharDialogo()}" />
 		<h:form id="subcanalForm"  >
-			<div class="main-card mb-3 card">
-				<div class="card-body">
+			 
 					<div class="form-row">
 						<div class="col-md-12">
 							<div class="position-relative form-group">
@@ -27,8 +26,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+				 
 			<hr/>
 			<center>
 				<p:commandLink actionListener="#{subcanalController.create()}"

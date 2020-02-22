@@ -61,15 +61,16 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 	@Transactional
 	public List<Brinde> findAllDisponivel(){
 		
-		return findAllDisponivel(null);
+		return findAllDisponivel(null,true);
 	}
 	
 	
-	public List<Brinde> findAllDisponivel(Integer CodigoEquipe){
+	public List<Brinde> findAllDisponivel(Integer CodigoEquipe, boolean exibirSomenteItensComEstoque){
 		List<Brinde> ret =null;
 		try {
-			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("select distinct c from Brinde c  inner join fetch c.brindeEstoqueEquipe bee " +
-			 (CodigoEquipe==null ? " where c.quantidade>0" : " where bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
+			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("select distinct c from Brinde C" +
+			 (exibirSomenteItensComEstoque ? " inner join fetch c.brindeEstoqueEquipe bee  where c.quantidade>0 " : " where 1=1 ") +
+			 (CodigoEquipe==null ? "" : " where bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
 			 
 			 ,Brinde.class);
 			 if(CodigoEquipe!=null) {

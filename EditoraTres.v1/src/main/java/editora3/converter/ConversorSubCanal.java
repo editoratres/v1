@@ -7,7 +7,7 @@ import javax.faces.convert.FacesConverter;
 
 import editora3.controller.CanalController;
 import editora3.controller.SubCanalController;
-import editora3.entidades.Canal;
+import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Subcanal;
  
  

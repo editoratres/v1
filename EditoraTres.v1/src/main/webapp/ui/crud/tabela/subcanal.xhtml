@@ -28,14 +28,14 @@
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
-								<p:commandLink style="font-size: 20px"
+								<p:commandLink style="font-size: 20px !important;"
 									actionListener="#{subcanalController.atualizar()}" update="datalist"
 									id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px" update=":subcanalForm"
+								<p:commandLink style="font-size: 20px !important;" update=":subcanalForm"
 									actionListener="#{subcanalController.prepararNovo()}"
 									oncomplete="PF('_subcanalDialog').show();" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
