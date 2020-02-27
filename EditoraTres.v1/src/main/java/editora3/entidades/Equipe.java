@@ -83,6 +83,8 @@ public class Equipe implements Serializable {
 
 	private String tipopessoa;
 	
+	private Double valorOferta=0d;
+	
 	@ManyToOne()
 	@JoinColumn(name="infraUsuarioBean", referencedColumnName="idusuario")
 	private InfraUsuario infraUsuarioBean;
@@ -282,6 +284,14 @@ public class Equipe implements Serializable {
 
 	public void setInfraUsuarioBean(InfraUsuario infraUsuarioBean) {
 		this.infraUsuarioBean = infraUsuarioBean;
+	}
+
+	public Double getValorOferta() {
+		return valorOferta;
+	}
+
+	public void setValorOferta(Double valorOferta) {
+		this.valorOferta = valorOferta;
 	}
 
 }

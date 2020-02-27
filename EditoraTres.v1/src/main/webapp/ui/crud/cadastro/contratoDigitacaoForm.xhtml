@@ -10,7 +10,7 @@
 
 	<p:dialog id="contratoDialog" widgetVar="_contratoDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" draggable="false" width="70%"
+		hideEffect="clip" closeOnEscape="true" draggable="false" width="80%"
 		header="Digitação de contratos">
 		<p:ajax event="close" listener="#{contratoController.fecharDialogo()}" />
 		<h:form id="contratoForm">
@@ -18,7 +18,7 @@
 				name="atualizarBrindes"></p:remoteCommand>
 
 			<div class="form-row body-editora">
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="position-relative form-group">
 						<b><label for="divinclusao" class="">Inclusão</label></b>
 						<div id="divinclusao">
@@ -31,21 +31,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-3">
+				<div class="col-md-2">
 					<div class="position-relative form-group">
 						<b><label for="iddivcontrato" class="">Contrato</label></b>
 						<div id="iddivcontrato" class="input-group mb-3">
 							<p:inputNumber minValue="0" maxValue="9999999"
+								
 								disabled="#{contratoController.editar or contratoController.contratoCarregado or contratoController.item.inclusao!=null}"
 								inputStyleClass="form-control" decimalPlaces="0"
 								style="#{contratoController.camposInvalidos.contains('idcontrato') ? 'border: 2px solid red !important;' : ''}"
-								decimalSeparator="" thousandSeparator="" size="28"
+								decimalSeparator="" thousandSeparator="" size="17"
 								value="#{contratoController.item.codigocontrato}"
 								id="idcontrato" />
 							<span class="input-group-btn"> <p:commandLink
 									styleClass="btn btn-outline-secondary" id="idpesquisarContrato"
 									onstart="PF('_id-blockui_entradabrinde').show();"
 									process="@this,idcontrato"
+									disabled="#{contratoController.editar}" 
 									onclick="PF('_datalistCtoDisponiveis').clearFilters();"
 									oncomplete="PF('_id-blockui_entradabrinde').hide() ; if(!args.validationFailed) { PF('_idConsultaCtoDisponiveis').show();PF('_id-blockui_entradabrinde').hide();}"
 									actionListener="#{contratoController.prepararConsultarContratoDisponivel()}"
@@ -59,12 +61,13 @@
 					</div>
 				</div>
 				
-				<div class="col-md-2">
+				<div class="col-md-1">
 					<div class="position-relative form-group">
 						<b><label for="divvenda" class="">Data Venda</label></b>
 						<div id="divvenda">
 							<p:calendar inputStyleClass="form-control"
 								disabled="#{contratoController.editar}"
+								inputStyle ="#{contratoController.camposInvalidos.contains('iddatavenda') ? 'border: 2px solid red !important;' : ''}"
 								converterMessage="Data de Inclusão informada inválida"
 								pattern="dd/MM/yyyy" mask="true"
 								value="#{contratoController.item.datavenda}" id="iddatavenda"
@@ -73,7 +76,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="position-relative form-group">
 						<b><label for="idEquipe">Equipe</label></b>
 						<p:selectOneMenu autoWidth="false"
@@ -98,11 +101,11 @@
 								onstart="PF('_id-blockui_entradabrinde').show();"
 								oncomplete="PF('_id-blockui_entradabrinde').hide();"
 								onerror="PF('_id-blockui_entradabrinde').hide();"
-								update="idvendedor" process="idEquipe" />
+								update="idvendedor,idpontodevenda" process="idEquipe" />
 						</p:selectOneMenu>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="position-relative form-group">
 						<b><label for="idvendedor" class="">Vendedor</label></b>
 						<p:selectOneMenu autoWidth="false"
@@ -207,6 +210,7 @@
 								<b><label for="tipoconta" class="">Tipo</label></b>
 								<p:selectOneMenu id="tipopessoa"
 									styleClass="form-control MyOneMenu"
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.tipopessoa}">
 
 									<f:selectItem itemLabel="Física" itemValue="fisica" />
@@ -218,10 +222,11 @@
 								</p:selectOneMenu>
 							</div>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="position-relative form-group">
 								<b><label for="cpf" class="">CPF/CNPJ</label></b>
 								<p:inputMask mask="#{contratoController.mascaraPessoa}"
+									disabled="#{contratoController.editar}" 
 									style="#{contratoController.camposInvalidos.contains('cnpjcpf') ? 'border: 2px solid red !important;' : ''}"
 									size="13" requiredMessage="CNPJ/CPF obrigatório"
 									value="#{contratoController.item.assinanteBean.cnpjcpf}"
@@ -231,10 +236,11 @@
 								</p:inputMask>
 							</div>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-6">
 							<div class="position-relative form-group">
 								<b><label for="nome" class="">Nome</label></b>
 								<p:inputText
+									disabled="#{contratoController.editar}" 
 									style="#{contratoController.camposInvalidos.contains('nome') ? 'border: 2px solid red !important;' : ''}"
 									value="#{contratoController.item.assinanteBean.descricao}"
 									maxlength="150" requiredMessage="A descrição é obrigatório"
@@ -245,6 +251,7 @@
 							<div class="position-relative form-group">
 								<b><label for="p:selectOneMenuidsexo" class="">Sexo</label></b>
 								<p:selectOneMenu id="idsexo" styleClass="form-control MyOneMenu"
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.sexo}">
 									<f:selectItem itemLabel="Selecione" noSelectionOption="true"
 										itemValue="" />
@@ -260,10 +267,12 @@
 							<div class="position-relative form-group">
 								<b><label for="cep" class="">Cep</label></b>
 								<div id="cep" class="input-group mb-3">
-									<p:inputMask mask="99.999-999" size="14"
+									<p:inputMask mask="99.999-999" size="18"
 										inputStyleClass="form-control"
+										disabled="#{contratoController.editar}" 
 										value="#{contratoController.item.assinanteBean.cep}" id="cep" />
 									<span class="input-group-btn"> <p:commandLink
+											disabled="#{contratoController.editar}" 
 											styleClass="btn btn-outline-secondary btn-sm"
 											id="id-equipeform-btcep"
 											actionListener="#{contratoController.pesquisarCep()}"
@@ -284,6 +293,7 @@
 							<div class="position-relative form-group">
 								<b><label for="exampleAddress" class="">Endereço</label></b>
 								<p:inputText
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.endereco}"
 									maxlength="200" id="exampleAddress" type="text"
 									styleClass="form-control" />
@@ -293,6 +303,7 @@
 							<div class="position-relative form-group">
 								<b><label for="numero" class="">Número</label></b>
 								<p:inputText
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.numero}"
 									maxlength="50" id="numero" type="text"
 									styleClass="form-control" />
@@ -302,6 +313,7 @@
 							<div class="position-relative form-group">
 								<b><label for="exampleAddress2" class="">Complemento</label></b>
 								<p:inputText
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.complemento}"
 									maxlength="100" id="exampleAddress2" type="text"
 									styleClass="form-control" />
@@ -315,6 +327,7 @@
 							<div class="position-relative form-group">
 								<b><label for="estado" class="">Estado</label></b>
 								<h:selectOneMenu styleClass="form-control MyOneMenu"
+								disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.estado}" var="t"
 									id="estado">
 									<f:selectItem itemValue="0" itemLabel="Selecione"
@@ -340,6 +353,7 @@
 							<div class="position-relative form-group">
 								<b><label for="cidade" class="">Cidade</label></b>
 								<h:selectOneMenu styleClass="form-control MyOneMenu"
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.cidade}" var="c"
 									id="cidade">
 									<f:selectItem itemValue="0" itemLabel="Selecione"
@@ -361,6 +375,7 @@
 							<div class="position-relative form-group">
 								<b><label for="fone1" class="">Fone1</label></b>
 								<p:inputMask mask="(99) 99999-9999"
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.fone1}"
 									id="fone1" type="text" styleClass="form-control" />
 							</div>
@@ -369,6 +384,7 @@
 							<div class="position-relative form-group">
 								<b><label for="fone2" class="">Fone2</label></b>
 								<p:inputMask mask="(99) 99999-9999"
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.fone2}"
 									id="fone2" type="text" styleClass="form-control" />
 							</div>
@@ -377,6 +393,7 @@
 							<div class="position-relative form-group">
 								<b><label for="exampleEmail11" class="">Email</label></b>
 								<p:inputText
+									disabled="#{contratoController.editar}" 
 									value="#{contratoController.item.assinanteBean.email}"
 									maxlength="100" id="exampleEmail11" required="false"
 									validatorMessage="Email inválido" styleClass="form-control">
@@ -411,7 +428,8 @@
 						<div class="card-body" style="padding: 0rem !important;">
 							<div class="form-row body-editora">
 								<div class="col-md-12">
-									<p:dataTable id="datalistitens" styleClass="table-editora"
+									<p:dataTable id="datalistitens" styleClass="table-editora-contrato"
+										
 										value="#{contratoController.item.contratoProdutos}" var="prod"
 										selectionMode="single" paginatorPosition="bottom"
 										scrollRows="2" scrollable="true" scrollHeight="60"
@@ -494,6 +512,7 @@
 										<p:column width="5%">
 											<center>
 												<p:commandLink
+													disabled="#{contratoController.editar}" 
 													update=":contratoForm:idvalorcartao :contratoForm:idTotalBrindes :contratoForm:datalistBrindes :contratoForm:datalistitens, :growl, :contratoForm:idTotalProdutos , :contratoForm:idTotalProdutosParcela"
 													actionListener="#{contratoController.excluirContratoProdutoItem(prod)}"
 													style="font-size: 20px !important;">
@@ -599,16 +618,25 @@
 												<p:spinner size="3" min="1" max="99"
 													style="text-align: center !important;"
 													value="#{brindes.quantidade}"
-													readonly="#{contratoController.editar} "
+													disabled="#{contratoController.editar}"
 													id="idQuantidadBrinde">
+													<p:ajax event="change"
+													process="idQuantidadBrinde"
+													onstart="PF('_id-blockui_entradabrinde').show();"
+													oncomplete="PF('_id-blockui_entradabrinde').hide();"
+													update=":contratoForm:idTotalBrindes :growl" />
+										
 
 												</p:spinner>
 
 											</ui:fragment>
 											<ui:fragment
-												rendered="#{empty brindes.contratoProdutoBean ? false :  true}">
+												rendered="#{empty brindes.contratoProdutoBean  ? false :  true}">
 
-												<h:outputText value="#{brindes.quantidade}" />
+												<h:outputText value="#{brindes.quantidade}" >
+														<f:convertNumber type="number" pattern="#####" />
+												</h:outputText>
+												
 
 											</ui:fragment>
 
@@ -632,6 +660,7 @@
 										<p:column width="10%">
 											<center>
 												<p:commandLink
+													disabled="#{contratoController.editar}" 
 													update=":contratoForm:datalistBrindes :growl :contratoForm:idTotalBrindes"
 													actionListener="#{contratoController.excluirContratoBrindeItem(brindes)}"
 													style="font-size: 20px !important;">
@@ -683,12 +712,13 @@
 					<div class="main-card mb-2 card"
 						style="margin: 0 0 none !important;">
 						<div class="card-body" style="padding: 0rem !important;">
-							<div class="form-row body-editora">
+							<div class="form-row body-editora" >
 								<div class="col-md-3">
 									<div class="position-relative form-group">
 										<b><label for="idbandeira" class="">Bandeira</label></b>
 										<h:selectOneMenu styleClass="form-control MyOneMenu"
 											autoWidth="false"
+											disabled="#{contratoController.editar}" 
 											converter="editora3.converter.ConversorBandeiraCartao"
 											style="#{contratoController.camposInvalidos.contains('idbandeira') ? 'border: 2px solid red !important;' : ''}"
 											value="#{contratoController.item.pagamentoBean.bandeiraBean}"
@@ -713,6 +743,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idcartao" class="">Cartão</label></b>
 										<p:inputText
+											disabled="#{contratoController.editar}" 
 											style="#{contratoController.camposInvalidos.contains('idcartao') ? 'border: 2px solid red !important;' : ''}"
 											value="#{contratoController.item.pagamentoBean.cartao}"
 											id="idcartao" type="text" styleClass="form-control" />
@@ -722,6 +753,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idcodseg" class="">Cod.Seg.</label></b>
 										<p:inputText size="7"
+											disabled="#{contratoController.editar}" 
 											style="#{contratoController.camposInvalidos.contains('idcodseg') ? 'border: 2px solid red !important;' : ''}"
 											value="#{contratoController.item.pagamentoBean.codseguranca}"
 											id="idcodseg" type="text" styleClass="form-control" />
@@ -731,6 +763,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idvalidade" class="">Validade</label></b>
 										<p:inputMask mask="99/99"
+										disabled="#{contratoController.editar}" 
 											style="#{contratoController.camposInvalidos.contains('idvalidade') ? 'border: 2px solid red !important;' : ''}"
 											value="#{contratoController.item.pagamentoBean.validade}"
 											id="idvalidade" type="text" styleClass="form-control">
@@ -743,6 +776,7 @@
 										<b><label for="idvalorcartao" class="">Valor</label></b>
 										<p:inputNumber decimalPlaces="2" minValue="0"
 											maxValue="99999.99" readonly="true"
+											
 											inputStyleClass="form-control"
 											value="#{contratoController.item.pagamentoBean.valor}"
 											id="idvalorcartao" type="text">
@@ -756,6 +790,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idlote" class="">Lote</label></b>
 										<p:inputText size="7" maxlength="20"
+											disabled="#{contratoController.editar}" 
 											value="#{contratoController.item.pagamentoBean.lote}"
 											id="idlote" type="text" styleClass="form-control" />
 									</div>
@@ -764,6 +799,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idmaquineta" class="">Maquineta</label></b>
 										<p:inputText size="7" maxlength="20"
+											disabled="#{contratoController.editar}" 
 											value="#{contratoController.item.pagamentoBean.maquineta}"
 											id="idmaquineta" type="text" styleClass="form-control" />
 									</div>
@@ -772,6 +808,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idnsu" class="">NSU</label></b>
 										<p:inputText size="7" maxlength="20"
+											disabled="#{contratoController.editar}" 
 											value="#{contratoController.item.pagamentoBean.nsu}"
 											id="idnsu" type="text" styleClass="form-control" />
 									</div>
@@ -780,6 +817,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idterminal" class="">Terminal</label></b>
 										<p:inputText size="7" maxlength="20"
+											disabled="#{contratoController.editar}" 
 											value="#{contratoController.item.pagamentoBean.terminal}"
 											id="idterminal" type="text" styleClass="form-control" />
 									</div>
@@ -788,6 +826,7 @@
 									<div class="position-relative form-group">
 										<b><label for="idtitular" class="">Titular</label></b>
 										<p:inputText maxlength="100"
+											disabled="#{contratoController.editar}" 
 											value="#{contratoController.item.pagamentoBean.titular}"
 											id="idtitular" type="text" styleClass="form-control" />
 									</div>
@@ -801,6 +840,7 @@
 												autorização</label></b>
 										<div id="iddataautorizacao">
 											<p:calendar inputStyleClass="form-control"
+												disabled="#{contratoController.editar}" 
 												converterMessage="Data de autorização informada inválida"
 												pattern="dd/MM/yyyy" mask="true"
 												value="#{contratoController.item.pagamentoBean.data}"
@@ -816,6 +856,7 @@
 										<b><label for="idposparcial" class="">Pos Parcial</label></b>
 										<div id="idposparcial">
 											<p:selectBooleanCheckbox
+												disabled="#{contratoController.editar}" 
 												value="#{contratoController.item.pagamentoBean.condposparcial}"
 												id="idposparcial">
 
@@ -828,6 +869,7 @@
 										<b><label for="divinclusao" class="">Pos Total</label></b>
 										<div id="idpostotal">
 											<p:selectBooleanCheckbox
+												disabled="#{contratoController.editar}" 
 												value="#{contratoController.item.pagamentoBean.condpostotal}"
 												id="idpostotal">
 
@@ -841,9 +883,10 @@
 					</div>
 				</div>
 			</div>
-			<center>
+			<center >
 				<p:commandLink actionListener="#{contratoController.create()}"
 					update="@form :_Formulario:datalist :growl"
+					rendered="#{contratoController.editar ? false : true}"
 					onstart="PF('_id-blockui_entradabrinde').show();"
 					onsuccess="PF('_id-blockui_entradabrinde').hide();"
 					style="font-size: 15px !important;"
@@ -863,7 +906,7 @@
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 
-			<p:blockUI widgetVar="_id-blockui_entradabrinde"
+			<p:blockUI widgetVar="_id-blockui_entradabrinde"  
 				id="id-blockui_entradabrinde" block=":contratoForm">
 				<ui:include src="/ui/carregando.xhtml" />
 			</p:blockUI>
@@ -871,7 +914,7 @@
 	</p:dialog>
 
 
-	<style>
+<!-- 	<style>
 .ui-datatable-hor-scroll .ui-datatable-tablewrapper, .scrolling-div .ui-datatable-tablewrapper
 	{
 	overflow: auto;
@@ -888,7 +931,7 @@
 	border: 2px solid red !important;
 }
 </style>
-
+ -->
 
 	<script>
 		function scrollToBottom() {

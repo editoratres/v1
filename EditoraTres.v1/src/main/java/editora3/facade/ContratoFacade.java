@@ -1,30 +1,41 @@
 package editora3.facade;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
 import javax.transaction.Transactional;
 
-import org.hibernate.Hibernate;
 
-import editora3.entidades.Assinante;
+
+
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeEstoqueEquipe;
 import editora3.entidades.Contrato;
 import editora3.entidades.ContratoBrinde;
-import editora3.entidades.ContratoPagamento;
-import editora3.entidades.Equipe;
-import editora3.entidades.Relatorio;
 
-public class ContratoFacade extends AbstractFacade<Contrato> {
+import editora3.entidades.Equipe;
+
+ 
+
+public class ContratoFacade extends AbstractFacade<Contrato> implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public ContratoFacade() {
 		super(Contrato.class);
@@ -48,28 +59,104 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 	
 	@Transactional
 	public List<Contrato> findAllLazy(Integer codigoequipe){
-		List<Contrato> ret =null;
-		try {
-			TypedQuery<Contrato> createQuery = getEntityManager().createQuery(
-					"select c from Contrato c  where not c.inclusao is null"+
-							(codigoequipe!=null ?  "  and c.equipeBean.codigo=:codigoequipe": ""),
-					Contrato.class);
-			if(codigoequipe!=null) {
-				createQuery.setParameter("codigoequipe", codigoequipe);
-			}
-		
-			ret = createQuery.getResultList();
-			
-		 
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			// TODO: handle exception
-		}	
-		
-		return ret;
+		LazyObjetos<Contrato> findAllLazy = findAllLazy(codigoequipe,null);
+		 return findAllLazy.getLista();
 		
 	}
+	 
+	public Integer findAllLazyCount(Integer codigoequipe){
+
+		Integer ret = 0;
+		Query  createQuery = getEntityManager()
+				.createQuery(
+						"select count(*) from Contrato c  where not c.inclusao is null"
+								+ (codigoequipe != null ? "  and c.equipeBean.codigo=:codigoequipe" : "")
+						);
+		if(codigoequipe!=null) {
+			createQuery.setParameter("codigoequipe", codigoequipe);
+		}
+		Object singleResult = createQuery.getSingleResult();
+		if(singleResult!=null) {
+			ret = Long.valueOf(singleResult.toString()).intValue();
+		}
+
+		return ret;
+	}
+	
+	
+	
+	public LazyObjetos<Contrato> findAllLazy(Integer codigoequipe, FiltrosLazyDataModel dataModel){
+		///List<Contrato> ret =null;
+		LazyObjetos<Contrato> retLazy = new LazyObjetos();  
+		
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("select c from Contrato c  where not c.inclusao is null "
+				+ (codigoequipe != null ? "  and c.equipeBean.codigo=:codigoequipe" : ""));
+		
+		StringBuilder sqlContagem = new StringBuilder();
+		sqlContagem.append("select count(*) from Contrato c  where not c.inclusao is null "
+				+ (codigoequipe != null ? "  and c.equipeBean.codigo=:codigoequipe" : ""));
+		
+		List<ParametrosNativosQuery> parametrosNativosQuery = new ArrayList<ParametrosNativosQuery>();
+		if(codigoequipe!=null) {
+			ParametrosNativosQuery p1=new ParametrosNativosQuery();
+			p1.setNome(":codigoequipe");
+			p1.setValor(codigoequipe);
+			parametrosNativosQuery.add(p1);
+		}
+		
+		QueryLazyGerador<Contrato> queryLazyGerador= new QueryLazyGerador<>(em, sql.toString(), sqlContagem.toString(), dataModel,parametrosNativosQuery,Contrato.class,"c");
+				
+		/*
+		
+		if (dataModel != null) {
+			Map<String, Object> filters = dataModel.getFilters();
+			if (filters != null && !filters.isEmpty()) {
+				Set<String> keySet = filters.keySet();
+				for (String key : keySet) {
+					if(filters.get(key).toString().trim().length()>0) {
+						 
+					 
+						   sql.append(" and cast(c."+key).append(" as string) like ").append(":").append(key.replace(".", "_"));
+						 
+					}
+				}
+			}
+		}
+
+		TypedQuery<Contrato> createQuery = getEntityManager().createQuery(sql.toString(), Contrato.class);
+
+		if (dataModel != null) {
+			Map<String, Object> filters = dataModel.getFilters();
+			if (filters != null && !filters.isEmpty()) {
+				Set<String> keySet = filters.keySet();
+				for (String key : keySet) {
+					if(filters.get(key).toString().trim().length()>0) {
+						 
+							createQuery.setParameter(key.replace(".", "_"), filters.get(key) instanceof Number ? filters.get(key) : filters.get(key)+"%" );
+						 
+					}
+				}
+			}
+		}
+
+		if (dataModel != null) {
+			createQuery.setFirstResult(dataModel.getFirst());
+			createQuery.setMaxResults(dataModel.getPageSize());
+
+		}
+*/		
+	
+		///ret =  queryLazyGerador.getTypedQueryResultado();
+		
+		retLazy.setLista(queryLazyGerador.getTypedQueryResultado());
+		retLazy.setTotalObjetos(queryLazyGerador.getTypedQueryTotalizador());
+		
+		return retLazy;
+	
+	}
+	
 	
 	@Transactional
 	public List<Contrato> totalContratosEfetivados(Integer codigoequipe){
@@ -117,13 +204,13 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 					}
 				}else {
 				
-					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),-contratoBrinde.getQuantidade());
+					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),contratoBrinde.getQuantidade());
 								
 				}
 				
 			}
-			c.setInclusao(null);
-			c.setRelatorioBean(null);
+			c.setDatacancelamento(new Date());
+			/*c.setRelatorioBean(null);
 			c.setNascimento(null);
 			c.setCartaobeneficio(null);
 			c.setDatavenda(null);
@@ -141,7 +228,7 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 			assinanteBean.setFone1("");
 			assinanteBean.setFone2("");
 			assinanteBean.setFone3("");
-			
+			c.setVendedorBean(null);
 			c.setAssinanteBean(assinanteBean);
 			//c.setCanalBean(null);
 			c.setSubcanlBean(null);
@@ -161,9 +248,10 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 			pagamentoBean.setValidade("");
 			pagamentoBean.setValor(0);
 			
+			
 			c.setPagamentoBean(pagamentoBean);
 			c.getContratoBrindes().clear();
-			c.getContratoProdutos().clear();
+			c.getContratoProdutos().clear();*/
 			getEntityManager().merge(c);
 		
 	}
@@ -187,7 +275,7 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 					}
 				}else {
 				
-					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),contratoBrinde.getQuantidade());
+					getBrindeEstoqueFacade().MovimentarEstoqueBrindeEquipe(getEntityManager(),contratoBrinde.getBrindBean(),c.getEquipeBean(),c.getPontoDeVendaBean(),-contratoBrinde.getQuantidade());
 								
 				}
 				
@@ -258,6 +346,69 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 	}
 
 	@Transactional
+	public LazyObjetos<Contrato> contratosDisponiveisLazy(Integer codigoequipe, Integer codigoContrato, FiltrosLazyDataModel dataModel){
+		LazyObjetos<Contrato> retLazy = new LazyObjetos();  
+		 
+			/*TypedQuery<Contrato> createQuery = getEntityManager().createQuery(
+					"select c from Contrato c  where c.inclusao is null and c.datacancelamento is null"+
+							(codigoContrato!=null ?  "  and c.codigocontrato=:codigocontrato": "") +
+							(codigoequipe!=null ?  "  and c.equipeBean.codigo=:codigoequipe": ""),
+					Contrato.class);
+			if(codigoequipe!=null) {
+				createQuery.setParameter("codigoequipe", codigoequipe);
+			}
+			if(codigoContrato!=null) {
+				createQuery.setParameter("codigocontrato", codigoContrato);
+			}
+		
+			ret = createQuery.getResultList();
+			
+			
+			
+			LazyObjetos<Contrato> retLazy = new LazyObjetos();  
+			*/
+			
+			StringBuilder sql = new StringBuilder();
+			sql
+			.append("select c from Contrato c  where c.inclusao is null and c.datacancelamento is null")
+			.append(codigoContrato!=null ?  "  and c.codigocontrato=:codigocontrato": "") 
+			.append(codigoequipe!=null ?  "  and c.equipeBean.codigo=:codigoequipe": "");
+			
+			
+			
+			StringBuilder sqlContagem = new StringBuilder();
+			sqlContagem
+			.append("select count(*) from Contrato c  where c.inclusao is null and c.datacancelamento is null")
+			.append(codigoContrato!=null ?  "  and c.codigocontrato=:codigocontrato": "") 
+			.append(codigoequipe!=null ?  "  and c.equipeBean.codigo=:codigoequipe": ""); 
+			
+			List<ParametrosNativosQuery> parametrosNativosQuery = new ArrayList<ParametrosNativosQuery>();
+			if(codigoequipe!=null) {
+				ParametrosNativosQuery p1=new ParametrosNativosQuery();
+				p1.setNome(":codigoequipe");
+				p1.setValor(codigoequipe);
+				parametrosNativosQuery.add(p1);
+			}
+			
+			if(codigoContrato!=null) {
+				
+				ParametrosNativosQuery p2=new ParametrosNativosQuery();
+				p2.setNome(":codigocontrato");
+				p2.setValor(codigoContrato);
+				parametrosNativosQuery.add(p2);
+			}
+		
+			
+			QueryLazyGerador<Contrato> queryLazyGerador= new QueryLazyGerador<>(em, sql.toString(), sqlContagem.toString(), dataModel,parametrosNativosQuery,Contrato.class,"c");
+			
+			retLazy.setLista(queryLazyGerador.getTypedQueryResultado());
+			retLazy.setTotalObjetos(queryLazyGerador.getTypedQueryTotalizador());
+			
+	 
+		return retLazy;
+		
+	}
+
 	public List<Contrato> contratosDisponiveis(Integer codigoequipe, Integer codigoContrato){
 		List<Contrato> ret =null;
 		try {
@@ -292,7 +443,7 @@ public class ContratoFacade extends AbstractFacade<Contrato> {
 		return ret;
 		
 	}
-	
+
 	public List ContratosEfetivadosUltimos6Meses(Integer codigoEquipe) {
 		List ret= null;
 		StringBuilder sql = new StringBuilder();

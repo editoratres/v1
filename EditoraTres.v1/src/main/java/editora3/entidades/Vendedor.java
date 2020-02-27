@@ -69,7 +69,7 @@ public class Vendedor implements Serializable {
 	private String situacao;
 
 	private String tipoconta;
-	
+	private Double valorOferta=0d;
 	private byte[] foto;
 
 	//bi-directional many-to-one association to Equipe
@@ -339,6 +339,14 @@ public class Vendedor implements Serializable {
 
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
+	}
+
+	public Double getValorOferta() {
+		return valorOferta;
+	}
+
+	public void setValorOferta(Double valorOferta) {
+		this.valorOferta = valorOferta;
 	}
 
 }

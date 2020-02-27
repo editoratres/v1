@@ -57,29 +57,31 @@
 						<div class="card-body">
 
 							<p:dataTable id="datalist"  styleClass="table-editora"
-								value="#{contratoController.itens}" var="item" selectionMode="single"
+								value="#{contratoController.itensLazy}" var="item"
 								paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"
+								lazy="true"
 								selection="#{contratoController.item}" paginator="true"
 								rowKey="#{item.codigo}" rows="10"
+							 
 								rowsPerPageTemplate="10,20,30,40,50">
-
-								<p:column width="10%" sortBy="#{item.codigocontrato}" filterBy="#{item.codigocontrato}" filterMatchMode="contains">
+								
+								<p:column  width="7%" sortBy="#{item.codigocontrato}" filterBy="#{item.codigocontrato}" filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Cod" />
 									</f:facet>
 									<h:outputText value="#{item.codigocontrato}" />
 								</p:column>
-								<p:column width="25%" sortBy="#{item.assinanteBean.descricao}"  filterBy="#{item.assinanteBean.descricao}" filterMatchMode="contains">
+								<p:column width="20%" sortBy="#{item.assinanteBean.descricao}"  filterBy="#{item.assinanteBean.descricao}" filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Assinante" />
 									</f:facet>
 									<h:outputText value="#{item.assinanteBean.descricao}" />
 								</p:column>
 								
-								<p:column width="15%"   filterBy="#{item.assinanteBean.cnpjcpf}" filterMatchMode="contains">
+								<p:column width="13%"   filterBy="#{item.assinanteBean.cnpjcpf}" filterMatchMode="contains">
 									<f:facet name="header">
-										<h:outputText value="Cpf/Cnpj" />
+										<h:outputText value="Identificação" />
 									</f:facet>
 									<h:outputText value="#{item.assinanteBean.cnpjcpf}" />
 								</p:column>
@@ -90,7 +92,7 @@
 									<h:outputText value="#{item.pagamentoBean.bandeiraBean.descricao}" />
 								</p:column>
 								
-								<p:column width="20%"   filterBy="#{item.pagamentoBean.cartao}" filterMatchMode="contains">
+								<p:column width="15%"   filterBy="#{item.pagamentoBean.cartao}" filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Cartão" />
 									</f:facet>
@@ -101,13 +103,23 @@
 									<f:facet name="header">
 										<h:outputText value="Valor" />
 									</f:facet>
-									<h:outputText value="#{item.pagamentoBean.valor}" />
+									<h:outputText value="#{item.pagamentoBean.valor}" >
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
 								</p:column>
 								<p:column width="10%" sortBy="#{item.datavenda}">
 									<f:facet name="header">
-										<h:outputText value="Dt.Vda" />
+										<h:outputText value="Vda" />
 									</f:facet>
 									<h:outputText value="#{item.datavenda}" >
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column width="10%" sortBy="#{item.datacancelamento}">
+									<f:facet name="header">
+										<h:outputText value="Canc." />
+									</f:facet>
+									<h:outputText value="#{item.datacancelamento}" >
 											<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
 								</p:column>
@@ -118,7 +130,7 @@
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink actionListener="#{contratoController.excluir(item)}"
+										<p:commandLink disabled="#{item.datacancelamento==null ? false : true}" actionListener="#{contratoController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir contrato"
@@ -126,9 +138,11 @@
 												icon="ui-icon-alert" />
 										</p:commandLink>
 										<p:commandLink update=":contratoForm"
+											onstart="PF('_id-blockui_entradabrinde').show();"
+											onerror="PF('_id-blockui_entradabrinde').hide();"
 											actionListener="#{contratoController.prepararEditar(item)}"
-											oncomplete="PF('_contratoDialog').show();" style="font-size: 20px">
-											<i class="metismenu-icon pe-7s-note" />
+											oncomplete="PF('_contratoDialog').show();PF('_id-blockui_entradabrinde').hide();" style="font-size: 20px">
+											<i class="metismenu-icon pe-7s-search" />
 										</p:commandLink>
 									</center>
 
@@ -142,6 +156,10 @@
 			</div>
 		</div>
 	</h:form>
+	<p:blockUI widgetVar="_id-blockui_entradabrinde"
+				id="id-blockui_entradabrinde" block=":_Formulario">
+				<ui:include src="/ui/carregando.xhtml" />
+			</p:blockUI>
 
 	<ui:include src="contratoDigitacaoForm.xhtml" />
 	<ui:include src="contratoDigitacaoFormDialogos.xhtml" />

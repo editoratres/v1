@@ -64,83 +64,90 @@
 							<p:dataTable id="datalist" styleClass="table-editora"
 								value="#{brindeController.itens}" var="item"
 								selectionMode="single" paginatorPosition="bottom"
-								rowExpandMode="single"
-								emptyMessage="Nenhum registro localizado"
+								rowExpandMode="single" emptyMessage="Nenhum registro localizado"
 								selection="#{brindeController.item}" paginator="true"
 								rowKey="#{item.codigo}" rows="10"
 								rowsPerPageTemplate="10,20,30,40,50">
-								<p:ajax event="rowToggle"  onstart="PF('_id-blockui_brinde').show();"  onerror="PF('_id-blockui_brinde').hide();" oncomplete="PF('_id-blockui_brinde').hide();"/>
+								<p:ajax event="rowToggle"
+									listener="#{brindeController.sumario.clear()}"
+									onstart="PF('_id-blockui_brinde').show();"
+									onerror="PF('_id-blockui_brinde').hide();"
+									oncomplete="PF('_id-blockui_brinde').hide();" />
 
-								<p:column style="width=5%"
+								<p:column width="5%"
 									rendered="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? true : false}">
 									<p:rowToggler />
 								</p:column>
 								<p:rowExpansion>
-									<div class="row" style="border-top: thin;">
-										<div class="col-md-5">
-											<h6 style="text-align: center !important;">
-												<b>Estoque disponivel na(s) equipe/ponto de venda</b>
-											</h6>
-										</div>
-									</div>
-									<div class="row">
+									<fieldset class="border p-4">
+										<legend class="w-auto">
+											<b>Estoque disponivel na(s) equipe/ponto de venda</b>
+										</legend>
 
-										<div class="col-md-12">
-											<p:dataGrid var="estoquequipe"
-												
-												value="#{brindeController.equipeDisponiveis}" columns="3"
-												layout="grid" rows="12">
+										<div class="row">
 
-												<p:dataTable styleClass="table-editora"
-													rendered="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo).isEmpty() ? false : true}"
-													style="margin: 5px !important;"
-													id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
-													selectionMode="single" paginatorPosition="bottom"
-													emptyMessage="Nenhum registro localizado"
-													rowExpandMode="single" paginator="false"
-													rowKey="#{itemBrindeEquipe.id}" rows="10"
-													expandableRowGroups="false" expandedRow="false"
-													sortBy="#{itemBrindeEquipe.equipeBean.descricao}"
-													value="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo)}">
-													<p:headerRow>
-														<p:column colspan="2">
-															<h:outputText
-																value="#{itemBrindeEquipe.equipeBean.descricao}" />
-														</p:column>
-													</p:headerRow>
-
-													<p:column width="70%">
+											<div class="col-md-12">
+												<p:dataGrid var="estoquequipe"
+													value="#{brindeController.equipeDisponiveis(null)}"
+													columns="3" layout="grid" rows="12">
+													<p:panelGrid columns="1" rendered="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo).isEmpty() ? false : true}">
 														<f:facet name="header">
-															<h:outputText value="Ponto de Venda" />
+															<h:outputText value="#{estoquequipe.descricao}" />
 														</f:facet>
-														<h:outputText
-															value="#{itemBrindeEquipe.pontoDeVendaBean.descricao}" />
-													</p:column>
-													<p:column width="30%"
-														style="text-align: center !important;">
-														<f:facet name="header">
-															<h:outputText value="Quant" />
-														</f:facet>
-														<h:outputText value="#{itemBrindeEquipe.quantidade}">
-															<f:convertNumber type="number" pattern="#####" />
-														</h:outputText>
-													</p:column>
-													<p:summaryRow
-														listener="#{brindeController.sumarizarEstoqueEquipe(item.codigo,estoquequipe.codigo)}">
-														<p:column style="text-align:right">
-															<h:outputText value="Total:" />
-														</p:column>
-														<p:column style="text-align: center !important;">
-															<h:outputText
-																value="#{brindeController.totalEquipe(estoquequipe.codigo)}">
-																<f:convertNumber type="number" pattern="#####" />
-															</h:outputText>
-														</p:column>
-													</p:summaryRow>
-												</p:dataTable>
-											</p:dataGrid>
+
+														<p:dataTable styleClass="table-editora"
+															rendered="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo).isEmpty() ? false : true}"
+															style="margin: 5px !important;"
+															id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
+															selectionMode="single" paginatorPosition="bottom"
+															emptyMessage="Nenhum registro localizado"
+															rowExpandMode="single" paginator="false"
+															rowKey="#{itemBrindeEquipe.id}" rows="10"
+															expandableRowGroups="false" expandedRow="false"
+															sortBy="#{itemBrindeEquipe.equipeBean.descricao}"
+															value="#{brindeController.retornaEstoquePorEquipe(item.codigo,estoquequipe.codigo)}">
+															<!-- <p:headerRow>
+															<p:column colspan="2">
+																<h:outputText
+																	value="#{itemBrindeEquipe.equipeBean.descricao}" />
+															</p:column>
+														</p:headerRow> -->
+
+															<p:column width="70%">
+																<f:facet name="header">
+																	<h:outputText value="Ponto de Venda" />
+																</f:facet>
+																<h:outputText
+																	value="#{itemBrindeEquipe.pontoDeVendaBean.descricao}" />
+															</p:column>
+															<p:column width="30%"
+																style="text-align: center !important;">
+																<f:facet name="header">
+																	<h:outputText value="Quant" />
+																</f:facet>
+																<h:outputText value="#{itemBrindeEquipe.quantidade}">
+																	<f:convertNumber type="number" pattern="#####" />
+																</h:outputText>
+															</p:column>
+															<p:summaryRow
+																listener="#{brindeController.sumarizarEstoqueEquipe(item.codigo,estoquequipe.codigo)}">
+																<p:column style="text-align:right">
+																	<h:outputText value="Total:" />
+																</p:column>
+																<p:column style="text-align: center !important;">
+																	<h:outputText
+																		value="#{brindeController.totalEquipe(estoquequipe.codigo)}">
+																		<f:convertNumber type="number" pattern="#####" />
+																	</h:outputText>
+																</p:column>
+															</p:summaryRow>
+														</p:dataTable>
+													</p:panelGrid>
+												</p:dataGrid>
+
+											</div>
 										</div>
-									</div>
+									</fieldset>
 								</p:rowExpansion>
 
 
@@ -160,7 +167,7 @@
 								</p:column>
 								<p:column style="text-align : center !important;">
 									<f:facet name="header">
-										<h:outputText value="Quant" />
+										<h:outputText value="Quant Matriz" />
 									</f:facet>
 									<h:outputText value="#{item.quantidade}">
 										<f:convertNumber type="number" pattern="####" />
@@ -184,7 +191,7 @@
 										value="#{item.status==true  ? 'ATIVO' : 'INATIVO'}" />
 								</p:column>
 
-								<p:column width="20%">
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
@@ -215,8 +222,8 @@
 			</div>
 		</div>
 	</h:form>
-	<p:blockUI widgetVar="_id-blockui_brinde"
-		id="id-blockui_brinde" block=":_Formulario">
+	<p:blockUI widgetVar="_id-blockui_brinde" id="id-blockui_brinde"
+		block=":_Formulario">
 		<ui:include src="/ui/carregando.xhtml" />
 	</p:blockUI>
 

@@ -90,7 +90,9 @@ public class Contrato implements Serializable {
 
 	//bi-directional many-to-one association to ContratoPagamento
 	
-
+	private Double valorOferta=0d;
+	
+	private Double valorDesconto=0d;
 	//bi-directional many-to-one association to ContratoProduto
 	@OneToMany(mappedBy="contrato", fetch=FetchType.LAZY , cascade = CascadeType.ALL, orphanRemoval=true)
 	//@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -299,6 +301,22 @@ public class Contrato implements Serializable {
 
 	public void setPontoDeVendaBean(PontoDeVenda pontoDeVendaBean) {
 		this.pontoDeVendaBean = pontoDeVendaBean;
+	}
+
+	public Double getValorDesconto() {
+		return valorDesconto;
+	}
+
+	public void setValorDesconto(Double valorDesconto) {
+		this.valorDesconto = valorDesconto;
+	}
+
+	public Double getValorOferta() {
+		return valorOferta;
+	}
+
+	public void setValorOferta(Double valorOferta) {
+		this.valorOferta = valorOferta;
 	}
 
 }

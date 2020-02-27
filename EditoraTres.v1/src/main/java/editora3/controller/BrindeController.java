@@ -1,6 +1,7 @@
 package editora3.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -232,11 +233,20 @@ public class BrindeController implements AbstractController<Brinde> {
 	public void setEquipeFacade(EquipeFacade equipeFacade) {
 		this.equipeFacade = equipeFacade;
 	}
-
-	public List<Equipe> getEquipeDisponiveis() {
+	
+	
+	public List<Equipe> equipeDisponiveis(Integer codigoEquipe) {
 		 List<Equipe> ret = (List<Equipe>)getFlash().getValoresPorID("brindeForm").get("equipesDisponiveis");
 		if(ret==null) {
-			ret = getEquipeFacade().findAllEquipes(null);
+			ret = getEquipeFacade().findAllEquipes(codigoEquipe);
+			ret.sort(new Comparator<Equipe>() {
+
+				@Override
+				public int compare(Equipe o1, Equipe o2) {
+					// TODO Auto-generated method stub
+					return o1.getCodigo().compareTo(o2.getCodigo());
+				}
+			});
 			setEquipeDisponiveis(ret);
 		}
 		return ret;

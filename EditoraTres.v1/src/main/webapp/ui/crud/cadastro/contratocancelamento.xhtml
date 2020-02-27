@@ -52,10 +52,16 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div   class="main-card mb-3 card">
-						<h5 style="margin: 10px;" class="card-title">Listagem de saída de contratos</h5>
-						<div style="margin: 5px;" class="card-body">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i>Listagem de saída de contratos
+							</div>
+						</div> 
+					 
+						<div class="card-body">
 
-							<p:dataTable id="datalist" styleClass="table"
+							<p:dataTable id="datalist" styleClass="table-editora"
 								value="#{contratoCancelamentoController.itens}" var="item" selectionMode="single"
 								paginatorPosition="bottom"
 								emptyMessage="Nenhum registro localizado"

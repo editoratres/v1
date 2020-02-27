@@ -2,8 +2,92 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-	<ui:composition>
-			<h:outputLabel>contato</h:outputLabel>
-	</ui:composition>
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<!-- <f:metadata>
+		<f:viewAction action="#{brindeController.atualizar()}"
+			onPostBack="true" />
+	</f:metadata> -->
+	<h:form id="_Formulario">
+
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-gift icon-gradient bg-premium-dark"> </i>
+						</div>
+						<div>
+							<h3>
+								<b> Relatorio de contratos efetivados </b>
+							</h3>
+						</div>
+					</div>
+					<div class="page-title-actions" style="width: 10%">
+						<!-- <div class="row">
+							<div class="col">
+								<p:commandLink style="font-size: 20px !important;"
+									actionListener="#{brindeController.atualizar()}"
+									update="datalist" id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+							<div class="col">
+								<p:commandLink style="font-size: 20px !important;"
+									update=":brindeForm"
+									actionListener="#{brindeController.prepararNovo()}"
+									oncomplete="PF('_brindeDialog').show();" id="btAdicionar">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+
+							</div>
+						</div> -->
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="main-card mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i> Critérios de filtragem
+							</div>
+						</div>
+
+						<div class="card-body">
+								<p:commandLink  value="Abrir" 
+								onstart="PF('_id-blockui_brinde').show();"
+								oncomplete="if(!args.validationFailed) { PF('_idexibirPDF').show();PF('_id-blockui_brinde').hide();}"
+								onerror="PF('_id-blockui_brinde').hide();"
+								update=":formVisualizarPDF :growl"
+								actionListener="#{relatorioContratosEfetivadosController.gerarRelatorio()}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+	<p:dialog id="idexibirPDF" widgetVar="_idexibirPDF" height="650"
+		width="80%" modal="true" resizable="false" appendTo="@(body)"
+		header="Relatório de contratos efetivados">
+		<h:form id="formVisualizarPDF">
+			<iframe
+				src="#{relatorioContratosEfetivadosController.nomePDF}"
+				height="600px" width="100%" scrolling="no"></iframe>
+		</h:form>
+
+	</p:dialog>
+	<p:blockUI widgetVar="_id-blockui_brinde" id="id-blockui_brinde"
+		block=":_Formulario">
+		<ui:include src="/ui/carregando.xhtml" />
+	</p:blockUI>
+
+
+
+</ui:composition>
 </html>

@@ -1,5 +1,6 @@
 package editora3.facade;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,7 +13,13 @@ import editora3.entidades.Contrato;
 import editora3.entidades.Equipe;
 import editora3.entidades.PontoDeVenda;
 
-public class BrindeEstoqueFacade extends AbstractFacade<BrindeEstoqueEquipe> {
+public class BrindeEstoqueFacade extends AbstractFacade<BrindeEstoqueEquipe>  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	public List<BrindeEstoqueEquipe> RetornarEstoqueEquipe(Integer codigoBrinde, Integer codigoEquipe ) {
 		return RetornarEstoqueEquipe(codigoBrinde,codigoEquipe,null);
 	}
@@ -25,6 +32,25 @@ public class BrindeEstoqueFacade extends AbstractFacade<BrindeEstoqueEquipe> {
 		}
 		
 		return (List<BrindeEstoqueEquipe>) createNativeQuery.getResultList();
+		 
+		
+	}
+	
+	public Double RetornarEstoqueEquipeGeral(Integer codigoEquipe) {
+		Double ret=0d;
+		Query createNativeQuery = getEntityManager().createQuery("select sum(b.quantidade) From BrindeEstoqueEquipe b " +(codigoEquipe!=null ?   " where  b.equipeBean.codigo=:equipeBean" : ""));
+	 
+		if(codigoEquipe!=null) {
+			createNativeQuery.setParameter("equipeBean",codigoEquipe);
+		}
+		
+		Number results = (Number)createNativeQuery.getSingleResult();
+		if(results!=null ) {
+			ret = Double.valueOf(results.toString());
+		}
+		
+		
+		return ret;
 		 
 		
 	}

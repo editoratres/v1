@@ -1,5 +1,6 @@
 package editora3.facade;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import editora3.entidades.ContratoEntrada;
 import editora3.entidades.ContratoEntradaIten;
 import editora3.entidades.Produto;
 
-public class ContratoEntradaFacade extends AbstractFacade<ContratoEntrada> {
+public class ContratoEntradaFacade extends AbstractFacade<ContratoEntrada> implements Serializable{
 
 	public ContratoEntradaFacade() {
 		super(ContratoEntrada.class);
@@ -102,6 +103,21 @@ public class ContratoEntradaFacade extends AbstractFacade<ContratoEntrada> {
 		return createNativeQuery.getResultList();
 		  
 
+	}
+	public List<ContratoEntrada> findAllDisponiveis(){
+		List<ContratoEntrada> ret = null;
+		StringBuilder sql = new StringBuilder();
+		 sql
+		.append("select * from contrato_entrada where codigo in ( ")
+				.append("select ce.codigo ")
+						.append("from contrato_entrada ce , contrato c ")
+								.append("where c.codigocontrato >= ce.faixainicial and c.codigocontrato <= ce.faixafinal and  c.datasaida is null and c.datacancelamento is null ") 
+										.append("group by ce.codigo ")
+												.append("having count(c.*) >0)");
+		 Query createNativeQuery = getEntityManager().createNativeQuery(sql.toString(),ContratoEntrada.class);
+		 
+		 ret = createNativeQuery.getResultList();
+		return ret;
 	}
 	
 	public HashMap<String, Integer> situacaoDosContratosNaFaixa(Integer faixainicial, Integer faixaFinal) {

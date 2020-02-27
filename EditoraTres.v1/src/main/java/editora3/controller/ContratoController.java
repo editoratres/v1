@@ -2,10 +2,11 @@ package editora3.controller;
 
  
 import java.util.ArrayList;
- 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,8 @@ import javax.inject.Named;
  
 import org.primefaces.PrimeFaces;
 import org.primefaces.context.PrimeFacesContext;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 import editora3.entidades.Assinante;
 import editora3.entidades.BandeiraCartao;
@@ -48,11 +51,14 @@ import editora3.facade.BrindeFacade;
 import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.ContratoFacade;
 import editora3.facade.EquipeFacade;
+import editora3.facade.FiltrosLazyDataModel;
+import editora3.facade.LazyObjetos;
 import editora3.facade.OfertaFacade;
 import editora3.facade.ProdutoFacade;
 import editora3.facade.RelatorioFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.seguranca.LoginInfo;
 import editora3.util.CepWebService;
 import editora3.util.JsfUtil;
@@ -66,6 +72,9 @@ import editora3.util.CepWebService.cep;
 public class ContratoController implements AbstractController<Contrato> {
 
 	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
+	@Inject
 	private BrindeEstoqueFacade brindeEstoqueFacade;
 	
 	@Inject
@@ -76,6 +85,7 @@ public class ContratoController implements AbstractController<Contrato> {
 	
 	private String mascaraCPF="999.999.999-99" ;
 	  
+	 
 	
 	@Inject
 	FlashApp flashapp;
@@ -154,9 +164,11 @@ public class ContratoController implements AbstractController<Contrato> {
 	@Override
 	public void excluir(Contrato item) {
 		// TODO Auto-generated method stub
-		
-		getContratofacade().cancelarContrato(item);
-		setItens(null);
+		if(getAutorizacaoRecurso().VerificarAcesso("ContratoDigit", "excluir",true)) {
+			getContratofacade().cancelarContrato(item);
+			setItens(null);
+			JsfUtil.addSuccessMessage("Contrato cancelado com sucesso", "Procedimento OK");
+		}
 
 	}
 
@@ -171,6 +183,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		item = getContratofacade().getContratoEager(item.getCodigo());
 		setContratoCarregado(false);
 		setItem(item);
+		setEditar(true);
 		 
 		// TODO Auto-generated method stub
 
@@ -196,6 +209,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		contratoPagamento.setCondpostotal(false);
 		contrato.setPagamentoBean(contratoPagamento);
 		setItem(contrato);
+		setEditar(false);
 	
 		// TODO Auto-generated method stub
 
@@ -252,13 +266,18 @@ public class ContratoController implements AbstractController<Contrato> {
 		getCamposInvalidos().clear();
 		UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 		boolean ret=true;
-		 
+	/*	 
 		if(item.getRelatorioBean()==null) {
 			
 			invalidarComponente("idrelatorio",viewRoot);
 			ret=false;
+		}*/
+		 
+		if(item.getDatavenda()==null ) {
+
+			invalidarComponente("iddatavenda",viewRoot);
+			ret=false;
 		}
-		
 		if(item.getCodigocontrato()==null || (item.getCodigocontrato()!=null && item.getCodigocontrato()==0)) {
 
 			invalidarComponente("idcontrato",viewRoot);
@@ -281,12 +300,12 @@ public class ContratoController implements AbstractController<Contrato> {
 			invalidarComponente("idpontodevenda",viewRoot);
 			ret=false;
 		}
-		if(item.getSubcanlBean()==null) {
+	/*	if(item.getSubcanlBean()==null) {
 			
 			invalidarComponente("idsubcanal",viewRoot);
 			ret=false;
 		}
-		
+		*/
 		if(item.getAssinanteBean().getCnpjcpf().trim().length()==0) {
 			
 			invalidarComponente("cnpjcpf",viewRoot);
@@ -419,7 +438,7 @@ public class ContratoController implements AbstractController<Contrato> {
 			//item.setDescricao(item.getDescricao().toUpperCase());
 
 			Contrato localizarPorNome = getContratofacade().localizarPorCodigo(item.getCodigocontrato());
-			if (localizarPorNome != null && localizarPorNome.getCodigo() != item.getCodigo()) {
+			if (localizarPorNome != null && localizarPorNome.getCodigo().intValue() != item.getCodigo().intValue()) {
 				JsfUtil.addErrorMessage("O Contrato informado já foi cadastrado", "Procedimento não realizado");
 				FacesContext.getCurrentInstance().validationFailed();
 				atualizar();
@@ -471,12 +490,16 @@ public class ContratoController implements AbstractController<Contrato> {
 		Double ret =0d;
 		
 		Contrato item = getItem();
-		if(item.getEquipeBean()==null) {
+		if(getLoginInfo().getCodigoEquipeVinculada()==null) {
 			ret=b.getQuantidade();
 		}else {
-			List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getContratofacade().RetornarEstoqueEquipe(b.getCodigo(),item.getEquipeBean().getCodigo());
+			List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(b.getCodigo(),getLoginInfo().getCodigoEquipeVinculada(),null);
 			if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
-				ret =  retornarEstoqueEquipe.get(0).getQuantidade();
+				for (Iterator iterator = retornarEstoqueEquipe.iterator(); iterator.hasNext();) {
+					BrindeEstoqueEquipe brindeEstoqueEquipe = (BrindeEstoqueEquipe) iterator.next();
+					ret+=brindeEstoqueEquipe.getQuantidade();
+				}
+				//ret =  retornarEstoqueEquipe.get(0).getQuantidade();
 			}
 		}
 		
@@ -533,7 +556,49 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	}
 	 
-	
+	 
+	public LazyDataModel<Contrato> getItensLazy() {
+
+		LazyDataModel<Contrato> itens = (LazyDataModel<Contrato>) getFlash().getValoresPorID("contratoForm").get("itensLazy");
+		try {
+ 
+			if (itens==null) {
+				itens = new LazyDataModel<Contrato>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public List<Contrato> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+							Map<String, Object> filters) {
+
+						FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
+								sortOrder, filters);
+						
+						LazyObjetos<Contrato> findAllLazy = getContratofacade().findAllLazy(getLoginInfo().getCodigoEquipeVinculada(),filtrosLazyDataModel);
+
+						setRowCount(findAllLazy.getTotalObjetos());
+
+						return findAllLazy.getLista() ;
+					}
+				};
+				// itens = (ArrayList<Contrato>)
+				// getContratofacade().findAllLazy(getLoginInfo().getCodigoEquipeVinculada());
+				setItensLazy(itens);
+			}
+		} catch (Exception ex) {
+			JsfUtil.addErrorMessage(ex, "getItens");
+			// TODO: handle exception
+		}
+		// TODO Auto-generated method stub
+		return itens;
+	}
+
+	 
+	public void setItensLazy(LazyDataModel<Contrato> itens) {
+		// TODO Auto-generated method stub
+		getFlash().getValoresPorID("contratoForm").put("itensLazy", itens);
+
+	}
+	 
 
 	public ContratoFacade getContratofacade() {
 		return produtofacade;
@@ -787,7 +852,7 @@ public class ContratoController implements AbstractController<Contrato> {
 		List<ContratoBrinde> contratoBrindeItens = getItem().getContratoBrindes();
 		for (Iterator iterator = contratoBrindeItens.iterator(); iterator.hasNext();) {
 			ContratoBrinde contratoBrinde = (ContratoBrinde) iterator.next();
-			ret+=  contratoBrinde.getBrindBean().getValor() ;
+			ret+=  contratoBrinde.getBrindBean().getValor() * contratoBrinde.getQuantidade() ;
 			
 		}
 		return ret;
@@ -929,6 +994,7 @@ public class ContratoController implements AbstractController<Contrato> {
 	public void validarNovoItemBrinde() {
 		try {
 			Contrato item = getItem();
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1124,7 +1190,7 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	public List<Equipe> getEquipesDisponiveis() {
 		if(equipesDisponiveis==null) {
-			equipesDisponiveis = getEquipeFacade().findAll();
+			equipesDisponiveis = getEquipeFacade().findAllEquipes(getLoginInfo().getCodigoEquipeVinculada());
 		}
 		return equipesDisponiveis;
 	}
@@ -1181,16 +1247,46 @@ public class ContratoController implements AbstractController<Contrato> {
 	public void atualizarGridContratosDisponiveis() {
 		System.out.println("");
 	}
-	public List<Contrato> getListaContratosDisponiveis() {
-		
-		List<Contrato> listaContratosDisponiveis = (List<Contrato>) getFlash().getValoresPorID("contratoForm").get("ListaContratosDisponiveis");
-		if(listaContratosDisponiveis==null) {
-			setListaContratosDisponiveis(getContratofacade().contratosDisponiveis(getLoginInfo().getCodigoEquipeVinculada(),null));
+	public LazyDataModel<Contrato> getListaContratosDisponiveis() {
+		 
+		LazyDataModel<Contrato> listaContratosDisponiveis = (LazyDataModel<Contrato>) getFlash().getValoresPorID("contratoForm").get("ListaContratosDisponiveis");
+		if (listaContratosDisponiveis == null) {
+			listaContratosDisponiveis = new LazyDataModel<Contrato>() {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public List<Contrato> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+						Map<String, Object> filters) {
+
+					FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
+							sortOrder, filters);
+
+					LazyObjetos<Contrato> findAllLazy = getContratofacade().contratosDisponiveisLazy(getLoginInfo().getCodigoEquipeVinculada(), null, filtrosLazyDataModel);
+
+					setRowCount(findAllLazy.getTotalObjetos());
+					findAllLazy.getLista().sort(new Comparator<Contrato>() {
+
+						@Override
+						public int compare(Contrato o1, Contrato o2) {
+							// TODO Auto-generated method stub
+							return o1.getCodigo().compareTo(o2.getCodigo());
+						}
+						
+					});	
+					return findAllLazy.getLista();
+
+				}
+			};
+			setListaContratosDisponiveis(listaContratosDisponiveis);
 		}
 		return listaContratosDisponiveis;
 	}
 
-	public void setListaContratosDisponiveis(List<Contrato> listaContratosDisponiveis) {
+	public void setListaContratosDisponiveis(LazyDataModel<Contrato> listaContratosDisponiveis) {
 		getFlash().getValoresPorID("contratoForm").put("ListaContratosDisponiveis",listaContratosDisponiveis);
 	}
 
@@ -1218,6 +1314,14 @@ public class ContratoController implements AbstractController<Contrato> {
 
 	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
 		this.brindeEstoqueFacade = brindeEstoqueFacade;
+	}
+
+	public AutorizacaoRecurso getAutorizacaoRecurso() {
+		return autorizacaoRecurso;
+	}
+
+	public void setAutorizacaoRecurso(AutorizacaoRecurso autorizacaoRecurso) {
+		this.autorizacaoRecurso = autorizacaoRecurso;
 	}
 
 	private List<Relatorio> relatoriosDisponiveis;

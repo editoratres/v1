@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="contratosefetivados" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3298cb27-44e2-45fd-a202-e429f82dd01f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="editora3"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<queryString>
+		<![CDATA[SELECT
+contrato.codigo AS contratocodigo,
+contrato.codigocontrato AS contratocodigocontrato,
+  contrato.datavenda AS contratodata, 
+  assinante.descricao AS cliente, 
+  contrato_pagamentos.valor AS contratovalor, 
+  brinde.valor AS brindevalor, 
+  brinde.descricao AS brindedescricao, 
+  produto.descricao AS produtodescricao, 
+  vendedor.nome AS vendedornome,
+  contrato.valordesconto,
+  contrato.valoroferta
+FROM 
+  public.contrato, 
+  public.assinante, 
+  public.brinde, 
+  public.produto, 
+  public.vendedor, 
+  public.contrato_produto, 
+  public.contrato_brindes, 
+  public.contrato_pagamentos
+WHERE 
+  contrato.codigo = contrato_brindes.codigocontrato AND
+  contrato.codigo = contrato_produto.codigocontrato AND
+  contrato.vendedorbean = vendedor.codigo AND
+  contrato.assinantebean = assinante.codigo AND
+  contrato.codigo = contrato_pagamentos.codigocontrato AND
+  contrato_produto.produtobean = produto.codigo AND
+  contrato_brindes.brindebean = brinde.codigo]]>
+	</queryString>
+	<field name="contratocodigo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="contratocodigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato"/>
+	</field>
+	<field name="contratocodigocontrato" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="contratocodigocontrato"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato"/>
+	</field>
+	<field name="contratodata" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="contratodata"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato"/>
+	</field>
+	<field name="cliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="cliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="assinante"/>
+	</field>
+	<field name="contratovalor" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="contratovalor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato_pagamentos"/>
+	</field>
+	<field name="brindevalor" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="brindevalor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="brinde"/>
+	</field>
+	<field name="brindedescricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="brindedescricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="brinde"/>
+	</field>
+	<field name="produtodescricao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="produtodescricao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produto"/>
+	</field>
+	<field name="vendedornome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="vendedornome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="vendedor"/>
+	</field>
+	<field name="valordesconto" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valordesconto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato"/>
+	</field>
+	<field name="valoroferta" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valoroferta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="contrato"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="240" height="20" uuid="d5afa615-9153-4bfc-8e4e-f9dd1e3db337"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de contratos efetivados]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="7b32a1a9-1927-4687-b92d-013807a9951b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contrato]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<textField>
+				<reportElement x="3" y="10" width="100" height="19" uuid="b4ed4651-7358-4201-abce-710ef7cb8d8b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c3b70937-8dc2-40e0-b838-b2a9c140e8fa"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{contratocodigo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="87" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="4" width="551" height="1" uuid="4d621921-0e01-4fbd-a3ae-1b1500aa8473"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="10" width="43" height="14" uuid="498cc918-9f65-4a40-be3c-94fa65ec7d9c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Impresso]]></text>
+			</staticText>
+			<textField evaluationTime="Master">
+				<reportElement x="47" y="24" width="100" height="15" uuid="6a644cf9-5b96-4927-a44b-8b105a2ce87d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[TEXT($V{MASTER_CURRENT_PAGE},"##") + "//"+ TEXT($V{MASTER_TOTAL_PAGES},"##")]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="49" y="10" width="96" height="14" uuid="891364bc-fea1-445b-a9c8-041edc158fdf"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="24" width="43" height="14" uuid="68285644-e7be-40f7-bded-9f59b12c5d5e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Pagina]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch"/>
+	</summary>
+</jasperReport>

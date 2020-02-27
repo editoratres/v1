@@ -75,7 +75,7 @@
 
 								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
 									disabled="#{ofertaItens.vez2==0 ? true : false}"
-								update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
 									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez2,2)}">
 									<h:outputText value="#{ofertaItens.vez2}"
 										style="font-size : 13px; font-weight: bold;align-text: center !important;">
@@ -243,7 +243,7 @@
 		</h:form>
 	</p:dialog>
 	<p:dialog modal="true" appendTo="@(body)" appendToBody="true"
-		width="800" height="400" header="Consulta de brindes"
+		width="70%" height="400" header="Consulta de brindes"
 		id="idConsultaBrindes" closeOnEscape="true"
 		widgetVar="_idConsultaBrindes">
 		<h:form id="idFormPesquisarBrinde">
@@ -253,9 +253,84 @@
 					value="#{contratoController.brindesDisponiveis}"
 					var="brindesconsulta" emptyMessage="Nenhum registro localizado"
 					paginator="false" rowKey="#{brindesconsulta.codigo}"
-					scrollable="true" selectionMode="single"
+					scrollable="true" selectionMode="single" rowExpandMode="single"
 					disabled="#{contratoController.editar}" scrollRows="10"
 					scrollHeight="330">
+					<p:ajax event="rowToggle"
+						listener="#{brindeController.sumario.clear()}"
+						onstart="PF('_id-blockui_brinde').show();"
+						onerror="PF('_id-blockui_brinde').hide();"
+						oncomplete="PF('_id-blockui_brinde').hide();" />
+
+					<p:column style="width=5%">
+						<p:rowToggler />
+					</p:column>
+
+					<p:rowExpansion>
+						<fieldset class="border p-4">
+							<legend class="w-auto">
+								<b>Estoque disponivel na(s) equipe/ponto de venda</b>
+							</legend>
+
+							<div class="row">
+
+								<div class="col-md-12">
+									<p:dataGrid var="estoquequipe"
+										value="#{brindeController.equipeDisponiveis(contratoController.loginInfo.codigoEquipeVinculada)}" columns="3"
+										layout="grid" rows="12">
+
+										<p:dataTable styleClass="table-editora"
+											rendered="#{brindeController.retornaEstoquePorEquipe(brindesconsulta.codigo,estoquequipe.codigo).isEmpty() ? false : true}"
+											style="margin: 5px !important;"
+											id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
+											selectionMode="single" paginatorPosition="bottom"
+											emptyMessage="Nenhum registro localizado"
+											rowExpandMode="single" paginator="false"
+											rowKey="#{itemBrindeEquipe.id}" rows="10"
+											expandableRowGroups="false" expandedRow="false"
+											sortBy="#{itemBrindeEquipe.equipeBean.descricao}"
+											value="#{brindeController.retornaEstoquePorEquipe(brindesconsulta.codigo,estoquequipe.codigo)}">
+											<p:headerRow>
+												<p:column colspan="2">
+													<h:outputText
+														value="#{itemBrindeEquipe.equipeBean.descricao}" />
+												</p:column>
+											</p:headerRow>
+
+											<p:column width="70%">
+												<f:facet name="header">
+													<h:outputText value="Ponto de Venda" />
+												</f:facet>
+												<h:outputText
+													value="#{itemBrindeEquipe.pontoDeVendaBean.descricao}" />
+											</p:column>
+											<p:column width="30%" style="text-align: center !important;">
+												<f:facet name="header">
+													<h:outputText value="Quant" />
+												</f:facet>
+												<h:outputText value="#{itemBrindeEquipe.quantidade}">
+													<f:convertNumber type="number" pattern="#####" />
+												</h:outputText>
+											</p:column>
+											<p:summaryRow
+												listener="#{brindeController.sumarizarEstoqueEquipe(brindesconsulta.codigo,estoquequipe.codigo)}">
+												<p:column style="text-align:right">
+													<h:outputText value="Total:" />
+												</p:column>
+												<p:column style="text-align: center !important;">
+													<h:outputText
+														value="#{brindeController.totalEquipe(estoquequipe.codigo)}">
+														<f:convertNumber type="number" pattern="#####" />
+													</h:outputText>
+												</p:column>
+											</p:summaryRow>
+										</p:dataTable>
+									</p:dataGrid>
+
+								</div>
+							</div>
+						</fieldset>
+					</p:rowExpansion>
 
 					<p:column filterBy="#{brindesconsulta.codigo}"
 						filterMatchMode="contains">
@@ -264,18 +339,22 @@
 						</f:facet>
 						<h:outputText value="#{brindesconsulta.codigo}" />
 					</p:column>
-					<p:column width="60%" filterBy="#{brindesconsulta.descricao}"
+					<p:column width="50%" filterBy="#{brindesconsulta.descricao}"
 						filterMatchMode="contains">
 						<f:facet name="header">
 							<h:outputText value="Descricao" />
 						</f:facet>
 						<h:outputText value="#{brindesconsulta.descricao}" />
 					</p:column>
-					<p:column>
+					<p:column style="text-align : center !important;">
 						<f:facet name="header">
-							<h:outputText value="Qtd" />
+							<h:outputText
+								value="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? 'Qtd Matriz' : 'Qt'} " />
 						</f:facet>
-						<h:outputText value="#{contratoController.EstoqueAtual(brindesconsulta)}" />
+						<h:outputText
+							value="#{contratoController.EstoqueAtual(brindesconsulta)}">
+							<f:convertNumber type="number" pattern="#####" />
+						</h:outputText>
 					</p:column>
 					<p:column style="align-item: center !important;">
 						<center>
@@ -291,6 +370,10 @@
 				</p:dataTable>
 			</p:outputPanel>
 		</h:form>
+		<p:blockUI widgetVar="_id-blockui_brinde" id="id-blockui_brinde"
+			block=":idFormPesquisarBrinde">
+			<ui:include src="/ui/carregando.xhtml" />
+		</p:blockUI>
 	</p:dialog>
 
 </ui:composition>

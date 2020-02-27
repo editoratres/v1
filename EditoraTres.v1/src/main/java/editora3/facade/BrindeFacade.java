@@ -1,5 +1,7 @@
 package editora3.facade;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,10 +11,16 @@ import javax.transaction.Transactional;
 
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeEntradaItens;
+import editora3.entidades.Contrato;
  
  
 
-public class BrindeFacade extends AbstractFacade<Brinde> {
+public class BrindeFacade extends AbstractFacade<Brinde> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public BrindeFacade() {
 		super(Brinde.class);
@@ -68,14 +76,21 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 	public List<Brinde> findAllDisponivel(Integer CodigoEquipe, boolean exibirSomenteItensComEstoque){
 		List<Brinde> ret =null;
 		try {
-			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery("select distinct c from Brinde C" +
-			 (exibirSomenteItensComEstoque ? " inner join fetch c.brindeEstoqueEquipe bee  where c.quantidade>0 " : " where 1=1 ") +
-			 (CodigoEquipe==null ? "" : " where bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
-			 
-			 ,Brinde.class);
+			StringBuilder sql = new StringBuilder();
+			sql
+			.append("select distinct c from Brinde c ")
+			.append(exibirSomenteItensComEstoque ? " inner join fetch c.brindeEstoqueEquipe bee " :"")
+			.append("where 1=1 ")
+			.append(CodigoEquipe==null ? "" : " and bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
+			.append(exibirSomenteItensComEstoque ? " and c.quantidade>0  " :"");
+			
+			 TypedQuery<Brinde> createQuery = getEntityManager().createQuery(sql.toString() ,Brinde.class);
+			
 			 if(CodigoEquipe!=null) {
-			 createQuery.setParameter("codigoEquipe", CodigoEquipe);
+				 createQuery.setParameter("codigoEquipe", CodigoEquipe);
 			 }
+			 
+			 
 			 ret = createQuery.getResultList();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,6 +101,46 @@ public class BrindeFacade extends AbstractFacade<Brinde> {
 		
 		return ret;
 	}
+	public LazyObjetos<Brinde> findAllDisponivelLazy(Integer codigoEquipe, boolean exibirSomenteItensComEstoque,FiltrosLazyDataModel dataModel){
+		LazyObjetos<Brinde> retLazy = new LazyObjetos();  
+		List<Brinde> ret =null;
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql
+			.append("select distinct c from Brinde c ")
+			.append(exibirSomenteItensComEstoque ? " inner join fetch c.brindeEstoqueEquipe bee " :"")
+			.append("where 1=1 ")
+			.append(codigoEquipe==null ? "" : " and bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
+			.append(exibirSomenteItensComEstoque ? " and c.quantidade>0  " :"");
+			 
+			 
+			StringBuilder sqlContagem = new StringBuilder();
+			sqlContagem
+			.append("select count(distinct c) from Brinde c ")
+			.append(exibirSomenteItensComEstoque ? " left join c.brindeEstoqueEquipe bee " :"")
+			.append("where 1=1 ")
+			.append(codigoEquipe==null ? "" : " and bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
+			.append(exibirSomenteItensComEstoque ? " and c.quantidade>0  " :"");
+			
+			List<ParametrosNativosQuery> parametrosNativosQuery = new ArrayList<ParametrosNativosQuery>();
+			if(codigoEquipe!=null) {
+				ParametrosNativosQuery p1=new ParametrosNativosQuery();
+				p1.setNome(":codigoEquipe");
+				p1.setValor(codigoEquipe);
+				parametrosNativosQuery.add(p1);
+			}
+			
+			QueryLazyGerador<Brinde> queryLazyGerador= new QueryLazyGerador<>(getEntityManager(), sql.toString(), sqlContagem.toString(), dataModel,parametrosNativosQuery,Brinde.class,"c");
+			retLazy.setLista(queryLazyGerador.getTypedQueryResultado());
+			retLazy.setTotalObjetos(queryLazyGerador.getTypedQueryTotalizador());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return retLazy;
+	}
+	
 	
 	
 	@Transactional

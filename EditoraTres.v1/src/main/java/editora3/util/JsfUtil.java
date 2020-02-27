@@ -5,9 +5,11 @@ package editora3.util;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
@@ -40,7 +42,8 @@ public class JsfUtil {
 
     public static void addErrorMessage(Exception ex, String defaultMsg) {
         String msg = ex.getLocalizedMessage();
-        log.error(ex);
+        log.info(defaultMsg);
+        log.error(ex,ex.fillInStackTrace());
         if (msg != null && msg.length() > 0) {
             addErrorMessage(msg);
         } else {
@@ -100,5 +103,52 @@ public class JsfUtil {
        
        
        return Ret;
+    }
+    public static String RetornarCaminhoAbsoluto(String relativePath) {
+    	//String relativePath="/resources/temp/";
+    	String absolutePath= FacesContext.getCurrentInstance().getExternalContext().getRealPath(relativePath);
+	    return absolutePath;	
+	    	
+    }
+    public static ServletContext getServletContext() {
+    	ServletContext ret = null;
+    	
+    	ret =  (ServletContext) FacesContext
+    		    .getCurrentInstance().getExternalContext().getContext();
+    	
+    	return ret;
+    }
+    public static String UrlServidor(){
+        StringBuilder ret=new StringBuilder();
+        try {
+            ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();
+            ret
+            .append(ectx.getRequestScheme())
+            .append("://")
+            .append(ectx.getRequestServerName())
+            .append(ectx.getRequestServerPort() != 0 ? ":" + ectx.getRequestServerPort() : "");       
+                   
+
+        } catch (Exception ex) {
+        	JsfUtil.addErrorMessage(ex, "UrlServidor");
+        }
+      
+       
+        return ret.toString();
+    }
+    public static String UrlContexto(){
+        String ret="";
+        try {
+            ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();
+            ret = ectx.getRequestScheme()
+                    + "://" + ectx.getRequestServerName()
+                    + ":" + ectx.getRequestServerPort()
+                    + "/" + ectx.getRequestContextPath().replace("/", "");
+
+        } catch (Exception e) {
+        }
+      
+       
+        return ret;
     }
 }

@@ -60,13 +60,13 @@ public class AutorizacaoRecurso implements Serializable{
         this.infraUsuarioFacade = infraUsuarioFacade;
     }
     
-    public boolean VerificarAcesso(String NomeClasse,String Acao){
+	public boolean VerificarAcesso(String NomeClasse,String Acao){
         return VerificarAcesso(NomeClasse, Acao, true);
     }
     public boolean VerificarAcesso(String NomeClasse,String Acao,boolean ExibirMSG){
         boolean Ret = false;
         try {
-            List<InfraTipoPerfilDet> LocalizarRecursoClasse = getInfraUsuarioFacade().LocalizarRecursoClasse(getLusuario().getIdusuariologado(), NomeClasse);
+            List<InfraTipoPerfilDet> LocalizarRecursoClasse = getInfraUsuarioFacade().LocalizarRecursoClasse(getLusuario().getUsuario_logado().getIdusuario(), NomeClasse);
             if(LocalizarRecursoClasse.size()>0){
                if(Acao.equalsIgnoreCase("editar")){
                     Ret = LocalizarRecursoClasse.get(0).getEditar();

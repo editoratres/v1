@@ -1,41 +1,58 @@
 package editora3.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped;
+ 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.PrimeFaces;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import editora3.entidades.Brinde;
-import editora3.entidades.PontoDeVenda;
+import editora3.entidades.BrindeEstoqueEquipe;
+ 
 import editora3.entidades.Contrato;
 import editora3.entidades.ContratoEntrada;
-import editora3.entidades.InfraUsuario;
+ 
 import editora3.facade.ContratoEntradaFacade;
 import editora3.facade.ContratoFacade;
+import editora3.facade.FiltrosLazyDataModel;
+import editora3.facade.LazyObjetos;
 import editora3.seguranca.LoginInfo;
+import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
-import editora3.facade.PontoDeVendaFacade;
+ 
 import editora3.util.JsfUtil;
 @Named("painelGerenciamentoController") 
-@RequestScoped
-public class PainelGerenciamentoController   {
+@SessionScoped
+public class PainelGerenciamentoController  implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4083060794500396066L;
+
 	@Inject
 	private LoginInfo loginInfo;
 	
 	@Inject
 	private ContratoFacade contratoFacade;
+	
+	@Inject
+	private BrindeEstoqueFacade brindeEstoqueFacade;
 	
 	@Inject
 	private	BrindeFacade brindefacade;
@@ -129,11 +146,26 @@ public class PainelGerenciamentoController   {
 	
 	public List<ContratoEntrada> getItens() {
 		ArrayList<ContratoEntrada> itens = (ArrayList<ContratoEntrada>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("itens");
-		if(itens==null) {
-			itens = (ArrayList<ContratoEntrada>) getContratoEntradaFacade().findAll();
-			setItens(itens);
+
+		try {
+
+			if (itens == null) {
+				itens = (ArrayList<ContratoEntrada>) getContratoEntradaFacade().findAllDisponiveis();
+				itens.sort(new Comparator<ContratoEntrada>() {
+
+					@Override
+					public int compare(ContratoEntrada o1, ContratoEntrada o2) {
+						// TODO Auto-generated method stub
+						return o1.getCodigo().compareTo(o2.getCodigo());
+					}
+				});
+				setItens(itens);
+			}
+			// TODO Auto-generated method stub
+		} catch (Exception ex) {
+			// TODO: handle exception
+			JsfUtil.addErrorMessage(ex, "getItens");
 		}
-		// TODO Auto-generated method stub
 		return itens;
 	}
 	
@@ -157,30 +189,75 @@ public class PainelGerenciamentoController   {
 	public void setBrindefacade(BrindeFacade brindefacade) {
 		this.brindefacade = brindefacade;
 	}
-	public List<Brinde> getBrindesDisponiveis() {
-		ArrayList<Brinde> brindesDisponiveis = (ArrayList<Brinde>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("brindesDisponiveis");
+	public LazyDataModel<Brinde> getBrindesDisponiveis() {
+		LazyDataModel<Brinde> brindesDisponiveis = (LazyDataModel<Brinde>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("brindesDisponiveis");
 		if(brindesDisponiveis==null) {
-			brindesDisponiveis = (ArrayList<Brinde>) getBrindefacade().findAllDisponivel(getLoginInfo().getCodigoEquipeVinculada(),true);
+			brindesDisponiveis=new LazyDataModel<Brinde>() {
+				
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public List<Brinde> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+						Map<String, Object> filters) {
+
+					FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
+							sortOrder, filters);
+
+					LazyObjetos<Brinde> findAllLazy =getBrindefacade().findAllDisponivelLazy(getLoginInfo().getCodigoEquipeVinculada(),true,filtrosLazyDataModel);
+
+				 
+					setRowCount(findAllLazy.getTotalObjetos());
+
+					return findAllLazy.getLista();
+				
+				}
+			};
+			//brindesDisponiveis = (ArrayList<Brinde>) getBrindefacade().findAllDisponivel(getLoginInfo().getCodigoEquipeVinculada(),true);
 			setBrindesDisponiveis(brindesDisponiveis);
 		}
 		// TODO Auto-generated method stub
 		return brindesDisponiveis;
 	}
-	public void setBrindesDisponiveis(List<Brinde> brindesDisponiveis) {
+	public void setBrindesDisponiveis(LazyDataModel<Brinde> brindesDisponiveis) {
 		getFlashapp().getValoresPorID("painelGerenciamentoForm").put("brindesDisponiveis",brindesDisponiveis);
 	}
+	private Integer totalContratosEfetivados;
+	public LazyDataModel<Contrato> getContratosEfetivados() {
+		LazyDataModel<Contrato> contratosDisponiveis = (LazyDataModel<Contrato>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("contratosEfetivados");
+		
+		try {
 
-	public List<Contrato> getContratosEfetivados() {
-		ArrayList<Contrato> contratosDisponiveis = (ArrayList<Contrato>) getFlashapp().getValoresPorID("painelGerenciamentoForm").get("contratosEfetivados");
-		if(contratosDisponiveis==null) {
-			contratosDisponiveis = (ArrayList<Contrato>) getContratoFacade().totalContratosEfetivados(getLoginInfo().getCodigoEquipeVinculada());
-			setBrindesDisponiveis(brindesDisponiveis);
+			if (contratosDisponiveis == null) {
+				contratosDisponiveis = new LazyDataModel<Contrato>() {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public List<Contrato> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+							Map<String, Object> filters) {
+
+						FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
+								sortOrder, filters);
+
+						LazyObjetos<Contrato> findAllLazy = getContratoFacade()
+								.findAllLazy(getLoginInfo().getCodigoEquipeVinculada(), filtrosLazyDataModel);
+
+					 
+						setRowCount(findAllLazy.getTotalObjetos());
+
+						return findAllLazy.getLista();
+					}
+				};
+				setContratosEfetivados(contratosDisponiveis);
+			}
+		} catch (Exception e) {
+			JsfUtil.addErrorMessage(e, "getContratosEfetivados");
+			// TODO: handle exception
 		}
 		return contratosDisponiveis;
 	}
 	
 	
-	public void setContratosEfetivados(List<Contrato> contratosDisponiveis) {
+	public void setContratosEfetivados(LazyDataModel<Contrato> contratosDisponiveis) {
 		getFlashapp().getValoresPorID("painelGerenciamentoForm").put("contratosEfetivados",contratosDisponiveis);
 	}
 
@@ -192,31 +269,19 @@ public class PainelGerenciamentoController   {
 		this.contratoFacade = contratoFacade;
 	}
 	public Double getTotalBrindesEmEstoque() {
-		Double ret =0d;
+		 
 		try {
-			List<Brinde> brindesDisponiveis2 = getBrindesDisponiveis();
-			for (Iterator iterator = brindesDisponiveis2.iterator(); iterator.hasNext();) {
-				Brinde brinde = (Brinde) iterator.next();
-				ret  += (brinde.getQuantidade()==null ? 0 : brinde.getQuantidade());
-				if(getLoginInfo().getCodigoEquipeVinculada()==null) {
-					 ret = brinde.getQuantidade();
-					}else {
-						if(brinde.getBrindeEstoqueEquipe()!=null && !brinde.getBrindeEstoqueEquipe().isEmpty()) {
-						   Double estoque =  brinde.getBrindeEstoqueEquipe().get(0).getQuantidade();
-						   ret = estoque;
-						}
-					}
-			}
+			
+			return getBrindeEstoqueFacade().RetornarEstoqueEquipeGeral(getLoginInfo().getCodigoEquipeVinculada());
+			
 		} catch (Exception ex) {
 			JsfUtil.addErrorMessage(ex, "getTotalContratosDisponiveis");
 			// TODO: handle exception
 		}
-		
-		
-		
-		return ret;
+		return 0d;
 	}
-	
+
+	 
 	public Double EstoqueAtual(Brinde b) {
 	
 		Double ret =0d;
@@ -224,13 +289,19 @@ public class PainelGerenciamentoController   {
 		try {
 			
 			if(getLoginInfo().getCodigoEquipeVinculada()==null) {
-			 ret = b.getQuantidade();
+				ret=b.getQuantidade();
 			}else {
-				if(b.getBrindeEstoqueEquipe()!=null && !b.getBrindeEstoqueEquipe().isEmpty()) {
-				   Double estoque =  b.getBrindeEstoqueEquipe().get(0).getQuantidade();
-				   ret = estoque;
+				List<BrindeEstoqueEquipe> retornarEstoqueEquipe = getBrindeEstoqueFacade().RetornarEstoqueEquipe(b.getCodigo(),getLoginInfo().getCodigoEquipeVinculada(),null);
+				if(retornarEstoqueEquipe!=null && !retornarEstoqueEquipe.isEmpty()) {
+					for (Iterator iterator = retornarEstoqueEquipe.iterator(); iterator.hasNext();) {
+						BrindeEstoqueEquipe brindeEstoqueEquipe = (BrindeEstoqueEquipe) iterator.next();
+						ret+=brindeEstoqueEquipe.getQuantidade();
+					}
+					//ret =  retornarEstoqueEquipe.get(0).getQuantidade();
 				}
 			}
+			
+			return ret;
 			
 		} catch (Exception ex) {
 			JsfUtil.addErrorMessage(ex, "EstoqueAtual");
@@ -261,7 +332,17 @@ public class PainelGerenciamentoController   {
 	public void setLoginInfo(LoginInfo loginInfo) {
 		this.loginInfo = loginInfo;
 	}
-
+	public BrindeEstoqueFacade getBrindeEstoqueFacade() {
+		return brindeEstoqueFacade;
+	}
+	public void setBrindeEstoqueFacade(BrindeEstoqueFacade brindeEstoqueFacade) {
+		this.brindeEstoqueFacade = brindeEstoqueFacade;
+	}
+	public Integer totalContratosEfetivados() {
+		return getContratoFacade().findAllLazyCount(getLoginInfo().getCodigoEquipeVinculada());
+		 
+	}
+	 
 	 
 	 
 

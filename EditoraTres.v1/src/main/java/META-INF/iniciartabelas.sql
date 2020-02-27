@@ -46,36 +46,35 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('perfil','Perfil d
 
 
 
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (1,'Brinde',null,'/ui/crud/cadastro/brinde.xhtml','Brinde');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (2,'Comissao',null,'/ui/crud/cadastro/comissao.xhtml','Comissao');
-
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (4,'Oferta',null,'/ui/crud/cadastro/oferta.xhtml','Oferta');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (5,'Produto',null,'/ui/crud/cadastro/produto.xhtml','Produto');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (6,'Relatorioscad',null,'/ui/crud/cadastro/relatorioscad.xhtml','RelatoriosCad');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (7,'Vendedor',null,'/ui/crud/cadastro/vendedor.xhtml','Vendedor');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (8,'Parametros',null,'/ui/crud/config/parametro.xhtml','Parametro');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (9,'Usuários',null,'/ui/crud/config/usuario.xhtml','Usuario');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (10,'Assinantes Rel',null,'/ui/crud/relatorios/assinantes.xhtml','AssinantesRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (11,'Contratos Rel',null,'/ui/crud/relatorios/contratos.xhtml','ContratosRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (12,'Fechamento Rel',null,'/ui/crud/relatorios/fechamento.xhtml','FechamentoRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (13,'Pagamento Rel',null,'/ui/crud/relatorios/pagamentos.xhtml','PagamentosRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (14,'Producao Rel',null,'/ui/crud/relatorios/producao.xhtml','ProducaoRel');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (15,'Pdv',null,'/ui/crud/tabela/canal.xhtml','Ponto de venda');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (17,'Maquineta POs',null,'/ui/crud/tabela/maquinetapos.xhtml','MaquinetaPOS');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (18,'Origem de Venda',null,'/ui/crud/tabela/origemvenda.xhtml','OrigemVenda');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (19,'TipoMov',null,'/ui/crud/tabela/tipomov.xhtml','TipoMov');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (20,'Perfil',null,'/ui/crud/config/perfil.xhtml','Usuario');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (21,'Equipe',null,'/ui/crud/cadastro/equipe.xhtml','Equipe');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (22,'Fornecedor',null,'/ui/crud/cadastro/fornecedor.xhtml','Fornecedor');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (23,'BrindeEntrada',null,'/ui/crud/cadastro/brindeentrada.xhtml','Entrada de Brinde');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (24,'BrindeSaida',null,'/ui/crud/cadastro/brindesaida.xhtml','Saída  de Brinde');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (25,'BrindeDev',null,'/ui/crud/cadastro/brindedev.xhtml','Devolução de Brinde');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (26,'ContratoEntrada',null,'/ui/crud/cadastro/contratoentrada.xhtml','Entrada de contratos');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (27,'ContratoSaida',null,'/ui/crud/cadastro/contratosaida.xhtml','Saída de contratos');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (28,'ContratoCancel',null,'/ui/crud/cadastro/contratocancelamento.xhtml','Cancelamento de contratos');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (29,'ContratoDigit',null,'/ui/crud/cadastro/contratodigitacao.xhtml','Digitação de contratos');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (30,'ContratoAssinante',null,'/ui/crud/cadastro/contratoassinante.xhtml','Assinantes dos contratos');
-insert into infra_modulos(idmodulo,  descricao ,  icone  ,  modulo ,  nomeclasse ) values (31,'BandeiraCartao',null,'/ui/crud/tabela/bandeiraCartao.xhtml','Bandeira de Cartão');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (1,'Brinde',null,'/ui/crud/cadastro/brinde.xhtml','Brinde');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (2,'Comissao',null,'/ui/crud/cadastro/comissao.xhtml','Comissao');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (4,'Oferta',null,'/ui/crud/cadastro/oferta.xhtml','Oferta');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (5,'Produto',null,'/ui/crud/cadastro/produto.xhtml','Produto');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (6,'Relatorioscad',null,'/ui/crud/cadastro/relatorioscad.xhtml','RelatoriosCad');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (7,'Vendedor',null,'/ui/crud/cadastro/vendedor.xhtml','Vendedor');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (8,'Parametros',null,'/ui/crud/config/parametro.xhtml','Parametro');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (9,'Usuários',null,'/ui/crud/config/usuario.xhtml','Usuario');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (10,'Assinantes Rel',null,'/ui/crud/relatorios/assinantes.xhtml','AssinantesRel');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (11,'Contratos Rel',null,'/ui/crud/relatorios/contratos.xhtml','ContratosRel');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (12,'Fechamento Rel',null,'/ui/crud/relatorios/fechamento.xhtml','FechamentoRel');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (13,'Pagamento Rel',null,'/ui/crud/relatorios/pagamentos.xhtml','PagamentosRel');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (14,'Producao Rel',null,'/ui/crud/relatorios/producao.xhtml','ProducaoRel');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (15,'Pdv',null,'/ui/crud/tabela/canal.xhtml','Ponto de venda');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (17,'Maquineta POs',null,'/ui/crud/tabela/maquinetapos.xhtml','MaquinetaPOS');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (18,'Origem de Venda',null,'/ui/crud/tabela/origemvenda.xhtml','OrigemVenda');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (19,'TipoMov',null,'/ui/crud/tabela/tipomov.xhtml','TipoMov');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (20,'Perfil',null,'/ui/crud/config/perfil.xhtml','Usuario');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (21,'Equipe',null,'/ui/crud/cadastro/equipe.xhtml','Equipe');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (22,'Fornecedor',null,'/ui/crud/cadastro/fornecedor.xhtml','Fornecedor');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (23,'BrindeEntrada',null,'/ui/crud/cadastro/brindeentrada.xhtml','Entrada de Brinde');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (24,'BrindeSaida',null,'/ui/crud/cadastro/brindesaida.xhtml','Saída  de Brinde');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (25,'BrindeDev',null,'/ui/crud/cadastro/brindedev.xhtml','Devolução de Brinde');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (26,'ContratoEntrada',null,'/ui/crud/cadastro/contratoentrada.xhtml','Entrada de contratos');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (27,'ContratoSaida',null,'/ui/crud/cadastro/contratosaida.xhtml','Saída de contratos');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (28,'ContratoCancel',null,'/ui/crud/cadastro/contratocancelamento.xhtml','Cancelamento de contratos');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (29,'ContratoDigit',null,'/ui/crud/cadastro/contratodigitacao.xhtml','Digitação de contratos');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (30,'ContratoAssinante',null,'/ui/crud/cadastro/contratoassinante.xhtml','Assinantes dos contratos');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao ) values (31,'BandeiraCartao',null,'/ui/crud/tabela/bandeiraCartao.xhtml','Bandeira de Cartão');
 
 
 insert into menu_opcoes(id,idmodulo,menu) values (1,1,'brinde');

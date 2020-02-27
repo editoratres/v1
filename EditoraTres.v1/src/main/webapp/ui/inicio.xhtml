@@ -52,7 +52,7 @@
 							</div>
 							<div class="widget-content-right">
 								<div class="widget-numbers text-white">
-									<span><p:outputLabel value="#{painelGerenciamentoController.contratosEfetivados.size()}"/></span>
+									<span><p:outputLabel value="#{painelGerenciamentoController.totalContratosEfetivados()}"/></span>
 								</div>
 							</div>
 						</div>
@@ -67,7 +67,9 @@
 							</div>
 							<div class="widget-content-right">
 								<div class="widget-numbers text-white">
-									<span><p:outputLabel value="#{painelGerenciamentoController.totalBrindesEmEstoque}"/></span>
+									<span><p:outputLabel value="#{painelGerenciamentoController.totalBrindesEmEstoque}">
+										<f:convertNumber type="number" pattern="#####" />
+									</p:outputLabel></span>
 								</div>
 							</div>
 						</div>
@@ -215,46 +217,96 @@
 						<div class="card-body">
 							<div class="tab-content">
 								<div class="tab-pane fade active show" id="tab-eg-55">
-
+ 
 									<p:dataTable id="datalistBrindes" styleClass="table-editora"
 										value="#{painelGerenciamentoController.brindesDisponiveis}"
 										var="itemBrinde"   paginatorPosition="bottom"
 										emptyMessage="Nenhum registro localizado"
 										rowExpandMode="single"
 										 paginator="true"
+										 lazy="true"
 										rowKey="#{itemBrinde.codigo}" rows="10"
-										rowsPerPageTemplate="10,20,30,40,50">
-										<p:column style="width=5%"  rendered="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? true : false}">
+										 >
+										<p:column style="width=5%"  >
 											<p:rowToggler />
 										</p:column>
-										<p:rowExpansion >
-											<br />
-											<center>
-												<h5>
-													<b>Estoque disponivel na(s) equipe(s)</b>
-												</h5>
-											</center>
-											<p:dataTable styleClass="table-editora" style="margin: 25px !important;"
-												id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
-												selectionMode="single" paginatorPosition="bottom"
-												emptyMessage="Nenhum registro localizado"
-												rowExpandMode="single" paginator="false"
-												rowKey="#{itemBrindeEquipe.id}" rows="10"
-												value="#{itemBrinde.brindeEstoqueEquipe}">
-												<p:column width="70%" >
-													<f:facet name="header">
-														<h:outputText value="Equipe" />
-													</f:facet>
-													<h:outputText value="#{itemBrindeEquipe.equipeBean.descricao}" />
-												</p:column>
-												<p:column width="30%" >
-													<f:facet name="header">
-														<h:outputText value="Quantidade" />
-													</f:facet>
-													<h:outputText value="#{itemBrindeEquipe.quantidade}" />
-												</p:column>
-											</p:dataTable>
+
+										<p:ajax event="rowToggle"
+											listener="#{brindeController.sumario.clear()}"
+											onstart="PF('_id-blockui_brinde').show();"
+											onerror="PF('_id-blockui_brinde').hide();"
+											oncomplete="PF('_id-blockui_brinde').hide();" />
+										<p:rowExpansion>
+											<fieldset class="border p-4">
+												<legend class="w-auto">
+													<b>Estoque disponivel na(s) equipe/ponto de venda</b>
+												</legend>
+
+												<div class="row">
+
+													<div class="col-md-12">
+														<p:dataGrid var="estoquequipe"
+															
+															value="#{brindeController.equipeDisponiveis(painelGerenciamentoController.loginInfo.codigoEquipeVinculada)}"
+															columns="3" layout="grid" rows="12">
+															<p:panelGrid columns="1" rendered="#{brindeController.retornaEstoquePorEquipe(itemBrinde.codigo,estoquequipe.codigo).isEmpty() ? false : true}">
+																<f:facet name="header">
+																	<h:outputText value="#{estoquequipe.descricao}" />
+																</f:facet>
+																<p:dataTable styleClass="table-editora"
+																	rendered="#{brindeController.retornaEstoquePorEquipe(itemBrinde.codigo,estoquequipe.codigo).isEmpty() ? false : true}"
+																	style="margin: 5px !important;"
+																	id="dataListbrindeEstoqueEquipe" var="itemBrindeEquipe"
+																	paginatorPosition="bottom"
+																	emptyMessage="Nenhum registro localizado"
+																	rowExpandMode="single" paginator="false"
+																	rowKey="#{itemBrindeEquipe.id}" rows="10"
+																	expandableRowGroups="false" expandedRow="false"
+																	sortBy="#{itemBrindeEquipe.equipeBean.descricao}"
+																	value="#{brindeController.retornaEstoquePorEquipe(itemBrinde.codigo,estoquequipe.codigo)}">
+																	<!-- <p:headerRow>
+																	<p:column colspan="2">
+																		
+																	</p:column>
+																</p:headerRow> -->
+
+																	<p:column width="70%">
+																		<f:facet name="header">
+																			<h:outputText value="Ponto de Venda" />
+																		</f:facet>
+																		<h:outputText
+																			value="#{itemBrindeEquipe.pontoDeVendaBean.descricao}" />
+																	</p:column>
+																	<p:column width="30%"
+																		style="text-align: center !important;">
+																		<f:facet name="header">
+																			<h:outputText value="Quant" />
+																		</f:facet>
+																		<h:outputText value="#{itemBrindeEquipe.quantidade}">
+																			<f:convertNumber type="number" pattern="#####" />
+																		</h:outputText>
+																	</p:column>
+																	<p:summaryRow
+																		listener="#{brindeController.sumarizarEstoqueEquipe(itemBrinde.codigo,estoquequipe.codigo)}">
+																		<p:column style="text-align:right">
+																			<h:outputText value="Total:" />
+																		</p:column>
+																		<p:column style="text-align: center !important;">
+																			<h:outputText
+																				value="#{brindeController.totalEquipe(estoquequipe.codigo)}">
+																				<f:convertNumber type="number" pattern="#####" />
+																			</h:outputText>
+																		</p:column>
+																	</p:summaryRow>
+																</p:dataTable>
+															</p:panelGrid>
+														</p:dataGrid>
+
+													</div>
+												</div>
+											</fieldset>
 										</p:rowExpansion>
+
 
 										<p:column width="10%" sortBy="#{itemBrinde.codigo}">
 											<f:facet name="header">
@@ -271,9 +323,11 @@
 										</p:column>
 										<p:column style="text-align: center !important;"> 
 											<f:facet name="header">
-												<h:outputText value="Quant" />
+												<h:outputText value="#{painelGerenciamentoController.loginInfo.codigoEquipeVinculada==null ? 'Qtd Matriz' : 'Qtd'}" />
 											</f:facet>
-											<h:outputText value="#{painelGerenciamentoController.EstoqueAtual(itemBrinde)}" />
+											<h:outputText value="#{painelGerenciamentoController.EstoqueAtual(itemBrinde)}" >
+													<f:convertNumber type="number" pattern="#####" />
+											</h:outputText>
 										</p:column>
 										<p:column>
 											<f:facet name="header">
@@ -314,15 +368,16 @@
 							<div class="tab-content">
 								<div class="tab-pane fade active show" id="tab-eg-55">
 									<p:dataTable id="datalistContratosDisponiveis"
-										styleClass="table table-editora"
+										styleClass="table-editora"
 										value="#{painelGerenciamentoController.contratosEfetivados}"
 										var="contratos"  
+										lazy="true"
 										paginatorPosition="bottom"
 										emptyMessage="Nenhum registro localizado" paginator="true"
-										rowKey="#{contratos.codigo}" rows="10"
-										rowsPerPageTemplate="10,20,30,40,50">
+										rowKey="#{contratos.codigo}" rows="5"
+										  >
 
-										<p:column width="10%" sortBy="#{contratos.codigocartao}">
+										<p:column width="10%" sortBy="#{contratos.codigocontrato}">
 											<f:facet name="header">
 												<h:outputText value="Cod" />
 											</f:facet>
@@ -342,7 +397,7 @@
 											</f:facet>
 											<h:outputText value="#{contratos.assinanteBean.cnpjcpf}" />
 										</p:column> -->
-										<p:column width="15%"
+										<!-- <p:column width="15%"
 											sortBy="#{contratos.pagamentoBean.bandeiraBean.descricao}">
 											<f:facet name="header">
 												<h:outputText value="Bandeira" />
@@ -358,6 +413,13 @@
 											</f:facet>
 											<h:outputText value="#{contratos.pagamentoBean.cartao}" />
 										</p:column>
+ -->									<p:column width="15%"
+											sortBy="#{contratos.pontoDeVendaBean.descricao}">
+											<f:facet name="header">
+												<h:outputText value="Ponto de Venda" />
+											</f:facet>
+											<h:outputText value="#{contratos.pontoDeVendaBean.descricao}" />
+										</p:column>
 										<p:column width="20%"
 											sortBy="#{contratos.equipeBean.descricao}">
 											<f:facet name="header">
@@ -365,24 +427,34 @@
 											</f:facet>
 											<h:outputText value="#{contratos.equipeBean.descricao}" />
 										</p:column>
-										<p:column width="15%"
+										<!-- <p:column width="15%"
 											sortBy="#{contratos.vendedorBean.nome}">
 											<f:facet name="header">
 												<h:outputText value="Vendedor" />
 											</f:facet>
 											<h:outputText value="#{contratos.vendedorBean.nome}" />
-										</p:column>
-										<p:column width="10%">
+										</p:column> -->
+										<p:column width="15%">
 											<f:facet name="header">
 												<h:outputText value="Valor" />
 											</f:facet>
-											<h:outputText value="#{contratos.pagamentoBean.valor}" />
+											<h:outputText value="#{contratos.pagamentoBean.valor}" >
+												<f:convertNumber type="currency" currencySymbol="R$" />
+											</h:outputText>
 										</p:column>
 										<p:column width="15%" sortBy="#{contratos.datavenda}">
 											<f:facet name="header">
-												<h:outputText value="Dt.Vda" />
+												<h:outputText value="Vda." />
 											</f:facet>
 											<h:outputText value="#{contratos.datavenda}" >
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column width="15%" sortBy="#{contratos.datacancelamento}">
+											<f:facet name="header">
+												<h:outputText value="Canc." />
+											</f:facet>
+											<h:outputText value="#{contratos.datacancelamento}" >
 													<f:convertDateTime pattern="dd/MM/yyyy" />
 											</h:outputText>
 										</p:column>
@@ -396,6 +468,10 @@
 
 		</div>
 	</h:form>
+	<p:blockUI widgetVar="_id-blockui_brinde" id="id-blockui_brinde"
+		block=":_Formulario">
+		<ui:include src="/ui/carregando.xhtml" />
+	</p:blockUI>
 </ui:composition>
 </html>
 

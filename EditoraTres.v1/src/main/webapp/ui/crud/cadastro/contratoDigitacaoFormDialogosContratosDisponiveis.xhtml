@@ -18,9 +18,9 @@
 					widgetVar="_datalistCtoDisponiveis"
 					value="#{contratoController.listaContratosDisponiveis}"
 					var="contratoDis" emptyMessage="Nenhum registro localizado"
-					scrollable="true" rowKey="#{contratoDis.codigo}"
-					disabled="#{contratoController.editar}" scrollRows="10"
-					scrollHeight="330">
+					rowKey="#{contratoDis.codigo}" paginator="true" rows="8"
+					lazy="true"  
+					paginatorPosition="bottom" disabled="#{contratoController.editar}">
 					<p:column width="10%" filterMatchMode="contains"
 						filterBy="#{contratoDis.codigocontrato}">
 						<f:facet name="header">
