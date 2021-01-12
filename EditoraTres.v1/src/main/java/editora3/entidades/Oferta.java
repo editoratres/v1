@@ -3,6 +3,12 @@ package editora3.entidades;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,12 +51,47 @@ public class Oferta implements Serializable {
 	@ManyToOne()
 	@JoinColumn(name="produtoBean", referencedColumnName="codigo")
 	private Produto produtoBean;
+	
+	
+	@ManyToOne()
+	@JoinColumn(name="equipeBean", referencedColumnName="codigo")
+	private Equipe equipeBean;
 
 	private String tipoassinatura;
+	
+	private Integer vigencia;
+	
+	//bi-directional many-to-one association to OfertaIten
+	@OneToMany(mappedBy="oferta", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	//@IndexColumn(name="codigo")
+	// @Fetch(FetchMode.SUBSELECT)
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	private List<OfertaIten> ofertaItens=new ArrayList<>();
+	
 
 	//bi-directional many-to-one association to OfertaIten
 	@OneToMany(mappedBy="oferta", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
-	private List<OfertaIten> ofertaItens=new ArrayList<>();
+	// @Fetch(FetchMode.SUBSELECT)
+	//@IndexColumn(name="codigo")
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	private List<OfertaBrindes> ofertaBrindes=new ArrayList<>();
+	
+	@OneToMany(mappedBy="oferta", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+	// @Fetch(FetchMode.SUBSELECT)
+	////@IndexColumn(name="codigo")
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	private List<OfertaEquipe> ofertaEquipe=new ArrayList<>();
+	
+
+	public List<OfertaBrindes> getOfertaBrindes() {
+		return ofertaBrindes;
+	}
+	
+	private Double desconto;
+
+	public void setOfertaBrindes(List<OfertaBrindes> ofertaBrindes) {
+		this.ofertaBrindes = ofertaBrindes;
+	}
 
 	public Oferta() {
 	}
@@ -125,6 +166,39 @@ public class Oferta implements Serializable {
 
 	public void setAtiva(Boolean ativa) {
 		this.ativa = ativa;
+	}
+
+	 
+	public Double getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(Double desconto) {
+		this.desconto = desconto;
+	}
+
+	public Equipe getEquipeBean() {
+		return equipeBean;
+	}
+
+	public void setEquipeBean(Equipe equipeBean) {
+		this.equipeBean = equipeBean;
+	}
+
+	public Integer getVigencia() {
+		return vigencia;
+	}
+
+	public void setVigencia(Integer vigencia) {
+		this.vigencia = vigencia;
+	}
+
+	public List<OfertaEquipe> getOfertaEquipe() {
+		return ofertaEquipe;
+	}
+
+	public void setOfertaEquipe(List<OfertaEquipe> ofertaEquipe) {
+		this.ofertaEquipe = ofertaEquipe;
 	}
 
 }

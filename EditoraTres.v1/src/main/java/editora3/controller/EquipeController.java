@@ -14,8 +14,10 @@ import javax.inject.Named;
 import editora3.entidades.Equipe;
 import editora3.entidades.InfraUsuario;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.InfraUsuarioFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.CepWebService;
 import editora3.util.CepWebService.Estados;
 import editora3.util.CepWebService.Municipio;
@@ -36,6 +38,12 @@ public class EquipeController implements AbstractController<Equipe>{
 	private String mascaraCPF="999.999.999-99" ;
 	@Inject
 	private EquipeFacade EquipeFacade; 
+	
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 	
 	
 	private List<InfraUsuario> usuarioDisponiveis;
@@ -99,10 +107,21 @@ public class EquipeController implements AbstractController<Equipe>{
 			if(item.getVendedors()!=null && !item.getVendedors().isEmpty()) {
 				JsfUtil.addErrorMessage("Somente equipes sem vendedores podem ser excluidas", "Exclusão não permitida");
 				FacesContext.getCurrentInstance().validationFailed();
-			}else {
-				getEquipeFacade().remove(item);
-				atualizar();
+				return;
+				
 			}
+			 Integer totalOfertasDaEquipe = getEquipeFacade().totalOfertasDaEquipe(item.getCodigo());
+			 if(totalOfertasDaEquipe>0) {
+					JsfUtil.addErrorMessage("Existe(m) [" + totalOfertasDaEquipe +"] oferta(s) cadastrada(s) para essa equipe", "Procedimento não permitido");
+					FacesContext.getCurrentInstance().validationFailed();
+					return;
+			 }
+			
+				if(autorizacaoRecurso.VerificarAcesso("Equipe", "excluir",true,item.getCodigo().toString() + " - " + item.getDescricao(),true)) { 
+					getEquipeFacade().remove(item);
+					atualizar();
+				}
+			
 		} catch (Exception e) {
 			JsfUtil.addErrorMessage(e, "excluir");
 			// TODO: handle exception
@@ -113,9 +132,12 @@ public class EquipeController implements AbstractController<Equipe>{
 
 	@Override
 	public void prepararEditar(Equipe item) {
+
+		if(autorizacaoRecurso.VerificarAcesso("Equipe", "editar",true,null,false)) { 	
 		// TODO Auto-generated method stub
-		setUsuarioDisponiveis(null);
-		setItem(item);
+			setUsuarioDisponiveis(null);
+			setItem(item);
+		}
 		
 	}
 
@@ -129,9 +151,11 @@ public class EquipeController implements AbstractController<Equipe>{
 	@Override
 	public void prepararNovo() {
 		// TODO Auto-generated method stub
+		if(autorizacaoRecurso.VerificarAcesso("Equipe", "criar",true,null,false)) { 	
 		setUsuarioDisponiveis(null);
 		setItem(new Equipe());
 		getItem().setTipopessoa("fisica");
+		}
 		
 	}
 
@@ -148,6 +172,17 @@ public class EquipeController implements AbstractController<Equipe>{
 		try {
 			
 			Equipe equipe = getItem();
+			if(equipe.getCnpjcpf()!=null && equipe.getCnpjcpf().isEmpty()) {
+				  JsfUtil.addErrorMessage("O cnpj/cpf não foi informado","Procedimento NÃO REALIZADO");
+				    FacesContext.getCurrentInstance().validationFailed();
+				    return;
+			}
+			
+			if(equipe.getDescricao()!=null && equipe.getDescricao().isEmpty()) {
+				  JsfUtil.addErrorMessage("O nome da equipe não foi informado","Procedimento NÃO REALIZADO");
+				    FacesContext.getCurrentInstance().validationFailed();
+				    return;
+			}
 			
 			if(equipe.getCnpjcpf()!=null && !equipe.getCnpjcpf().trim().isEmpty()) {
 				Equipe localizarCPF = getEquipeFacade().localizarCPF(equipe.getCnpjcpf());
@@ -176,6 +211,7 @@ public class EquipeController implements AbstractController<Equipe>{
 					}
 				}
 				getEquipeFacade().create(equipe);
+				auditoriaFacade.auditar("Equipe", "criar", equipe.getCodigo() + " - " + equipe.getDescricao());
 				JsfUtil.addSuccessMessage("Equipe criada com sucesso", "Procedimento OK");
 				
 			}else {
@@ -187,13 +223,14 @@ public class EquipeController implements AbstractController<Equipe>{
 						FacesContext.getCurrentInstance().validationFailed();
 						return;
 					}
-					if(localizarVendedoresEquipe!=null || (localizarVendedoresEquipe!=null && localizarVendedoresEquipe.getCodigo().intValue()!=equipe.getCodigo().intValue() )  ) {
+					if((localizarVendedoresEquipe!=null && localizarVendedoresEquipe.getCodigo().intValue()!=equipe.getCodigo().intValue() )  ) {
 						JsfUtil.addErrorMessage("O usuário informadao já esta vinculado a outra equipe", "Procedimento OK");
 						FacesContext.getCurrentInstance().validationFailed();;
 						return;
 					}
 				}
 				getEquipeFacade().edit(equipe);	
+				auditoriaFacade.auditar("Equipe", "editar", equipe.getCodigo() + " - " + equipe.getDescricao());
 				JsfUtil.addSuccessMessage("Equipe alterada com sucesso", "Procedimento OK");
 			}
 			

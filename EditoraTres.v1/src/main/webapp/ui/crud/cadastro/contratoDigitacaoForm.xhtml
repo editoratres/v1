@@ -79,8 +79,8 @@
 				<div class="col-md-3">
 					<div class="position-relative form-group">
 						<b><label for="idEquipe">Equipe</label></b>
-						<p:selectOneMenu autoWidth="false"
-							disabled="#{contratoController.editar or (contratoController.contratoCarregado and  contratoController.item.equipeBean!=null)  or  contratoController.item.inclusao!=null}"
+						<p:selectOneMenu autoWidth="false" 
+							disabled="#{contratoController.loginInfo.codigoEquipeVinculada!=null ? true : false}"
 							style="#{contratoController.camposInvalidos.contains('idEquipe') ? 'border: 2px solid red !important;' : ''}"
 							converter="editora3.converter.ConversorEquipe"
 							styleClass="form-control MyOneMenu" filter="true"
@@ -110,7 +110,7 @@
 						<b><label for="idvendedor" class="">Vendedor</label></b>
 						<p:selectOneMenu autoWidth="false"
 							style="#{contratoController.camposInvalidos.contains('idvendedor') ? 'border: 2px solid red !important;' : ''}"
-							disabled="#{contratoController.editar or (contratoController.contratoCarregado and  contratoController.item.vendedorBean!=null )  or  contratoController.item.inclusao!=null}"
+							disabled="#{contratoController.editar}"
 							styleClass="form-control MyOneMenu" filter="true"
 							converter="editora3.converter.ConversorVendedor"
 							filterMatchMode="startsWith" var="v" id="idvendedor"
@@ -646,7 +646,7 @@
 											<f:facet name="header">
 												<h:outputText value="Valor Unit" />
 											</f:facet>
-											<h:outputText value="#{brindes.brindBean.valor}">
+											<h:outputText value="#{brindes.valor}">
 												<f:convertNumber type="currency" currencySymbol="R$" />
 											</h:outputText>
 										</p:column>
@@ -885,7 +885,7 @@
 			</div>
 			<center >
 				<p:commandLink actionListener="#{contratoController.create()}"
-					update="@form :_Formulario:datalist :growl"
+					update="@form :_FormularioContratos:datalist :growl"
 					rendered="#{contratoController.editar ? false : true}"
 					onstart="PF('_id-blockui_entradabrinde').show();"
 					onsuccess="PF('_id-blockui_entradabrinde').hide();"

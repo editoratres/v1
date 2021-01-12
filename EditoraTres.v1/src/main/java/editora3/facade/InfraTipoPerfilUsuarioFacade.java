@@ -11,6 +11,7 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -54,7 +55,29 @@ public class InfraTipoPerfilUsuarioFacade extends AbstractFacade<InfraTipoPerfil
         return ret;//getEntityManager().createQuery(cq).getResultList();
         
         
-        
+         
     }
-    
+     public Integer totalUsuariosComOPerfil(Integer idtipoperfil) {
+ 		Integer ret = 0;
+ 		try {
+ 			Query createQuery = getEntityManager()
+ 					.createNativeQuery("select count(*) from infra_usuario_perfil where idtipoperfil =:idtipoperfil"
+ 									);
+ 			 
+ 				createQuery.setParameter("idtipoperfil", idtipoperfil);
+ 			 
+
+ 			Object singleResult = createQuery.getSingleResult();
+ 			if(singleResult!=null) {
+ 				ret = Integer.valueOf(singleResult.toString());
+ 			}
+
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 			// TODO: handle exception
+ 		}
+
+ 		return ret;
+
+ 	}
 }

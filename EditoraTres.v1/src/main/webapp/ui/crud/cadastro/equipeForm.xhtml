@@ -43,7 +43,7 @@
 							<div class="position-relative form-group">
 								<label for="cpf" class="">CPF/CNPJ</label>
 								<p:inputMask mask="#{equipeController.mascaraPessoa}"
-									required="true" requiredMessage="CNPJ/CPF obrigatório"
+									  requiredMessage="CNPJ/CPF obrigatório"
 									value="#{equipeController.item.cnpjcpf}" id="cnpjcpf"
 									type="text" styleClass="form-control">
 									<p:ajax listener="#{equipeController.ValidarCNPJ}"
@@ -55,7 +55,7 @@
 							<div class="position-relative form-group">
 								<label for="nome" class="">Descrição</label>
 								<p:inputText value="#{equipeController.item.descricao}"
-									required="true" maxlength="150"
+									  maxlength="150"
 									requiredMessage="A descrição é obrigatório" id="nome"
 									type="text" styleClass="form-control" />
 							</div>
@@ -233,9 +233,10 @@
 							</div>
 						</div>
 					</div>
-					<h5>SEGURANÇA</h5>
+					
 					<div class="form-row">
 						<div class="col-md-2">
+							<h5>SEGURANÇA</h5>
 							<div class="position-relative form-group">
 								<label for="idusuario" class="">Usuário vinculado</label>
 								<h:selectOneMenu styleClass="form-control"
@@ -257,10 +258,23 @@
 
 								</h:selectOneMenu>
 							</div>
-
 						</div>
+						<div class="col-md-2"/>
+						<div class="col-md-2">
+							<h5>COMERCIAL</h5>
+							<div class="position-relative form-group">
+								<label for="idvalorOferta" class="">Valor Oferta</label>
+								<p:inputNumber maxValue="9999999" minValue="0"
+								   decimalPlaces="2"
+									value="#{equipeController.item.valorOferta}"
+									  maxlength="20"
+									inputStyleClass="form-control"
+									 id="idvalorOferta"
+									type="text"  />								 
+							</div>
+						</div>
+						
 					</div>
-
 				</div>
 			</div>
 			<p:blockUI widgetVar="_id-blockui_equipe" id="id-blockui_equipe"
@@ -274,11 +288,14 @@
 					onstart="PF('_id-blockui_equipe').show();"
 					oncomplete="if (!args.validationFailed) {PF('_equipeDialog').hide() ; PF('_id-blockui_equipe').hide();}"
 					onsuccess="PF('_id-blockui_equipe').hide();"
+					 
 					styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
 					type="submit">
 					<i class="fa fa-check"> </i>  Gravar
 			 	<p:confirm header="Criar/Editar equipe"
 						message="Deseja confirma esta operação?" icon="ui-icon-alert" />
+				
+				<!-- 	<f:actionListener type="editora3.util.CleanForms" /> -->
 
 				</p:commandLink>
 			</center>

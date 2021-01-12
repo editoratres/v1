@@ -20,8 +20,11 @@ import org.primefaces.PrimeFaces;
 
 import editora3.entidades.Equipe;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
+import editora3.facade.ContratoFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.seguranca.LoginInfo;
 import editora3.util.CepWebService;
 import editora3.util.JsfUtil;
@@ -50,7 +53,13 @@ public class VendedorController implements Serializable, AbstractController<Vend
 	private VendedorFacade vendedorFacade;
 	
 	private List<Equipe> equipesDisponiveis;
-
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
+	
 	@Override
 	public FlashApp getFlash() {
 		return flash;
@@ -65,13 +74,23 @@ public class VendedorController implements Serializable, AbstractController<Vend
 
 	@Override
 	public void excluir(Vendedor item) {
-		 getVendedorFacade().remove(item);
-		 atualizar();
-		
+		Integer ret= vendedorFacade.totalContratosEfetivadosDoVendedor(item.getCodigo());
+		if(ret>0) {
+			JsfUtil.addErrorMessage("O vendedor possui [ "+ ret.toString() +" ] contrato(s) cadastrado(s)", "Procedimento não permitido");
+			FacesContext.getCurrentInstance().validationFailed();
+			return;
+		}
+		if(autorizacaoRecurso.VerificarAcesso("Vendedor", "excluir",true,item.getCodigo().toString() + " - " + item.getNome(),true)) {
+				getVendedorFacade().remove(item);
+				atualizar();
+			
+		}
 	}
 	@Override
 	public void prepararEditar(Vendedor item) {
-		setItem(item);
+		if(autorizacaoRecurso.VerificarAcesso("Vendedor", "editar",true,null,false)) { 
+			setItem(item);
+		}
 		
 	}
 	@PostConstruct
@@ -87,10 +106,12 @@ public class VendedorController implements Serializable, AbstractController<Vend
 	}
 	@Override
 	public void prepararNovo() {
-		Vendedor vendedor = new Vendedor();
-		vendedor.setComissao(0d);
-		//vendedor.setEquipeBean(new Equipe());
-		setItem(vendedor);
+		if(autorizacaoRecurso.VerificarAcesso("Vendedor", "criar",true,null,false)) { 
+			Vendedor vendedor = new Vendedor();
+			vendedor.setComissao(0d);
+			//vendedor.setEquipeBean(new Equipe());
+			setItem(vendedor);
+		}
 		 
 		
 	}
@@ -109,15 +130,19 @@ public class VendedorController implements Serializable, AbstractController<Vend
 					    return;
 				}
 			}
-			
+			if(item.getEquipeBean()==null) {
+				  JsfUtil.addErrorMessage("Não é possível gravar o vendedor sem informa a equipe","Procedimento NÃO REALIZADO");
+				    FacesContext.getCurrentInstance().validationFailed();
+				    return;
+			}
 			
 			if(item.getCodigo()==null) {
-				
 				getVendedorFacade().create(item);
+				auditoriaFacade.auditar("Vendedor", "criar", item.getCodigo().toString()+ " - " + item.getNome());
 				JsfUtil.addSuccessMessage("Vendedor criado com sucesso","Procedimento OK");
-				
 			}else {
 				getVendedorFacade().edit(item);
+				auditoriaFacade.auditar("Vendedor", "editar", item.getCodigo().toString() + " - " + item.getNome());
 				JsfUtil.addSuccessMessage("Vendedor atualizado com sucesso","Procedimento OK");
 			}
 			

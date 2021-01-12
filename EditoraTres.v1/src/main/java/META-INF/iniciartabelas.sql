@@ -1,5 +1,4 @@
 insert into menu(nome,descricao, icone,  id, nomepai) values ('Editora3','Editora Três','pe-7s-bookmarks',0,null);
-
 insert into menu(nome,descricao, icone,  id, nomepai) values ('cadastro','Cadastro','pe-7s-server',1,0);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('vendedor','Vendedor',null,2,1);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('equipe','Equipe',null,25,1);
@@ -17,7 +16,7 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('brindeentrada','E
 insert into menu(nome,descricao, icone,  id, nomepai) values ('brindesaida','Saída de Brindes',null,28,4);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('brindedevolucao','Devolução de Brindes',null,29,4);
 
-insert into menu(nome,descricao, icone,  id, nomepai) values ('contratos','Contratos',null,31,1)
+insert into menu(nome,descricao, icone,  id, nomepai) values ('contratos','Contratos',null,31,1);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('contratosentrada','Entrada',null,32,31);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('contratossaida','Saída',null,33,31);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('contratoscancelamento','Cancelamento',null,34,31);
@@ -43,7 +42,7 @@ insert into menu(nome,descricao, icone,  id, nomepai) values ('configuracao','Co
 insert into menu(nome,descricao, icone,  id, nomepai) values ('parametros','Parâmetros',null,22,21);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('usuario','Usuário',null,23,21);
 insert into menu(nome,descricao, icone,  id, nomepai) values ('perfil','Perfil de Acesso',null,24,21);
-
+insert into menu(nome,descricao, icone,  id, nomepai) values ('auditoria','Auditoria',null,38,21);
 
 
 insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (1,'Brinde',null,'/ui/crud/cadastro/brinde.xhtml','Brinde');
@@ -75,6 +74,8 @@ insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao
 insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (29,'ContratoDigit',null,'/ui/crud/cadastro/contratodigitacao.xhtml','Digitação de contratos');
 insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao  ) values (30,'ContratoAssinante',null,'/ui/crud/cadastro/contratoassinante.xhtml','Assinantes dos contratos');
 insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao ) values (31,'BandeiraCartao',null,'/ui/crud/tabela/bandeiraCartao.xhtml','Bandeira de Cartão');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao ) values (32,'ConcederDesconto',null,'','Conceder desconto');
+insert into infra_modulos(idmodulo,  nomeclasse ,  icone  ,  modulo ,  descricao ) values (33,'Auditoria',null,'/ui/crud/config/auditoria.xhtml','Auditoria');
 
 
 insert into menu_opcoes(id,idmodulo,menu) values (1,1,'brinde');
@@ -105,4 +106,51 @@ insert into menu_opcoes(id,idmodulo,menu) values (27,27,'contratossaida');
 insert into menu_opcoes(id,idmodulo,menu) values (28,28,'contratoscancelamento');
 insert into menu_opcoes(id,idmodulo,menu) values (29,29,'contratosdigitacao');
 insert into menu_opcoes(id,idmodulo,menu) values (30,30,'contratosassinantes');
- insert into menu_opcoes(id,idmodulo,menu) values (31,31,'bandeiraCartao');
+insert into menu_opcoes(id,idmodulo,menu) values (31,31,'bandeiraCartao');
+insert into menu_opcoes(id,idmodulo,menu) values (32,33,'auditoria');
+
+delete from infra_tipo_perfil_det where idmodulo in (
+select idmodulo from infra_modulos where nomeclasse in
+(
+'Relatorioscad',
+'Comissao',
+'Assinantes Rel',
+'Pagamento Rel',
+'Fechamento Rel',
+'Origem de Venda',
+'Maquineta POs',
+'TipoMov',
+'Parametros'
+)
+);
+
+delete from menu_opcoes  where idmodulo in (
+select idmodulo from infra_modulos where nomeclasse in
+(
+'Relatorioscad',
+'Comissao',
+'Assinantes Rel',
+'Pagamento Rel',
+'Fechamento Rel',
+'Origem de Venda',
+'Maquineta POs',
+'TipoMov',
+'ContratoAssinante',
+'Parametros'
+)
+);
+
+delete from infra_modulos where nomeclasse in
+(
+'Relatorioscad',
+'Comissao',
+'Assinantes Rel',
+'Pagamento Rel',
+'Fechamento Rel',
+'Origem de Venda',
+'Maquineta POs',
+'TipoMov',
+'Parametros'
+);
+
+update menu  set descricao ='Produção' where nome='producao';

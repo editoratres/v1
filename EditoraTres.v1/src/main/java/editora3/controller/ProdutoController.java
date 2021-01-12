@@ -12,7 +12,10 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import editora3.entidades.Produto;
+import editora3.facade.AuditoriaFacade;
+import editora3.facade.ContratoFacade;
 import editora3.facade.ProdutoFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("produtoController") 
 @RequestScoped
@@ -25,11 +28,30 @@ public class ProdutoController implements AbstractController<Produto> {
 	private
 	ProdutoFacade produtofacade;
 	
+	@Inject
+	ContratoFacade contratoFacade;
+
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	@Override
 	public void excluir(Produto item) {
 		// TODO Auto-generated method stub
-		getProdutofacade().remove(item);
-		setItens(null);
+		Integer ret = produtofacade.totalOfertasDoProduto(item.getCodigo());
+		if(ret!=0) {			
+			JsfUtil.addErrorMessage("O produto está vinculado a [ " + ret + " ] oferta(s)", "Procedimento não permitido");
+			FacesContext.getCurrentInstance().validationFailed();
+			return;
+		}
+
+		if(autorizacaoRecurso.VerificarAcesso("Produto", "excluir",true,item.getCodigo().toString() + " - " + item.getDescricao(),true)) {
+			getProdutofacade().remove(item);
+			setItens(null);
+			
+		}
 		
 	}
 	@PostConstruct
@@ -39,7 +61,9 @@ public class ProdutoController implements AbstractController<Produto> {
 
 	@Override
 	public void prepararEditar(Produto item) {
-		setItem(item);
+		if(autorizacaoRecurso.VerificarAcesso("Produto", "editar",true,null,false)) {
+			setItem(item);
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -53,7 +77,9 @@ public class ProdutoController implements AbstractController<Produto> {
 
 	@Override
 	public void prepararNovo() {
-		setItem(new Produto()); 
+		if(autorizacaoRecurso.VerificarAcesso("Produto", "criar",true,null,false)) {
+			setItem(new Produto()); 
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -82,13 +108,13 @@ public class ProdutoController implements AbstractController<Produto> {
 		    	return;
 		    }
 		    
-		   
-		    
 		    if(item.getCodigo()==null) {
 		    	getProdutofacade().create(item);
+		    	auditoriaFacade.auditar("Produto", "criar", item.getCodigo().toString() + " - " + item.getDescricao());
 		    	JsfUtil.addSuccessMessage("Produto criado com sucesso", "Procedimento OK");
 		    }else {
 		    	getProdutofacade().edit(item);
+		    	auditoriaFacade.auditar("Produto", "editar", item.getCodigo().toString() + " - " + item.getDescricao());
 		    	JsfUtil.addSuccessMessage("Produto alterado com sucesso", "Procedimento OK");
 		    }
 		    atualizar();

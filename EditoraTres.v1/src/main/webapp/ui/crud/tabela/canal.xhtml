@@ -21,7 +21,7 @@
 						</div>
 						<div>
 							<h3><b>
-							Ponto de Venda
+							Pontos de Venda
 							</b></h3>
 						</div>
 					</div>
@@ -35,9 +35,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":canalForm"
+								<p:commandLink style="font-size: 20px !important;" update=":canalForm, :growl"
 									actionListener="#{canalController.prepararNovo()}"
-									oncomplete="PF('_canalDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed) {PF('_canalDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -98,10 +98,12 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":canalForm"
+										<p:commandLink update=":canalForm , :growl"
 											actionListener="#{canalController.prepararEditar(item)}"
-											oncomplete="PF('_canalDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){ PF('_canalDialog').show();}" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
+											
+											
 										</p:commandLink>
 									</center>
 

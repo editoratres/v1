@@ -3,7 +3,10 @@ package editora3.entidades;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -64,6 +67,8 @@ public class InfraTipoPerfilUsuario implements Serializable {
 	}
 
 	public Collection<InfraTipoPerfilDet> getInfraTipoPerfilDets() {
+		
+		
 		return this.infraTipoPerfilDets;
 	}
 

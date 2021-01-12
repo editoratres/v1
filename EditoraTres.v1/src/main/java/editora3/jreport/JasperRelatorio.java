@@ -7,16 +7,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Map;
 
- 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
+import org.hibernate.internal.SessionImpl;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
-public class JasperRelatorio {
+@Named("JasperRelatorio")
+@RequestScoped
+public class JasperRelatorio implements Serializable {
 
 	private String relArquivo;
 	private Map parametros;
@@ -26,6 +36,15 @@ public class JasperRelatorio {
 	private String arquivoDestino;
 	private OutputStream streamPDF;
 
+	private static final long serialVersionUID = 1L;
+	@PersistenceContext(unitName = "EditoraTres.v1")
+    private EntityManager em;
+	
+	public Connection getConnection() {
+	    Session session = em.unwrap(Session.class);
+	    Connection connection = ((SessionImpl) session).connection();
+	    return connection;
+	}
 	
 	public JasperRelatorio(String relArquivo,String arquivoDestino,  Map parametros, Connection cnx) throws FileNotFoundException {
 		super();

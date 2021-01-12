@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -27,14 +28,22 @@ import javax.inject.Named;
 import org.primefaces.component.picklist.PickList;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
+import editora3.entidades.Auditoria;
+import editora3.entidades.Brinde;
 import editora3.entidades.InfraTipoPerfilUsuario;
 import editora3.entidades.InfraUsuario;
 import editora3.entidades.InfraUsuarioPerfil;
+import editora3.facade.AuditoriaFacade;
+import editora3.facade.FiltrosLazyDataModel;
 import editora3.facade.InfraTipoPerfilUsuarioFacade;
 import editora3.facade.InfraUsuarioFacade;
+import editora3.facade.LazyObjetos;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 import org.primefaces.model.DefaultStreamedContent;
 
@@ -45,6 +54,11 @@ public class InfraUsuarioController implements Serializable {
 	/**
 	 * 
 	 */
+	@Inject
+	private AuditoriaFacade auditoriaFacade;
+
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
  
 	@Inject
 	private FlashApp flash ;
@@ -53,6 +67,8 @@ public class InfraUsuarioController implements Serializable {
 	private List<InfraUsuario> items = null;
 	@Inject
 	private InfraUsuarioFacade facade;
+	
+	 
 	private UploadedFile fotoupload;
 	 @Inject
 	    private InfraTipoPerfilUsuarioFacade infraTipoPerfilUsuarioFacade;
@@ -121,9 +137,12 @@ public class InfraUsuarioController implements Serializable {
 		this.selected = selected;
 	}
 	public void prepararNovo() {
-		selected=new InfraUsuario();
-		 IniciarLista(); 
-		 flash.getValores().put("selected", selected);
+
+		if(autorizacaoRecurso.VerificarAcesso("Usuarios", "criar",true,null,false)) {
+			selected=new InfraUsuario();
+			IniciarLista(); 
+			flash.getValores().put("selected", selected);
+		}
 	}
 	@PostConstruct
 	public void iniciar() {
@@ -171,9 +190,11 @@ public class InfraUsuarioController implements Serializable {
 	}
 	public void prepararEditar(InfraUsuario infraUsuario) {
 		try {
-			selected=infraUsuario;
-		    IniciarLista(); 
-			flash.getValores().put("selected", selected);
+			if(autorizacaoRecurso.VerificarAcesso("Usuarios", "editar",true,null,false)) {
+				selected=infraUsuario;
+				IniciarLista(); 
+				flash.getValores().put("selected", selected);
+			}
 			
 			
 		} catch (Exception e) {
@@ -186,10 +207,19 @@ public class InfraUsuarioController implements Serializable {
 			if(infraUsuario.isUsuarioadm()) {
 				JsfUtil.addSuccessMessage("Não é possivel excluir o usúario administrador","Usuário não excluido");
 			}else {
-				facade.remove(infraUsuario);
-				flash.getValores().clear();
-				items=null;
-				JsfUtil.addSuccessMessage("Procedimento realizado com sucesso","Usuário Excluido");
+				String texto =infraUsuario.getIdusuario().toString() + " - Login : " + infraUsuario.getUsuario() + " - Nome : " + infraUsuario.getNome();
+				Integer totalEquipeComUsuario = facade.totalEquipeComUsuario(infraUsuario.getIdusuario());
+				if(totalEquipeComUsuario>0) {
+					JsfUtil.addErrorMessage("O usuário está vinculado a [ "+ totalEquipeComUsuario +" ] equipe","Procedimento não realizado");
+					FacesContext.getCurrentInstance().validationFailed();
+					return;
+				}
+				if(autorizacaoRecurso.VerificarAcesso("Usuarios", "excluir",true,texto,true)) {
+					facade.remove(infraUsuario);
+					flash.getValores().clear();
+					items=null;
+					JsfUtil.addSuccessMessage("Procedimento realizado com sucesso","Usuário Excluido");
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -233,12 +263,18 @@ public class InfraUsuarioController implements Serializable {
 				i++;
 			}
 			selected.setInfraUsuarioPerfils(listperfilusuario);
-
+			
 			if (selected.getIdusuario() == null) {
 				facade.create(selected);
+				String texto =selected.getIdusuario().toString() + " - Login : " + selected.getUsuario() + " - Nome : " + selected.getNome();
+				
+				auditoriaFacade.auditar("Usuarios", "criar",texto);
 				JsfUtil.addSuccessMessage("Usuário criado com sucesso", "Procedimento OK");
 			} else {
 				facade.edit(selected);
+				String texto =selected.getIdusuario().toString() + " - Login : " + selected.getUsuario() + " - Nome : " + selected.getNome();
+				
+				auditoriaFacade.auditar("Usuarios", "editar",texto);
 				JsfUtil.addSuccessMessage("Usuário alterado com sucesso", "Procedimento OK");
 			}
 			items = null;
@@ -334,6 +370,43 @@ public class InfraUsuarioController implements Serializable {
 		this.infraTipoPerfilUsuarioFacade = infraTipoPerfilUsuarioFacade;
 	}
 	  
+	private LazyDataModel<Auditoria> auditoriaDisponiveis=null;
 
-	   
+	public LazyDataModel<Auditoria> getAuditoriaDisponiveis(Integer idusuario) {
+		auditoriaDisponiveis = (LazyDataModel<Auditoria>) flash.getValoresPorID("infrausuariocontroller")
+				.get("auditoria");
+		if (auditoriaDisponiveis == null) {
+			auditoriaDisponiveis = new LazyDataModel<Auditoria>() {
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public List<Auditoria> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+						Map<String, Object> filters) {
+
+					FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
+							sortOrder, filters);
+					// filtrosLazyDataModel.getMapeamentoCampoViewModel().put("descricao",
+					// "b.descricao");
+
+					LazyObjetos<Auditoria> findAllLazy = null ;//auditoriaFacade.findAllLazy(idusuario, filtrosLazyDataModel);
+
+					setRowCount(findAllLazy.getTotalObjetos());
+
+					return findAllLazy.getLista();
+
+				}
+			};
+
+		}
+
+		setAuditoriaDisponiveis(auditoriaDisponiveis);
+		
+		return auditoriaDisponiveis;
+	
+		}
+		public void setAuditoriaDisponiveis(LazyDataModel<Auditoria> auditoriaDisponiveis) {
+			flash.getValoresPorID("infrausuariocontroller").put("auditoria",auditoriaDisponiveis);
+		}
+   
 }

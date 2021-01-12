@@ -18,7 +18,7 @@
 				<div class="page-title-wrapper">
 					<div class="page-title-heading" style="width: 90%">
 						<div class="page-title-icon">
-							<i class="fa fa-gift icon-gradient bg-premium-dark"> </i>
+							<i class="fa fa-file-signature icon-gradient bg-premium-dark"> </i>
 						</div>
 						<div>
 							<h3>
@@ -49,9 +49,10 @@
 
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="main-card mb-3 card">
+			<div class="row"  >
+				<div class="col-md-12" style="display: flex;align-items: center;justify-content: center;">
+				 
+					<div class="main-card mb-3 card" style="width : 70% !important;" >
 						<div class="card-header-tab card-header-tab-animation card-header">
 							<div class="card-header-title">
 								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
@@ -59,15 +60,111 @@
 							</div>
 						</div>
 
-						<div class="card-body">
-								<p:commandLink  value="Abrir" 
-								onstart="PF('_id-blockui_brinde').show();"
-								oncomplete="if(!args.validationFailed) { PF('_idexibirPDF').show();PF('_id-blockui_brinde').hide();}"
-								onerror="PF('_id-blockui_brinde').hide();"
-								update=":formVisualizarPDF :growl"
-								actionListener="#{relatorioContratosEfetivadosController.gerarRelatorio()}"/>
+						<div class="card-body" style="margin: 10px !important;">
+							<div class="form-row">
+								<div class="col-md-3">
+									<div class="position-relative form-group">
+										<b><label for="dividdatainicial" class="">Período</label></b>
+										<div id="dividdatainicial">
+											<p:calendar inputStyleClass="form-control"  
+												converterMessage="Data inicial informada inválida"
+												pattern="dd/MM/yyyy" mask="true"
+												value="#{relatorioContratosEfetivadosController.item.datainicial}"
+												id="iddatainicial" type="text"
+												validatorMessage="Data informada inválida">
+											</p:calendar>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="position-relative form-group">
+										<b><label for="dividdatafinal" class="">Até</label></b>
+										<div id="dividdatafinal">
+											<p:calendar inputStyleClass="form-control" 
+												converterMessage="Data inicial informada inválida"
+												pattern="dd/MM/yyyy" mask="true"
+												value="#{relatorioContratosEfetivadosController.item.datafinal}"
+												id="iddatafinal" type="text"
+												validatorMessage="Data informada inválida">
+											</p:calendar>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-md-6">
+									<div class="position-relative form-group">
+										<b><label for="idEquipe">Equipe</label></b>
+										<p:selectOneMenu autoWidth="false"
+											converter="editora3.converter.ConversorEquipe"
+											styleClass="form-control MyOneMenu" filter="true"
+											filterMatchMode="startsWith" var="e" id="idEquipe"
+											value="#{relatorioContratosEfetivadosController.item.equipe}">
+											<f:selectItem itemValue="0" itemLabel="Selecione"
+												noSelectionOption="true" />
+											<f:selectItems
+												value="#{relatorioContratosEfetivadosController.equipesDisponiveis}"
+												var="equipe" itemLabel="#{equipe.descricao}"
+												itemValue="#{equipe}" />
+											<p:column style="width:10%">
+												<h:outputText value="#{e.codigo}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{e.descricao}" />
+											</p:column>
+											<p:ajax event="change"
+												onstart="PF('_id-blockui_brinde').show();"
+												oncomplete="PF('_id-blockui_brinde').hide();"
+												onerror="PF('_id-blockui_brinde').hide();"
+												update="idpontodevenda" process="idEquipe" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="position-relative form-group">
+										<b><label for="idpontodevenda" class="">Ponto de
+												Venda</label></b>
+										<p:selectOneMenu autoWidth="false"
+											styleClass="form-control MyOneMenu" filter="true"
+											filterMatchMode="startsWith" var="p" id="idpontodevenda"
+											converter="editora3.converter.ConversorPontoDeVenda"
+											value="#{relatorioContratosEfetivadosController.item.pdv}">
+											<f:selectItem itemValue="0" itemLabel="Selecione"
+												noSelectionOption="true" />
+											<f:selectItems
+												value="#{relatorioContratosEfetivadosController.pontosDeVendadisponiveis}"
+												var="pdv" itemLabel="#{pdv.descricao}" itemValue="#{pdv}" />
+											<p:column style="width:10%">
+												<h:outputText value="#{p.codigo}" />
+											</p:column>
+											<p:column>
+												<h:outputText value="#{p.descricao}" />
+											</p:column>
+										</p:selectOneMenu>
+									</div>
+								</div>
+
+
+							</div>
+							<br/>
+							<center>
+								<p:commandLink
+									actionListener="#{relatorioContratosEfetivadosController.gerarRelatorio()}"
+									update="@form :growl :formVisualizarPDF"
+									onstart="PF('_id-blockui_brinde').show();"
+									onsuccess="PF('_id-blockui_brinde').hide();"
+									style="font-size: 15px !important;"
+									oncomplete="if(!args.validationFailed) { PF('_idexibirPDF').show();PF('_id-blockui_brinde').hide();}"
+									styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+									type="submit">
+									<i class="fa fa-search"> </i> Visualizar relatório
+								</p:commandLink>
+							</center>
+
 						</div>
+
 					</div>
+				 
 				</div>
 			</div>
 		</div>
@@ -76,8 +173,7 @@
 		width="80%" modal="true" resizable="false" appendTo="@(body)"
 		header="Relatório de contratos efetivados">
 		<h:form id="formVisualizarPDF">
-			<iframe
-				src="#{relatorioContratosEfetivadosController.nomePDF}"
+			<iframe src="#{relatorioContratosEfetivadosController.nomePDF}"
 				height="600px" width="100%" scrolling="no"></iframe>
 		</h:form>
 

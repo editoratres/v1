@@ -22,7 +22,7 @@
 						</div>
 						<div>
 							<h3>
-								<b> Brinde </b>
+								<b> Brindes </b>
 							</h3>
 						</div>
 					</div>
@@ -37,9 +37,9 @@
 							</div>
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
-									update=":brindeForm"
+									update=":brindeForm, :growl"
 									actionListener="#{brindeController.prepararNovo()}"
-									oncomplete="PF('_brindeDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_brindeDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -204,9 +204,9 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":brindeForm"
+										<p:commandLink update=":brindeForm, :growl"
 											actionListener="#{brindeController.prepararEditar(item)}"
-											oncomplete="PF('_brindeDialog').show();"
+											oncomplete="if(!args.validationFailed){PF('_brindeDialog').show();}"
 											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>

@@ -21,7 +21,7 @@
 						</div>
 						<div>
 							<h3><b>
-							Cancelamento de contratos
+							Cancelamentos de contratos
 							</b></h3>
 						</div>
 					</div>
@@ -37,9 +37,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":contratoCancelamentoForm"
+								<p:commandLink style="font-size: 20px !important;" update=":contratoCancelamentoForm, :growl"
 									actionListener="#{contratoCancelamentoController.prepararNovo()}"
-									oncomplete="PF('_cancelamentoContratoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_cancelamentoContratoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -55,7 +55,7 @@
 						<div class="card-header-tab card-header-tab-animation card-header">
 							<div class="card-header-title">
 								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
-								</i>Listagem de saída de contratos
+								</i>Listagem de cancelamentos de contratos
 							</div>
 						</div> 
 					 

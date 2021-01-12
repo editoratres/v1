@@ -7,6 +7,7 @@ package editora3.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -23,7 +24,9 @@ import editora3.entidades.InfraModulo;
 import editora3.entidades.InfraTipoPerfilDet;
 import editora3.entidades.InfraTipoPerfilUsuario;
 import editora3.entidades.InfraUsuario;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.InfraTipoPerfilUsuarioFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 import editora3.util.JsfUtil.PersistAction;
 
@@ -54,9 +57,17 @@ public class InfraTipoPerfilUsuarioController implements Serializable {
     private editora3.facade.InfraModulosFacade InfraModulosFacade;
     private List<InfraTipoPerfilUsuario> items = null;
     private InfraTipoPerfilUsuario selected;
+    
+
+	@Inject
+	private AuditoriaFacade auditoriaFacade;
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 
     public InfraTipoPerfilUsuarioController() {
     }
+    
 
     public InfraTipoPerfilUsuario getSelected() {
     	 if( flash.getValores().get("selected")!=null) {
@@ -70,8 +81,24 @@ public class InfraTipoPerfilUsuarioController implements Serializable {
     }
     public void prepararEditar(InfraTipoPerfilUsuario infraTipoPerfilUsuario) {
 		try {
+			if(autorizacaoRecurso.VerificarAcesso("Perfil", "editar",true,null,false)) {
 			flash.getValores().put("selected", infraTipoPerfilUsuario);
 			selected=infraTipoPerfilUsuario;
+			if(selected.getInfraTipoPerfilDets()!=null) {
+			    List<InfraTipoPerfilDet> listaOrdenanda =new ArrayList<>(this.selected.getInfraTipoPerfilDets());
+			    
+				listaOrdenanda.sort(new Comparator<InfraTipoPerfilDet>() {
+					@Override
+					public int compare(InfraTipoPerfilDet o1, InfraTipoPerfilDet o2) {
+						// TODO Auto-generated method stub
+						return o1.getInfraModulo().getDescricao().compareTo(o2.getInfraModulo().getDescricao());
+					}
+				});
+				this.selected.setInfraTipoPerfilDets(listaOrdenanda);
+	    	}
+			}
+			
+			//return this.selected.getInfraTipoPerfilDets();
 			
 			
 			
@@ -97,22 +124,30 @@ public class InfraTipoPerfilUsuarioController implements Serializable {
 
     public InfraTipoPerfilUsuario prepareCreate() {
     	//
-        selected = new InfraTipoPerfilUsuario();        
-        selected.setInfraTipoPerfilDets(IniciarListaPerfilDetalhes());
-        //setInfraTipoPerfilDetLista(IniciarListaPerfilDetalhes());
+    	if(autorizacaoRecurso.VerificarAcesso("Perfil", "criar",true,null,false)) {
+    		selected = new InfraTipoPerfilUsuario();        
+    		selected.setInfraTipoPerfilDets(IniciarListaPerfilDetalhes());
+    		//setInfraTipoPerfilDetLista(IniciarListaPerfilDetalhes());
        
-        initializeEmbeddableKey();
+    		initializeEmbeddableKey();
         
-        flash.getValores().put("selected", selected);
+    		flash.getValores().put("selected", selected);
         
-        return getSelected();
+    		return getSelected();
+    	}else {
+    		return null;
+    	}
     }
     public InfraTipoPerfilUsuario prepareEdit() {
-        //selected = new InfraTipoPerfilUsuario();        
-        
-       // setInfraTipoPerfilDetLista( selected.getInfraTipoPerfilDetCollection());        
-        initializeEmbeddableKey();
-        return getSelected();
+		if (autorizacaoRecurso.VerificarAcesso("Perfil", "editar", true, null, false)) {
+			// selected = new InfraTipoPerfilUsuario();
+
+			// setInfraTipoPerfilDetLista( selected.getInfraTipoPerfilDetCollection());
+			initializeEmbeddableKey();
+			return getSelected();
+		} else {
+			return null;
+		}
     }
    
     @PostConstruct
@@ -139,9 +174,16 @@ public class InfraTipoPerfilUsuarioController implements Serializable {
                 }
                 //selected.setInfraTipoPerfilDetCollection(getInfraTipoPerfilDetLista());
             }*/
+            boolean novo = selected.getIdtipoperfil()==null ? true : false;
+            
             persist(PersistAction.CREATE, "");
+            
+            String texto = selected.getIdtipoperfil().toString() + " - Descrição : " + selected.getTipoperfil();
+            
             if (!JsfUtil.isValidationFailed()) {
                 items = null;    // Invalidate list of items to trigger re-query.
+            	auditoriaFacade.auditar("Perfil", novo? "criar" : "editar",  texto);
+            
             }
 
         } catch (Exception e) {
@@ -158,13 +200,23 @@ public class InfraTipoPerfilUsuarioController implements Serializable {
     	if(item.isUsuarioadm()) {
     		  JsfUtil.addErrorMessage("Não é possivel excluir o perfil administrador","Procedimento não permitido");
     	}else {
-    		getFacade().remove(item);
-     
-	        if (!JsfUtil.isValidationFailed()) {
-	            selected = null; // Remove selection
-	            items = null;    // Invalidate list of items to trigger re-query.
-	            flash.getValores().clear();
-	        }
+    		Integer totalUsauriosComOPerfil = getFacade().totalUsuariosComOPerfil(item.getIdtipoperfil());
+    		if(totalUsauriosComOPerfil>0) {
+    			JsfUtil.addErrorMessage("O perfil está vinculado a [ " + totalUsauriosComOPerfil + " ] usuário(s)","Procedimento não permitido");
+    			FacesContext.getCurrentInstance().validationFailed();
+    			return;
+    		}
+    		String texto = item.getIdtipoperfil().toString() + " - Descrição : " + item.getTipoperfil();
+    		if(autorizacaoRecurso.VerificarAcesso("Perfil", "excluir",true,texto,true)) {
+	    		getFacade().remove(item);
+	    		 
+		        if (!JsfUtil.isValidationFailed()) {
+		            selected = null; // Remove selection
+		            items = null;    // Invalidate list of items to trigger re-query.
+		            flash.getValores().clear();
+		        }
+    		}
+	        
     	}
     }
     public void atualizar() {

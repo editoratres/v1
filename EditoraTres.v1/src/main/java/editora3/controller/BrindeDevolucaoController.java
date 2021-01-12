@@ -29,6 +29,7 @@ import editora3.entidades.BrindeSaidaIten;
 import editora3.entidades.Contrato;
 import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.BrindeDevolucaoFacade;
 import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
@@ -36,6 +37,7 @@ import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
  
 @Named("brindeDevolucaoController") 
@@ -51,6 +53,13 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	@Inject
 	private EquipeFacade equipeFacade; 
 
+
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	public EquipeFacade getEquipeFacade() {
 		return equipeFacade;
 	}
@@ -118,8 +127,11 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	@Override
 	public void excluir(BrindeDevolucao item) {
 		// TODO Auto-generated method stub
-		getBrindeDevolucaofacade().cancelarDevolucaoBrinde(item);
-		setItens(null);
+
+		if(autorizacaoRecurso.VerificarAcesso("BrindeDev", "excluir",true,item.getCodigo().toString() + " - Equipe : " + item.getEquipeBean().getDescricao() + " - Pdv : " + item.getPontoDeVendaBean().getDescricao(),true)) {
+			getBrindeDevolucaofacade().cancelarDevolucaoBrinde(item);
+			setItens(null);
+		}
 		
 	}
 	public Double getQuantidadeTotalDevolucaoItens() {
@@ -182,9 +194,9 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	public void excluirItem(BrindeDevolucaoIten item) {
 		// TODO Auto-generated method stub
 		getItem().getBrindeDevolucaoItens().remove(item);
-		if(getItem().getBrindeDevolucaoItens().isEmpty()) {
-			getItem().getBrindeDevolucaoItens().add(new BrindeDevolucaoIten());
-		}
+		//if(getItem().getBrindeDevolucaoItens().isEmpty()) {
+		//	getItem().getBrindeDevolucaoItens().add(new BrindeDevolucaoIten());
+		//}
 	 
 		
 	}
@@ -208,6 +220,7 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 	@Override
 	public void prepararNovo() {
 		//setItem(new BrindeDevolucao()); 
+		if(autorizacaoRecurso.VerificarAcesso("BrindeDev", "criar",true,null,false)) {
 		BrindeDevolucao item =new BrindeDevolucao();
 		item.setData(new Date());
 		//BrindeDevolucaoIten _brindaEntradaIten2 = new BrindeDevolucaoIten();
@@ -217,6 +230,7 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
     
 		 setItem(item);
 		 setEditar(false);
+	}
 		 
 		
 	} 
@@ -444,6 +458,7 @@ public class BrindeDevolucaoController implements AbstractController<BrindeDevol
 		    if(item.getCodigo()==null) {
 		    	//item.setTotal(getTotalEntradaItens());
 		    	getBrindeDevolucaofacade().CriarDevolucao(item);
+		    	auditoriaFacade.auditar("BrindeDev", "criar", item.getCodigo().toString() + " - Equipe : " + item.getEquipeBean().getDescricao() + " - Pdv : " + item.getPontoDeVendaBean().getDescricao());
 		    	JsfUtil.addSuccessMessage("Devolução de brinde criada com sucesso", "Procedimento OK");
 		    }
 		    atualizar();

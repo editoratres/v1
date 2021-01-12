@@ -15,8 +15,10 @@ import org.primefaces.PrimeFaces;
  
 import editora3.entidades.ContratoSaida;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.ContratoSaidaFacade;
 import editora3.facade.EquipeFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("contratoSaidaController") 
 @RequestScoped
@@ -28,6 +30,11 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 	@Inject
 	private
 	ContratoSaidaFacade contratoSaidaFacade;
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 	
 	private Boolean editar=false;
 	
@@ -42,8 +49,11 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}else {
-				getContratoSaidaFacade().excluirSaidaContrato(item);
-				setItens(null);
+				String texto = item.getCodigo().toString() + " - Equipe : " + item.getEquipeBean().getDescricao() + " - Faixa : " + item.getFaixainicial().toString() + " até " + item.getFaixafinal().toString();
+				if(autorizacaoRecurso.VerificarAcesso("ContratoSaida", "excluir",true, texto,true)) {
+					getContratoSaidaFacade().excluirSaidaContrato(item);
+					setItens(null);
+				}
 			}
 		
 		} catch (Exception e) {
@@ -73,7 +83,9 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 
 	@Override
 	public void prepararNovo() {
-		setItem(new ContratoSaida()); 
+		if(autorizacaoRecurso.VerificarAcesso("ContratoSaida", "criar",true,null,false)) {
+			setItem(new ContratoSaida()); 
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -162,6 +174,8 @@ public class ContratoSaidaController implements AbstractController<ContratoSaida
 		    if(item.getCodigo()==null) {
 		    	item.setData(new Date());
 		    	getContratoSaidaFacade().criarSaida(item);
+		    	String texto = item.getCodigo().toString() + " - Equipe : " + item.getEquipeBean().getDescricao() + " - Faixa : " + item.getFaixainicial().toString() + " até " + item.getFaixafinal().toString();
+		    	auditoriaFacade.auditar("ContratoSaida", "criar", texto);
 		    	JsfUtil.addSuccessMessage("Saida de contrato(s) criada com sucesso", "Procedimento OK");
 		    	
 		    }

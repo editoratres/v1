@@ -35,9 +35,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":brindeDevolucaoForm"
+								<p:commandLink style="font-size: 20px !important;" update=":brindeDevolucaoForm, :growl"
 									actionListener="#{brindeDevolucaoController.prepararNovo()}"
-									oncomplete="PF('_brindeDevolucaoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_brindeDevolucaoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 

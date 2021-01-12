@@ -36,9 +36,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":vendedorForm"
+								<p:commandLink style="font-size: 20px !important;" update=":vendedorForm :growl"
 									actionListener="#{vendedorController.prepararNovo()}"
-									oncomplete="PF('_vendedorDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed) {PF('_vendedorDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -54,7 +54,7 @@
 						<h5  style="margin: 10px;" class="card-title">Listagem de vendedores</h5>
 						<div  class="card-body">
 							<div class="row">
-								<p:dataTable id="datalist" tableStyleClass="table-editora"
+								<p:dataTable id="datalist" styleClass="table-editora"
 									value="#{vendedorController.itens}" var="item"
 									selectionMode="single" paginatorPosition="bottom"
 									emptyMessage="Nenhum registro localizado"
@@ -109,9 +109,9 @@
 													message="Deseja confirma esta operação?"
 													icon="ui-icon-alert" />
 											</p:commandLink>
-											<p:commandLink update=":vendedorForm"
+											<p:commandLink update=":vendedorForm :growl"
 												actionListener="#{vendedorController.prepararEditar(item)}"
-												oncomplete="PF('_vendedorDialog').show();"
+												oncomplete="if(!args.validationFailed) {PF('_vendedorDialog').show();}"
 												style="font-size: 20px">
 												<i class="metismenu-icon pe-7s-note" />
 											</p:commandLink>

@@ -36,9 +36,9 @@
 							</div>
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
-									update=":equipeForm"
+									update=":equipeForm, :growl"
 									actionListener="#{equipeController.prepararNovo()}"
-									oncomplete="PF('_equipeDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_equipeDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -102,9 +102,9 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":equipeForm"
+										<p:commandLink update=":equipeForm, :growl"
 											actionListener="#{equipeController.prepararEditar(item)}"
-											oncomplete="PF('_equipeDialog').show();"
+											oncomplete="if(!args.validationFailed){PF('_equipeDialog').show();}"
 											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>

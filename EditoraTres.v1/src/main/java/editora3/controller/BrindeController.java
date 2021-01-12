@@ -20,9 +20,11 @@ import org.primefaces.PrimeFaces;
 import editora3.entidades.Brinde;
 import editora3.entidades.BrindeEstoqueEquipe;
 import editora3.entidades.Equipe;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
 import editora3.facade.EquipeFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("brindeController") 
 @RequestScoped
@@ -41,25 +43,35 @@ public class BrindeController implements AbstractController<Brinde> {
 	@Inject
 	private BrindeEstoqueFacade brindeEstoqueFacade;
 	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso;
+	
+	@Inject
+	private AuditoriaFacade auditoriaFacade; 
+	
 	@Override
 	public void excluir(Brinde item) {
 		int ret = getBrindefacade().movimentacoesBrinde(item.getCodigo());
-		if(ret==0) {
-			// TODO Auto-generated method stub
-			getBrindefacade().remove(item);
-			setItens(null);
-		}else {
+		if(ret!=0) {			
 			JsfUtil.addErrorMessage("O brinde possui movimentações realizadas", "Procedimento não realizado");
 	    	FacesContext.getCurrentInstance().validationFailed();
-	    	 
+	    	return; 
+		}
+		if(autorizacaoRecurso.VerificarAcesso("Brinde", "excluir",true,item.getCodigo().toString() + " - " + item.getDescricao(),true)) {
+			 
+				getBrindefacade().remove(item);
+				setItens(null);
+			 
 		}
 		
 	}
 
 	@Override
 	public void prepararEditar(Brinde item) {
-		setItem(item);
+		if(autorizacaoRecurso.VerificarAcesso("Brinde", "editar",true,null,false)) {
+			setItem(item);
 		// TODO Auto-generated method stub
+		}
 		
 	}
 	@PostConstruct
@@ -77,9 +89,11 @@ public class BrindeController implements AbstractController<Brinde> {
 
 	@Override
 	public void prepararNovo() {
-		setItem(new Brinde()); 
-		getItem().setQuantidade(0d);
-		getItem().setStatus(false);
+		if(autorizacaoRecurso.VerificarAcesso("Brinde", "criar",true,null,false)) { 
+			setItem(new Brinde()); 
+			getItem().setQuantidade(0d);
+			getItem().setStatus(false);
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -109,9 +123,11 @@ public class BrindeController implements AbstractController<Brinde> {
 		    } 
 		    if(item.getCodigo()==null) {
 		    	getBrindefacade().create(item);
+		    	auditoriaFacade.auditar("Brinde", "criar", item.getCodigo().toString() +" - " + item.getDescricao());
 		    	JsfUtil.addSuccessMessage("Brinde criado com sucesso", "Procedimento OK");
 		    }else {
 		    	getBrindefacade().edit(item);
+		    	auditoriaFacade.auditar("Brinde", "editar", item.getCodigo().toString() +" - " + item.getDescricao());
 		    	JsfUtil.addSuccessMessage("Brinde alterado com sucesso", "Procedimento OK");
 		    }
 		    atualizar();

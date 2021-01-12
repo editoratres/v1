@@ -95,4 +95,29 @@ public class EquipeFacade  extends AbstractFacade<Equipe> implements Serializabl
 		
 		return find;
 	}
+	
+	public Integer totalOfertasDaEquipe(Integer codigoEquipe) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(oe.*) from oferta_equipe oe where "
+									+ " oe.equipebean=:codigoEquipe" );
+			 
+				createQuery.setParameter("codigoEquipe", codigoEquipe);
+			 
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
+	}
+
 }

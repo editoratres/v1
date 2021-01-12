@@ -27,6 +27,7 @@ import editora3.entidades.BrindeSaidaIten;
 import editora3.entidades.ContratoBrinde;
 import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.BrindeEstoqueFacade;
 import editora3.facade.BrindeFacade;
 import editora3.facade.BrindeSaidaFacade;
@@ -34,6 +35,7 @@ import editora3.facade.PontoDeVendaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.SubCanalFacade;
 import editora3.facade.VendedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
  
 @Named("brindeSaidaController") 
@@ -49,6 +51,11 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	@Inject
 	private EquipeFacade equipeFacade; 
 
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 	public EquipeFacade getEquipeFacade() {
 		return equipeFacade;
 	}
@@ -117,9 +124,12 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 	
 	@Override
 	public void excluir(BrindeSaida item) {
+		if(autorizacaoRecurso.VerificarAcesso("BrindeSaida", "excluir",true,item.getCodigo().toString(),true)) { 
+
 		// TODO Auto-generated method stub
-		getBrindeSaidaFacade().cancelarSaidaBrinde(item);
-		setItens(null);
+			getBrindeSaidaFacade().cancelarSaidaBrinde(item);
+			setItens(null);
+		}
 		
 	}
 	public Double getQuantidadeTotalSaidaItens() {
@@ -189,8 +199,10 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 
 	@Override
 	public void prepararEditar(BrindeSaida item) {
-		setEditar(true);
-		setItem(item);
+		//if(autorizacaoRecurso.VerificarAcesso("BrindeSaida", "editar",true,null,false)) {
+			setEditar(true);
+			setItem(item);
+	///	}
 		 
 	}
 	
@@ -205,6 +217,7 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 
 	@Override
 	public void prepararNovo() {
+		if(autorizacaoRecurso.VerificarAcesso("BrindeSaida", "criar",true,null,false)) {
 		//setItem(new BrindeDevolucao()); 
 		BrindeSaida item =new BrindeSaida();
 		item.setData(new Date());
@@ -215,6 +228,7 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
     
 		 setItem(item);
 		 setEditar(false);
+		}
 		 
 		
 	} 
@@ -426,6 +440,7 @@ public class BrindeSaidaController implements AbstractController<BrindeSaida> {
 		    if(item.getCodigo()==null) {
 		    	//item.setTotal(getTotalEntradaItens());
 		    	getBrindeSaidaFacade().CriarSaida(item);
+		    	auditoriaFacade.auditar("BrindeSaida", "criar", item.getCodigo().toString());
 		    	JsfUtil.addSuccessMessage("Saida de brinde criada com sucesso", "Procedimento OK");
 		    }
 		    atualizar();

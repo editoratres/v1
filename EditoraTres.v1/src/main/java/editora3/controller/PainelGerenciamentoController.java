@@ -202,6 +202,7 @@ public class PainelGerenciamentoController  implements Serializable {
 
 					FiltrosLazyDataModel filtrosLazyDataModel = new FiltrosLazyDataModel(first, pageSize, sortField,
 							sortOrder, filters);
+					filtrosLazyDataModel.getMapeamentoCampoViewModel().put("descricao", "b.descricao");
 
 					LazyObjetos<Brinde> findAllLazy =getBrindefacade().findAllDisponivelLazy(getLoginInfo().getCodigoEquipeVinculada(),true,filtrosLazyDataModel);
 

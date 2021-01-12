@@ -11,7 +11,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta http-equiv="Content-Language" content="en" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Editora 3</title>
+	<title>Toca Livros</title>
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
 	<meta name="description"
@@ -33,20 +33,30 @@
 
 </h:head>
 <h:body id="idPaginaPrincipal" >
+	
+ 
+	<f:metadata>
+		<f:viewAction
+			action="#{dashboardController.navegar('/ui/inicio.xhtml')}" />
+	</f:metadata>
+	
 	<f:event type="preRenderView"
 		listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
+		
 	<p:growl id="growl" life="6000" showDetail="true" />
-	 <ui:include src="sessionTimeOut.xhtml" /> 
-	<div 
+	 
+	<div
 		class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
 		<div class="app-header header-shadow bg-heavy-rain header-text-dark">
 			<div class="app-header__logo">
 				<p:commandLink style="font-size: 40px  !important;"
-					 action="index.xhtml?faces-redirect=true"
-					 >
-					<i class="fas fa-book-open"  />
+					onstart="PF('_id-blockui_paginaprincipal').show();"
+					update="_main_content"
+					oncomplete="PF('_id-blockui_paginaprincipal').hide();"
+					actionListener="#{dashboardController.navegar('/ui/inicio.xhtml')}">
+					<i class="fas fa-book-open" />
 				</p:commandLink>
-				
+
 				<div class="header__pane ml-auto">
 					<div>
 						<button type="button"
@@ -93,7 +103,7 @@
 						<li class="nav-item" style="align-content: center !important;">
 
 							<b>
-								<h4>Sistema de gerenciamento de Assinaturas - Editora 3</h4>
+								<h4>Sistema de gerenciamento de Assinaturas - Toca Livros</h4>
 						</b>
 
 						</li>
@@ -118,21 +128,23 @@
 							<div class="widget-content-wrapper">
 								<h:form id="formUsuario">
 									<div class="widget-content-left">
-										
-	
+
+
 										<div class="btn-group">
-										
+
 											<a data-toggle="dropdown" aria-haspopup="true"
-												aria-expanded="false" class="p-0 btn">
-												<p:graphicImage cache="false" class="rounded-circle" height="50"
-												width="50" value="#{loginInfo.foto}" id="idfoto" />
-												 <i class="fa fa-angle-down ml-2 opacity-8"></i>
+												aria-expanded="false" class="p-0 btn"> <p:graphicImage
+													cache="false" class="rounded-circle" height="50" width="50"
+													value="#{loginInfo.foto}" id="idfoto" /> <i
+												class="fa fa-angle-down ml-2 opacity-8"></i>
 											</a>
 											<div tabindex="-1" role="menu" aria-hidden="true"
 												class="dropdown-menu dropdown-menu-right">
 
 												<p:commandLink type="button" tabindex="0"
-													update=":perfilForm" actionListener="#{dashboardController.loginInfo.prepararEditarUsaurio}" onclick="PF('_perfilDialog').show();"
+													update=":perfilForm"
+													actionListener="#{dashboardController.loginInfo.prepararEditarUsaurio}"
+													onclick="PF('_perfilDialog').show();"
 													styleClass="dropdown-item">Perfil</p:commandLink>
 
 												<div tabindex="-1" class="dropdown-divider"></div>
@@ -144,15 +156,15 @@
 
 											</div>
 											<div class="widget-content-left  ml-3 header-user-info">
-											<div class="widget-heading">
-												<p:outputLabel id="idnomeUsuario"
-													value="#{dashboardController.loginInfo.usuario_logado.nome}" />
+												<div class="widget-heading">
+													<p:outputLabel id="idnomeUsuario"
+														value="#{dashboardController.loginInfo.usuario_logado.nome}" />
+												</div>
 											</div>
 										</div>
-										</div>
-										
+
 									</div>
-									
+
 								</h:form>
 
 							</div>
@@ -521,13 +533,13 @@
 					</span>
 				</div>
 				<div class="scrollbar-sidebar">
-					<div class="app-sidebar__inner">
-						<h:form id="formDash">
-							
+					<div class="app-sidebar__inner" >
+						<h:form id="formDash" >
+
 							<ul class="vertical-nav-menu">
 								<li class="app-sidebar__heading">Menu Principal</li>
-								
-								<ui:include  src="/ui/menu.xhtml">
+
+								<ui:include src="/ui/menu.xhtml">
 									<ui:param name="node" value="#{interfaceMenuHtml.itens}" />
 								</ui:include>
 								<!-- <li class="app-sidebar__heading">UI Components</li>
@@ -632,6 +644,7 @@
 								</a></li> -->
 							</ul>
 							<p:blockUI widgetVar="_id-blockui_paginaprincipal"
+								blocked="#{dashboardController.bloquearPaginaPrincipal}"
 								id="id-blockui_paginaprincipal" block=":idPaginaPrincipal">
 								<ui:include src="/ui/carregando.xhtml" />
 							</p:blockUI>
@@ -639,11 +652,11 @@
 					</div>
 				</div>
 			</div>
-			
-			
+
+
 			<div class="app-main__outer">
 				<div class="main-content" style="margin: 0; padding: 0;">
-					<h:panelGroup id="_main_content" >
+					<h:panelGroup id="_main_content">
 						<ui:include src="#{dashboardController.paginaAtual}"></ui:include>
 					</h:panelGroup>
 				</div>
@@ -655,7 +668,7 @@
 				</f:metadata>
 
 			</div>
-			
+
 			<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 		</div>
 	</div>
@@ -668,15 +681,23 @@
   {
     if( !localStorage.getItem('firstLoad') )
     {
+    	
       localStorage['firstLoad'] = true;
       window.location.reload();
+     
+    
+   
     }  
-    else
+    else{
+     
       localStorage.removeItem('firstLoad');
+       
+    }
   }
 })();
 
 </script>
-<ui:include src="perfilUsuario.xhtml" />
+
+	<ui:include src="perfilUsuario.xhtml" />
 </h:body>
 </html>

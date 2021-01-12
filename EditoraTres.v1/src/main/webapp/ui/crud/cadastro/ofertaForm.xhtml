@@ -10,183 +10,302 @@
 
 	<p:dialog id="ofertaDialog" widgetVar="_ofertaDialog" modal="true"
 		resizable="false" appendTo="@(body)" showEffect="clip"
-		hideEffect="clip" closeOnEscape="true" width="80%" header="Oferta">
+		hideEffect="clip" closeOnEscape="true" width="70%" header="Oferta">
 		<p:ajax event="close" listener="#{ofertaController.fecharDialogo()}" />
 		<h:form id="ofertaForm">
 			<ul class="tabs-animated-shadow tabs-animated nav">
+
 				<li class="nav-item"><a role="tab" class="nav-link active"
-					id="tab-0-oferta" data-toggle="tab" href="#tab-content-0-oferta">
-						<span>ITENS</span>
+					id="tab-0-produto" data-toggle="tab" href="#tab-content-0-produto">
+						<span>PRODUTO</span>
 				</a></li>
 				<li class="nav-item"><a role="tab" class="nav-link"
-					id="tab-1-oferta" data-toggle="tab" href="#tab-content-1-oferta">
+					id="tab-1-brinde" data-toggle="tab" href="#tab-content-1-brinde">
+						<span>BRINDES</span>
+				</a></li>
+				<li class="nav-item"><a role="tab" class="nav-link"
+					id="tab-2-equipe" data-toggle="tab" href="#tab-content-2-equipe">
+						<span>EQUIPE</span>
+				</a></li>
+				<li class="nav-item"><a role="tab" class="nav-link"
+					id="tab-3-edicoes" data-toggle="tab" href="#tab-content-3-edicoes">
 						<span>EDIÇÕES</span>
 				</a></li>
 			</ul>
 			<div class="tab-content">
-				<div class="tab-pane tabs-animation fade show active"
-					id="tab-content-0-oferta" role="tabpanel">
-				 
-							<div class="form-row">
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="produto" class="">Produto</label>
-										<h:selectOneMenu styleClass="form-control" filter="true"
-											filterMatchMode="startsWith"
-											requiredMessage="O produto é obrigatório"
-											value="#{ofertaController.item.produtoBean}" var="t"
-											id="produto">
-											<f:selectItem itemValue="0" itemLabel="Selecione"
-												noSelectionOption="true" />
-											<f:selectItems value="#{ofertaController.produtos}"
-												var="produtos" itemLabel="#{produtos.descricao}"
-												itemValue="#{produtos}" />
-											<p:column style="width:10%">
-												<h:outputText value="#{t.codigo}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{t.descricao}" />
-											</p:column>
+				
+				<div class="tab-pane tabs-animation fade show  active"
+					id="tab-content-0-produto" role="tabpanel">
 
-										</h:selectOneMenu>
+					<div class="form-row">
+						<div class="col-md-8">
+							<div class="position-relative form-group">
+								<label style="font-weight: bold;" for="produto" class="">Produto</label>
+								<h:selectOneMenu styleClass="form-control" filter="true"
+									filterMatchMode="startsWith"
+									requiredMessage="O produto é obrigatório"
+									value="#{ofertaController.item.produtoBean}" var="t"
+									id="produto">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems value="#{ofertaController.produtos}"
+										var="produtos" itemLabel="#{produtos.descricao}"
+										itemValue="#{produtos}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{t.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{t.descricao}" />
+									</p:column>
 
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="brinde" class="">Brindes</label>
-										<h:selectOneMenu styleClass="form-control" filter="true"
-											filterMatchMode="startsWith"
-											value="#{ofertaController.item.brindeBean}" var="v"
-											id="brinde">
-											<f:selectItem itemValue="0" itemLabel="Selecione"
-												noSelectionOption="true" />
-											<f:selectItems value="#{ofertaController.brindes}"
-												var="brindes" itemLabel="#{brindes.descricao}"
-												itemValue="#{brindes}" />
-											<p:column style="width:10%">
-												<h:outputText value="#{v.codigo}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{v.descricao}" />
-											</p:column>
+									<p:ajax event="change" update="tipoassinatura"
+										process="produto"
+										listener="#{ofertaController.atualizarTipoAssinatura(produtos)}" />
 
-										</h:selectOneMenu>
+								</h:selectOneMenu>
 
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="position-relative form-group">
-										<label for="tipoconta" class="">Tipo assinatura</label>
-										<p:selectOneRadio id="console"
-											value="#{ofertaController.item.tipoassinatura}"
-											unselectable="true">
-											<f:selectItem itemLabel="Mensal" itemValue="Mensal" />
-											<f:selectItem itemLabel="Trimestral" itemValue="Trimestral" />
-											<f:selectItem itemLabel="Semestral" itemValue="Semestral" />
-											<f:selectItem itemLabel="Anual" itemValue="Anual" />
-
-										</p:selectOneRadio>
-									</div>
-								</div>
 							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="position-relative form-group">
+								<label style="font-weight: bold;" for="tipoassinatura" class="">Tipo
+									assinatura(Meses)</label>
+								<h:selectOneMenu id="tipoassinatura" styleClass="form-control"
+									value="#{ofertaController.item.tipoassinatura}"
+									unselectable="true">
+									<f:selectItem itemLabel="1" itemValue="1" />
+									<f:selectItem itemLabel="2" itemValue="2" />
+									<f:selectItem itemLabel="3" itemValue="3" />
+									<f:selectItem itemLabel="4" itemValue="4" />
+									<f:selectItem itemLabel="5" itemValue="5" />
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="7" itemValue="7" />
+									<f:selectItem itemLabel="8" itemValue="8" />
+									<f:selectItem itemLabel="9" itemValue="9" />
+									<f:selectItem itemLabel="10" itemValue="10" />
+									<f:selectItem itemLabel="11" itemValue="11" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+									<f:selectItem itemLabel="13" itemValue="13" />
+									<f:selectItem itemLabel="14" itemValue="14" />
 
-							<div class="form-row">
-								<div class="col-md-2">
-									<div class="position-relative form-group">
-										<label for="idativo" class="">Status?</label>
-										<br />
-										<p:inputSwitch  value="#{ofertaController.item.ativa}" 
-										offLabel="Inativa" onLabel="Ativa"
-										 id="idativo" >
-										 	  <p:ajax update="idativo"/>
-										 </p:inputSwitch>
-										 								
-									</div>
-								</div>
+								</h:selectOneMenu>
 							</div>
+						</div>
+						<!-- <div class="col-md-1">
+							<div class="position-relative form-group">
+								<label style="font-weight: bold;" for="vigencias" class="">Vigência</label>
+								<p:inputNumber maxValue="9999" minValue="0" size="10"
+									inputStyleClass="form-control"
+									value="#{ofertaController.item.vigencia}" id="vigencias"
+									type="text" />
+							</div>
+						</div>
+						<div class="col-md-1">
+							<div class="position-relative form-group">
+								<label style="font-weight: bold;" for="desconto" class="">Desconto</label>
+								<p:inputNumber maxValue="9999.99" minValue="0"
+									inputStyleClass="form-control" size="10"
+									value="#{ofertaController.item.desconto}" id="desconto"
+									type="text" />
+							</div>
+						</div>
+ -->
 
-					 
+					</div>
+					<div class="form-row">
+						<div class="col-md-2">
+							<div class="position-relative form-group">
+								<label style="font-weight: bold;" for="idativo" class="">Ativo</label>
+								<br />
+								<p:selectBooleanCheckbox value="#{ofertaController.item.ativa}"
+									id="idativo" />
+							</div>
+						</div>
+					</div>
+					
 				</div>
+
+
 				<div class="tab-pane tabs-animation fade show"
-					id="tab-content-1-oferta" role="tabpanel">
-				 
-							<p:dataTable id="datalistofertaItens"
-								value="#{ofertaController.ofertaItens}" var="ofertaitem"
-								emptyMessage="Nenhum registro localizado"
-								selection="#{ofertaController.ofertaItensSelecionado}"
-								rowKey="#{ofertaitem.codigo}">
-								<f:facet name="footer">
-									<div class="col">
-										<p:commandLink style="font-size: 20px"
-											update=":ofertaFormItens :growl"
-											actionListener="#{ofertaController.prepareCreateItemOferta()}"
-											oncomplete="if (!args.validationFailed) PF('_ofertaDialogItens').show();"
-											id="btAdicionarEdicao">
-											<i class="fas fa-plus-circle" />
-										</p:commandLink>
-									</div>
-								</f:facet>
-								<p:column  >
-									<f:facet name="header">
-										<h:outputText value="Status" />
-									</f:facet>
-									<h:outputText value="#{ofertaitem.ativa ? 'ATIVA' : 'inativa'}" />
-									 
-								</p:column>
-								<p:column width="10%">
-									<f:facet name="header">
-										<h:outputText value="Edição" />
-									</f:facet>
-									<h:outputText value="#{ofertaitem.edicao}" />
-								</p:column>
+					id="tab-content-1-brinde" role="tabpanel">
+					<fieldset class="border p-4">
+						<legend class="w-auto">
+							<b>Brindes da oferta</b>
+						</legend>
+						<div class="form-row">
+							<div class="col-md-12">
+								<p:dataTable id="datalistBrindeOferta"
+									value="#{ofertaController.item.ofertaBrindes}" var="brindes"
+									paginatorPosition="bottom" scrollRows="2" scrollable="true"
+									scrollHeight="60"
+									style="height : 100px !important;margin: 10px !important;"
+									emptyMessage="Nenhum registro localizado" paginator="true"
+									rowKey="#{brindes.codigo}">
 
-								<p:column>
-									<f:facet name="header">
-										<h:outputText value="Prêmio" />
-									</f:facet>
-									<h:outputText value="#{ofertaitem.premio}" />
-								</p:column>
-
-								<p:column>
-									<f:facet name="header">
-										<h:outputText value="Vend.Base" />
-									</f:facet>
-									<h:outputText value="#{ofertaitem.vendbase}" />
-								</p:column>
-								<p:column>
-									<f:facet name="header">
-										<h:outputText value="Val.Base" />
-									</f:facet>
-									<h:outputText value="#{ofertaitem.valorbase}" />
-								</p:column>
-
-								<p:column width="20%">
-									<f:facet name="header">
-										<h:outputText value="Ações" />
-									</f:facet>
-									<center>
+									<p:column width="10%">
+										<f:facet name="header">
+											<h:outputText value="Código" />
+										</f:facet>
+										<h:outputText value="#{brindes.brindeBean.codigo}" />
+									</p:column>
+									<p:column width="45%">
+										<f:facet name="header">
+											<h:outputText value="Descricao" />
+										</f:facet>
+										<h:outputText value="#{brindes.brindeBean.descricao}" />
+									</p:column>
+									<p:column width="20%" style="text-align : center !important;">
+										<f:facet name="header">
+											<h:outputText value="Qt" />
+										</f:facet>
+										<p:spinner size="3" min="1" max="99"
+											style="text-align: center !important;"
+											id="idQuantidadeProduto" value="#{brindes.quantidade}">
+										</p:spinner>
+									</p:column>
+									<p:column style="text-align : center !important;">
+										<f:facet name="header">
+											<h:outputText value="Ações" />
+										</f:facet>
 										<p:commandLink
-											actionListener="#{ofertaController.excluirItemOferta(ofertaitem)}"
-											update=":ofertaForm:datalistofertaItens, :growl"
-											style="font-size: 20px">
+											actionListener="#{ofertaController.excluirItemBrinde(brindes)}"
+											update="datalistBrindeOferta, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
-											<p:confirm header="Excluir item da oferta"
+											<p:confirm header="Excluir brinde"
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":ofertaFormItens"
-											oncomplete="PF('_ofertaDialogItens').show();"
-											actionListener="#{ofertaController.prepareEditarItemOferta(ofertaitem)}"
-											style="font-size: 20px">
-											<i class="metismenu-icon pe-7s-note" />
-										</p:commandLink>
-									</center>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+						<div class="form-row"
+							style="margin-top: 15px !important; margin-left: 15px !important;">
+							<p:commandLink style="font-size: 20px ;"
+								onclick="PF('_datalistBrindesConsulta').clearFilters();PF('_idConsultaBrindes').show();"
+								type="buttton" update=":growl idFormPesquisarBrinde"
+								styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+								id="btAdicionarBrindeItem">
+								<i class="fas fa-plus-circle" /> Brinde
+						</p:commandLink>
+						</div>
+					</fieldset>
+				</div>
+			
+			<div class="tab-pane tabs-animation fade show"
+					id="tab-content-2-equipe" role="tabpanel">
 
-								</p:column>
+					<div class="position-relative form-group">
+			<center>
+						<p:pickList id="equipe" style="border: 1px solid #FF !important;"
+							 
+							converter="editora3.controller.EquipeDualListConverter"
+							addAllLabel="Adicionar todos" addLabel="Adiconar Selecionado"
+							removeLabel="Remover Equipe" removeAllLabel="Remover todos"
+							value="#{ofertaController.dualListModelofertaEquipe}"
+							var="Equipes" itemLabel="#{Equipes.descricao}"
+							itemValue="#{Equipes}">
+							<f:facet name="sourceCaption">Equipes Disponiveis</f:facet>
+							<f:facet name="targetCaption">Equipes dessa Oferta</f:facet>
+						</p:pickList>
+</center>
+						<!-- <h:selectOneMenu styleClass="form-control" filter="true"
+									filterMatchMode="startsWith"
+									value="#{ofertaController.item.equipeBean}" var="e" id="equipe">
+									<f:selectItem itemValue="0" itemLabel="Selecione"
+										noSelectionOption="true" />
+									<f:selectItems value="#{ofertaController.equipes}" var="equipe"
+										itemLabel="#{equipe.descricao}" itemValue="#{equipe}" />
+									<p:column style="width:10%">
+										<h:outputText value="#{e.codigo}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{e.descricao}" />
+									</p:column>
 
-							</p:dataTable>
-					 
+								</h:selectOneMenu> -->
+
+					</div>
+				</div>
+			
+				<div class="tab-pane tabs-animation fade show"
+					id="tab-content-3-edicoes" role="tabpanel">
+
+					<p:dataTable id="datalistofertaItens"
+						value="#{ofertaController.ofertaItens}" var="ofertaitem"
+						emptyMessage="Nenhum registro localizado"
+						selection="#{ofertaController.ofertaItensSelecionado}"
+						rowKey="#{ofertaitem.codigo}">
+						<f:facet name="footer">
+							<div class="col">
+								<p:commandLink style="font-size: 20px"
+									update=":ofertaFormItens :growl"
+									actionListener="#{ofertaController.prepareCreateItemOferta()}"
+									oncomplete="if (!args.validationFailed) PF('_ofertaDialogItens').show();"
+									id="btAdicionarEdicao">
+									<i class="fas fa-plus-circle" />
+								</p:commandLink>
+							</div>
+						</f:facet>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Status" />
+							</f:facet>
+							<h:outputText value="#{ofertaitem.ativa ? 'ATIVA' : 'inativa'}" />
+
+						</p:column>
+						<p:column width="10%">
+							<f:facet name="header">
+								<h:outputText value="Edição" />
+							</f:facet>
+							<h:outputText value="#{ofertaitem.edicao}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Prêmio" />
+							</f:facet>
+							<h:outputText value="#{ofertaitem.premio}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Vend.Base" />
+							</f:facet>
+							<h:outputText value="#{ofertaitem.vendbase}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Val.Base" />
+							</f:facet>
+							<h:outputText value="#{ofertaitem.valorbase}" />
+						</p:column>
+
+						<p:column width="20%">
+							<f:facet name="header">
+								<h:outputText value="Ações" />
+							</f:facet>
+							<center>
+								<p:commandLink
+									actionListener="#{ofertaController.excluirItemOferta(ofertaitem)}"
+									update=":ofertaForm:datalistofertaItens, :growl"
+									style="font-size: 20px">
+									<i class="metismenu-icon pe-7s-trash" />
+									<p:confirm header="Excluir item da oferta"
+										message="Deseja confirma esta operação?" icon="ui-icon-alert" />
+								</p:commandLink>
+								<p:commandLink update=":ofertaFormItens"
+									oncomplete="PF('_ofertaDialogItens').show();"
+									actionListener="#{ofertaController.prepareEditarItemOferta(ofertaitem)}"
+									style="font-size: 20px">
+									<i class="metismenu-icon pe-7s-note" />
+								</p:commandLink>
+							</center>
+
+						</p:column>
+
+					</p:dataTable>
+
 				</div>
 			</div>
 
@@ -215,6 +334,48 @@
 			</p:confirmDialog>
 		</h:form>
 	</p:dialog>
+	<p:dialog modal="true" appendTo="@(body)" appendToBody="true"
+		width="50%" height="400" header="Consulta de brindes"
+		id="idConsultaBrindes" closeOnEscape="true"
+		widgetVar="_idConsultaBrindes">
+		<h:form id="idFormPesquisarBrinde">
+			<p:outputPanel id="painelBuscaBrinde">
+				<p:dataTable styleClass="table" id="datalistBrindesConsulta"
+					widgetVar="_datalistBrindesConsulta"
+					value="#{ofertaController.brindesDisponiveis}"
+					var="brindesconsulta" emptyMessage="Nenhum registro localizado"
+					paginator="false" rowKey="#{brindesconsulta.codigo}"
+					scrollable="true" selectionMode="single" rowExpandMode="single"
+					scrollRows="10" scrollHeight="330">
+					<p:column filterBy="#{brindesconsulta.codigo}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText value="Codigo" />
+						</f:facet>
+						<h:outputText value="#{brindesconsulta.codigo}" />
+					</p:column>
+					<p:column width="70%" filterBy="#{brindesconsulta.descricao}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText value="Descricao" />
+						</f:facet>
+						<h:outputText value="#{brindesconsulta.descricao}" />
+					</p:column>
+					<p:column style="align-item: center !important;">
+						<center>
+							<p:commandLink update=":ofertaForm:datalistBrindeOferta "
+								actionListener="#{ofertaController.incluirBrindeOferta(brindesconsulta)}"
+								oncomplete="PF('_idConsultaBrindes').hide();"
+								style="font-size: 16px !important;">
+								<i class="fa fa-check-circle" />
+							</p:commandLink>
+						</center>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+
 
 
 

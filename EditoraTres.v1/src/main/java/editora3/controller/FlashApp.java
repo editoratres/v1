@@ -26,6 +26,7 @@ public class FlashApp implements Serializable {
 	}
 	public void limpar() {
 		this.valores.clear();
+		this.valoresPorID.clear();
 	}
 
 	public HashMap<String, Object> getValoresPorID(String idValores) {

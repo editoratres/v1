@@ -14,9 +14,11 @@ import org.primefaces.PrimeFaces;
 
 import editora3.entidades.ContratoCancelamento;
 import editora3.entidades.ContratoSaida;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.ContratoCancelamentoFacade;
  
 import editora3.facade.EquipeFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("contratoCancelamentoController") 
 @RequestScoped
@@ -30,6 +32,12 @@ public class ContratoCancelamentoController implements AbstractController<Contra
 	ContratoCancelamentoFacade contratoCancelamentoFacade;
 	
 	private Boolean editar=false;
+
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 	
 	@Override
 	public void excluir(ContratoCancelamento item) {
@@ -42,8 +50,12 @@ public class ContratoCancelamentoController implements AbstractController<Contra
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}else {
-				getContratoCancelamentoFacade().excluirSaidaContrato(item);
-				setItens(null);
+
+				String texto = item.getCodigo().toString() + " - " + item.getFaixainicial().toString() + " até " + item.getFaixafinal().toString();
+				if(autorizacaoRecurso.VerificarAcesso("ContratoCancel", "excluir",true,texto ,true)) { 
+					getContratoCancelamentoFacade().excluirSaidaContrato(item);
+					setItens(null);
+				}
 			}
 		
 		} catch (Exception e) {
@@ -73,7 +85,10 @@ public class ContratoCancelamentoController implements AbstractController<Contra
 
 	@Override
 	public void prepararNovo() {
-		setItem(new ContratoCancelamento()); 
+
+		if(autorizacaoRecurso.VerificarAcesso("ContratoCancel", "criar",true,null,false)) {
+			setItem(new ContratoCancelamento()); 
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -156,6 +171,8 @@ public class ContratoCancelamentoController implements AbstractController<Contra
 		    if(item.getCodigo()==null) {
 		    	item.setData(new Date());
 		    	getContratoCancelamentoFacade().criarCancelamento(item);
+		    	String texto = item.getCodigo().toString() + " - " + item.getFaixainicial().toString() + " até " + item.getFaixafinal().toString();
+		    	auditoriaFacade.auditar("ContratoCancel", "criar", texto);
 		    	JsfUtil.addSuccessMessage("Saida de contrato(s) criada com sucesso", "Procedimento OK");
 		    	
 		    }

@@ -14,8 +14,10 @@ import org.primefaces.PrimeFaces;
 import editora3.entidades.Equipe;
 import editora3.entidades.PontoDeVenda;
 import editora3.entidades.Vendedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.EquipeFacade;
 import editora3.facade.PontoDeVendaFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.seguranca.LoginInfo;
 import editora3.util.CepWebService;
 import editora3.util.JsfUtil;
@@ -37,13 +39,35 @@ public class CanalController implements AbstractController<PontoDeVenda> {
 	private
 	PontoDeVendaFacade canalfacade;
 	
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	@Override
-	public void excluir(PontoDeVenda item) {
+	public void excluir(PontoDeVenda item) { 
 		// TODO Auto-generated method stub
-		getCanalfacade().remove(item);
-		setItens(null);
+		int total = canalfacade.totalContratosDoPontoDeVenda(item.getCodigo());
+		if(total!=0) {
+			JsfUtil.addErrorMessage("Existem ["+ total +"] contrato(s) vinculados ao ponto de venda", "Procedimento não permitido");
+			FacesContext.getCurrentInstance().validationFailed();
+			return;
+		}
 		
-	}
+		total = canalfacade.totalSaidasBrindesParaPontoDeVenda(item.getCodigo());
+		if(total!=0) {
+			JsfUtil.addErrorMessage("Existem ["+ total +"] saidas(s) de brindes vinculados ao ponto de venda", "Procedimento não permitido");
+			FacesContext.getCurrentInstance().validationFailed();
+			return;
+		}
+		if(autorizacaoRecurso.VerificarAcesso("Pdv", "excluir",true,item.getCodigo().toString() +" - " + item.getDescricao(),true)) {
+			
+			getCanalfacade().remove(item);
+			setItens(null);
+		}
+	}	
+	
 	@PostConstruct
 	public void iniciar() {
 		setItens(null);

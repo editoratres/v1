@@ -12,7 +12,9 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import editora3.entidades.BandeiraCartao;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.BandeiraCartaoFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("bandeiraCartaoController") 
 @RequestScoped
@@ -25,21 +27,34 @@ public class BandeiraCartaoController implements AbstractController<BandeiraCart
 	private
 	BandeiraCartaoFacade canalfacade;
 	
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	@Override
 	public void excluir(BandeiraCartao item) {
 		// TODO Auto-generated method stub
-		getBandeiraCartaofacade().remove(item);
-		setItens(null);
+		if(autorizacaoRecurso.VerificarAcesso("BandeiraCartao", "excluir",true, item.getCodigo().toString()+ " - " + item.getDescricao())) {
+			getBandeiraCartaofacade().remove(item);
+			setItens(null);
+		}
 		
 	}
 	@PostConstruct
 	public void iniciar() {
 		setItens(null);
 	}
-
+	 
 	@Override
 	public void prepararEditar(BandeiraCartao item) {
-		setItem(item);
+		if(autorizacaoRecurso.VerificarAcesso("BandeiraCartao", "editar",true,null,false)) {
+			setItem(item);
+		}else {
+			FacesContext.getCurrentInstance().validationFailed();
+		}
+		 
 		// TODO Auto-generated method stub
 		
 	}
@@ -53,7 +68,11 @@ public class BandeiraCartaoController implements AbstractController<BandeiraCart
 
 	@Override
 	public void prepararNovo() {
-		setItem(new BandeiraCartao()); 
+		if(autorizacaoRecurso.VerificarAcesso("BandeiraCartao", "criar",true,null,false)) {
+					 
+		   setItem(new BandeiraCartao());
+		}
+	 
 		// TODO Auto-generated method stub
 		
 	}
@@ -71,6 +90,8 @@ public class BandeiraCartaoController implements AbstractController<BandeiraCart
 		// TODO Auto-generated method stub
 		try {
 			
+			
+			
 		    BandeiraCartao item = getItem();
 		    item.setDescricao(item.getDescricao().toUpperCase());
 		    
@@ -85,11 +106,16 @@ public class BandeiraCartaoController implements AbstractController<BandeiraCart
 		   
 		    
 		    if(item.getCodigo()==null) {
-		    	getBandeiraCartaofacade().create(item);
-		    	JsfUtil.addSuccessMessage("Bandeira criada com sucesso", "Procedimento OK");
+		    	
+		    		getBandeiraCartaofacade().create(item);
+		    		auditoriaFacade.auditar("BandeiraCartao", "criar", item.getCodigo().toString() + " - " + item.getDescricao());
+		    		JsfUtil.addSuccessMessage("Bandeira criada com sucesso", "Procedimento OK");
+		    	
 		    }else {
-		    	getBandeiraCartaofacade().edit(item);
-		    	JsfUtil.addSuccessMessage("Bandeira alterada com sucesso", "Procedimento OK");
+		    		getBandeiraCartaofacade().edit(item);
+		    		auditoriaFacade.auditar("BandeiraCartao", "editar", item.getCodigo().toString() + " - " + item.getDescricao());
+		    		JsfUtil.addSuccessMessage("Bandeira alterada com sucesso", "Procedimento OK");
+		    	
 		    }
 		    atualizar();
 		} catch (Exception e) {

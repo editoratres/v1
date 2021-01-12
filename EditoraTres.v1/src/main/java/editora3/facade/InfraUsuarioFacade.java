@@ -226,6 +226,16 @@ public class InfraUsuarioFacade extends AbstractFacade<InfraUsuario> implements 
         }
         return ret;
     }
+    public List<InfraModulo> getModulo(String NomeClasse) {
+    	List<InfraModulo>  ret= null;
+    	Query q =  em.createNativeQuery("select * from infra_modulos where nomeclasse=:nomeclasse",InfraModulo.class);
+    	q.setParameter("nomeclasse", NomeClasse);
+        //q.setParameter("IDCONTRATADO", IdContratado);
+        ret =  q.getResultList();
+    	
+    	
+    	return ret;
+    }
     public List<InfraTipoPerfilDet> LocalizarRecursoClasse(Integer Usuario,String NomeClasse){
          List<InfraTipoPerfilDet> ret=null;
          try {
@@ -322,4 +332,28 @@ public class InfraUsuarioFacade extends AbstractFacade<InfraUsuario> implements 
 	
 	    return ret;
 	}
+	public Integer totalEquipeComUsuario(Integer infrausuariobean) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(*) from equipe where infrausuariobean =:infrausuariobean"
+									);
+			 
+				createQuery.setParameter("infrausuariobean", infrausuariobean);
+			 
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
+	}
+	
 }

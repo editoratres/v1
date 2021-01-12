@@ -105,27 +105,28 @@ public class BrindeFacade extends AbstractFacade<Brinde> implements Serializable
 		LazyObjetos<Brinde> retLazy = new LazyObjetos();  
 		List<Brinde> ret =null;
 		try {
+			StringBuffer sqlcomum = new StringBuffer();
+			sqlcomum 
+			.append(" from Brinde b , Equipe e ")
+			.append(exibirSomenteItensComEstoque ? ", brinde_estoque_equipe bee " :"")
+			.append("where bee.equipelbean=e.codigo")
+			.append(codigoEquipe==null ? "" : " and bee.equipeBean=:codigoEquipe and bee.quantidade>0")
+			.append(exibirSomenteItensComEstoque ? " and b.quantidade>0  " :"");
+
 			StringBuilder sql = new StringBuilder();
 			sql
-			.append("select distinct c from Brinde c ")
-			.append(exibirSomenteItensComEstoque ? " inner join fetch c.brindeEstoqueEquipe bee " :"")
-			.append("where 1=1 ")
-			.append(codigoEquipe==null ? "" : " and bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
-			.append(exibirSomenteItensComEstoque ? " and c.quantidade>0  " :"");
-			 
+			.append("select distinct b.* ")
+			.append(sqlcomum.toString()) ;
 			 
 			StringBuilder sqlContagem = new StringBuilder();
 			sqlContagem
-			.append("select count(distinct c) from Brinde c ")
-			.append(exibirSomenteItensComEstoque ? " left join c.brindeEstoqueEquipe bee " :"")
-			.append("where 1=1 ")
-			.append(codigoEquipe==null ? "" : " and bee.equipeBean.codigo=:codigoEquipe and bee.quantidade>0")
-			.append(exibirSomenteItensComEstoque ? " and c.quantidade>0  " :"");
+			.append("select count(distinct b.*) ")
+			.append(sqlcomum.toString());
 			
 			List<ParametrosNativosQuery> parametrosNativosQuery = new ArrayList<ParametrosNativosQuery>();
 			if(codigoEquipe!=null) {
 				ParametrosNativosQuery p1=new ParametrosNativosQuery();
-				p1.setNome(":codigoEquipe");
+				p1.setNome("codigoEquipe");
 				p1.setValor(codigoEquipe);
 				parametrosNativosQuery.add(p1);
 			}

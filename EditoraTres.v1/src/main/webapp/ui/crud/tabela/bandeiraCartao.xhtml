@@ -35,9 +35,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":bandeiraCartaoForm"
+								<p:commandLink style="font-size: 20px !important;" update=":bandeiraCartaoForm, :growl"
 									actionListener="#{bandeiraCartaoController.prepararNovo()}"
-									oncomplete="PF('_bandeiraCartaoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed) {PF('_bandeiraCartaoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -101,9 +101,9 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":bandeiraCartaoForm"
+										<p:commandLink update=":bandeiraCartaoForm , :growl"
 											actionListener="#{bandeiraCartaoController.prepararEditar(item)}"
-											oncomplete="PF('_bandeiraCartaoDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){PF('_bandeiraCartaoDialog').show();}" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>

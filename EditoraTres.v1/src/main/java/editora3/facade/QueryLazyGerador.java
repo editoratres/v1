@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.annotations.QueryHints;
 import org.primefaces.model.SortOrder;
 
  
@@ -51,13 +52,15 @@ public class QueryLazyGerador<T> {
 	}
 	
 	public List<T> getTypedQueryResultado(){
-		TypedQuery<T> ret = null;
+		Query ret = null;
 		
 		StringBuilder sql = aplicarParametrosNaQuery(getSqlLista(),false);
 
-		ret = getEm().createQuery(sql.toString(), cl);
+		ret = getEm().createNativeQuery(sql.toString(), cl);
 
 		ret = setarParametrosQuery(ret);
+		//ret.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+		
 
 		if (dataModel != null) {
 			ret.setFirstResult(dataModel.getFirst());
@@ -75,17 +78,19 @@ public class QueryLazyGerador<T> {
 				for (String key : keySet) {
 					if(filters.get(key).toString().trim().length()>0) {
 						 
-							ret.setParameter(key.replace(".", "_"), filters.get(key) instanceof Number ? filters.get(key) : filters.get(key)+"%" );
+							ret.setParameter(key.replace(".", "_").toLowerCase(), filters.get(key) instanceof Number ? filters.get(key) : filters.get(key).toString().toLowerCase()+"%" );
 						 
 					}
 				}
 			}
 			
 		}
-		for (Iterator iterator = parametrosNativosQuery.iterator(); iterator.hasNext();) {
-			ParametrosNativosQuery parametro = (ParametrosNativosQuery) iterator.next();
-			ret.setParameter(parametro.getNome(), parametro.getValor());
-			
+		if(parametrosNativosQuery!=null) {
+			for (Iterator iterator = parametrosNativosQuery.iterator(); iterator.hasNext();) {
+				ParametrosNativosQuery parametro = (ParametrosNativosQuery) iterator.next();
+				ret.setParameter(parametro.getNome(), parametro.getValor());
+				
+			}
 		}
 		return ret;
 	}
@@ -97,19 +102,44 @@ public class QueryLazyGerador<T> {
 				for (String key : keySet) {
 					if(filters.get(key).toString().trim().length()>0) {
 						 
-						query.setParameter(key.replace(".", "_"), filters.get(key) instanceof Number ? filters.get(key) : filters.get(key)+"%" );
+						query.setParameter(key.replace(".", "_").toLowerCase(), filters.get(key) instanceof Number ? filters.get(key) : filters.get(key).toString().toLowerCase()+"%" );
 						 
 					}
 				}
 			}
 		}
-		for (Iterator iterator = parametrosNativosQuery.iterator(); iterator.hasNext();) {
-			ParametrosNativosQuery parametro = (ParametrosNativosQuery) iterator.next();
-			query.setParameter(parametro.getNome(), parametro.getValor());
-			
+		if(parametrosNativosQuery!=null) {
+			for (Iterator iterator = parametrosNativosQuery.iterator(); iterator.hasNext();) {
+				ParametrosNativosQuery parametro = (ParametrosNativosQuery) iterator.next();
+				query.setParameter(parametro.getNome(), parametro.getValor());
+				
+			}
 		}
 		return query;
 	}
+//	private StringBuilder aplicarParametrosNaQuery(String sqlQuery, boolean ignorarOrderBy) {
+//		StringBuilder sql = new StringBuilder();
+//		sql.append(sqlQuery);
+//		if (dataModel != null) {
+//			Map<String, Object> filters = dataModel.getFilters();
+//			if (filters != null && !filters.isEmpty()) {
+//				Set<String> keySet = filters.keySet();
+//				for (String key : keySet) {
+//					if(filters.get(key).toString().trim().length()>0) {
+//						 
+//					 
+//						   sql.append(" and cast(").append(Alias).append(".").append(key).append(" as varchar) like ").append(":").append(key.replace(".", "_"));
+//						 
+//					}
+//				}
+//			}
+//			if(!ignorarOrderBy && dataModel.getSortField()!=null) {
+//				sql.append(" order by ").append(Alias).append(".").append(dataModel.getSortField()).append(dataModel.getSortOrder()!=SortOrder.ASCENDING ? " desc ": ""); 
+//			}
+//		}
+//		return sql;
+//	}
+//	
 	private StringBuilder aplicarParametrosNaQuery(String sqlQuery, boolean ignorarOrderBy) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(sqlQuery);
@@ -117,28 +147,30 @@ public class QueryLazyGerador<T> {
 			Map<String, Object> filters = dataModel.getFilters();
 			if (filters != null && !filters.isEmpty()) {
 				Set<String> keySet = filters.keySet();
+				 String campoModel ="";
 				for (String key : keySet) {
 					if(filters.get(key).toString().trim().length()>0) {
 						 
-					 
-						   sql.append(" and cast(").append(Alias).append(".").append(key).append(" as string) like ").append(":").append(key.replace(".", "_"));
+						   campoModel = dataModel.getMapeamentoCampoViewModel().get(key);	  
+						
+						   sql.append(" and lower(cast(").append(campoModel).append(" as varchar)) like ").append(":").append(key.toLowerCase().replace(".", "_"));
 						 
 					}
 				}
 			}
 			if(!ignorarOrderBy && dataModel.getSortField()!=null) {
-				sql.append(" order by ").append(Alias).append(".").append(dataModel.getSortField()).append(dataModel.getSortOrder()!=SortOrder.ASCENDING ? " desc ": ""); 
+				 String filtroCampoModel =dataModel.getMapeamentoCampoViewModel().get(dataModel.getSortField());
+				sql.append(" order by ").append(filtroCampoModel).append(dataModel.getSortOrder()!=SortOrder.ASCENDING ? " desc ": ""); 
 			}
 		}
 		return sql;
 	}
-	
 	public Integer getTypedQueryTotalizador(){
 		Integer ret=0;
 	
 		StringBuilder sql = aplicarParametrosNaQuery(getSqlContagem(),true); 
 		
-		Query query =  getEm().createQuery(sql.toString());
+		Query query =  getEm().createNativeQuery(sql.toString());
 		
 		query = setarParametrosQuery(query);
 		Object singleResult = query.getSingleResult();

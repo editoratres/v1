@@ -35,9 +35,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":brindeEntradaForm"
+								<p:commandLink style="font-size: 20px !important;" update=":brindeEntradaForm , :growl"
 									actionListener="#{brindeEntradaController.prepararNovo()}"
-									oncomplete="PF('_brindeEntradaDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed) {PF('_brindeEntradaDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -114,9 +114,9 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":brindeEntradaForm"
+										<p:commandLink update=":brindeEntradaForm :growl"
 											actionListener="#{brindeEntradaController.prepararEditar(item)}"
-											oncomplete="PF('_brindeEntradaDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){PF('_brindeEntradaDialog').show();}" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-search" />
 										</p:commandLink>
 									</center>

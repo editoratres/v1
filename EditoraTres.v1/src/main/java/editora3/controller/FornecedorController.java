@@ -12,7 +12,9 @@ import javax.inject.Named;
 
 import editora3.entidades.Equipe;
 import editora3.entidades.Fornecedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.FornecedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.CepWebService;
 import editora3.util.CepWebService.Estados;
 import editora3.util.CepWebService.Municipio;
@@ -31,7 +33,11 @@ public class FornecedorController implements AbstractController<Fornecedor>{
 	private String mascaraCPF="999.999.999-99" ;
 	@Inject
 	private FornecedorFacade fornecedorFacade; 
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
 	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
 	 
 
 	private ArrayList<Municipio> municipio=null;
@@ -77,8 +83,10 @@ public class FornecedorController implements AbstractController<Fornecedor>{
 	public void excluir(Fornecedor item) {
 		// TODO Auto-generated method stub
 		 try {
+			 if(autorizacaoRecurso.VerificarAcesso("Fornecedor", "excluir",true,item.getCodigo().toString()+ " - " + item.getDescricao(),true)) {
 				getFornecedorFacade().remove(item);
 				atualizar();
+			 }
 			 
 		} catch (Exception e) {
 			JsfUtil.addErrorMessage(e, "excluir");
@@ -91,7 +99,9 @@ public class FornecedorController implements AbstractController<Fornecedor>{
 	@Override
 	public void prepararEditar(Fornecedor item) {
 		// TODO Auto-generated method stub
-		setItem(item);
+		if(autorizacaoRecurso.VerificarAcesso("Fornecedor", "editar",true,null,false)) {
+			setItem(item);
+		}
 		
 	}
 
@@ -104,9 +114,11 @@ public class FornecedorController implements AbstractController<Fornecedor>{
 
 	@Override
 	public void prepararNovo() {
+		if(autorizacaoRecurso.VerificarAcesso("Fornecedor", "criar",true,null,false)) {
 		// TODO Auto-generated method stub
 		setItem(new Fornecedor());
 		getItem().setTipopessoa("fisica");
+		}
 		
 	}
 
@@ -137,10 +149,12 @@ public class FornecedorController implements AbstractController<Fornecedor>{
 			
 			if(equipe.getCodigo()==null) {
 				getFornecedorFacade().create(equipe);
+				auditoriaFacade.auditar("Fornecedor", "criar", equipe.getCodigo().toString() + " - " + equipe.getDescricao());
 				JsfUtil.addSuccessMessage("Fornecedor criado com sucesso", "Procedimento OK");
 				
 			}else {
 				getFornecedorFacade().edit(equipe);	
+				auditoriaFacade.auditar("Fornecedor", "editar", equipe.getCodigo().toString() + " - " + equipe.getDescricao());
 				JsfUtil.addSuccessMessage("Fornecedor alterado com sucesso", "Procedimento OK");
 			}
 			

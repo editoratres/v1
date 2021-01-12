@@ -168,6 +168,7 @@
 							<div class="col-md-1">
 								<p:commandLink onclick="PF('_datalistBrindes').clearFilters();"
 									update=":idFormPesquisarBrinde:painelBuscaBrinde"
+									disabled="#{brindeSaidaController.editar}"
 									actionListener="#{brindeSaidaController.prepararConsultarBrinde(itens)}"
 									oncomplete="PF('_idConsultaBrindes').show();"
 									style="font-size: 20px">

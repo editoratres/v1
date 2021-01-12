@@ -17,27 +17,29 @@
 				<div class="page-title-wrapper">
 					<div class="page-title-heading" style="width: 90%">
 						<div class="page-title-icon">
-							<i class="fa fa-money-check-alt icon-gradient bg-premium-dark"> </i>
+							<i class="fa fa-money-check-alt icon-gradient bg-premium-dark">
+							</i>
 						</div>
 						<div>
-							<h3><b>
-							Oferta
-							</b></h3>
+							<h3>
+								<b> Ofertas </b>
+							</h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
-									actionListener="#{ofertaController.atualizar()}" update="datalist"
-									id="btAtualizar">
+									actionListener="#{ofertaController.atualizar()}"
+									update="datalist" id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":ofertaForm"
+								<p:commandLink style="font-size: 20px !important;"
+									update=":ofertaForm, :growl"
 									actionListener="#{ofertaController.prepararNovo()}"
-									oncomplete="PF('_ofertaDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_ofertaDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -49,22 +51,21 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div   class="main-card mb-3 card">
+					<div class="main-card mb-3 card">
 						<div class="card-header-tab card-header-tab-animation card-header">
 							<div class="card-header-title">
 								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
 								</i>Listagem de ofertas
 							</div>
 						</div>
-						 
-						<div   class="card-body">
+
+						<div class="card-body">
 
 							<p:dataTable id="datalist" styleClass="table-editora"
-								value="#{ofertaController.itens}" var="item" selectionMode="single"
+								value="#{ofertaController.itensLazy}" var="item"
 								paginatorPosition="bottom"
-								emptyMessage="Nenhum registro localizado"
-								selection="#{ofertaController.item}" paginator="true"
-								rowKey="#{item.codigo}" rows="10"
+								emptyMessage="Nenhum registro localizado" paginator="true"
+								lazy="true" rowKey="#{item.codigo}" rows="10"
 								rowsPerPageTemplate="10,20,30,40,50">
 
 								<p:column width="10%">
@@ -73,49 +74,75 @@
 									</f:facet>
 									<h:outputText value="#{item.codigo}" />
 								</p:column>
-								<p:column  width="25%" >
+								<p:column width="20%" filterBy="#{item.produtoBean.descricao}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Produto" />
 									</f:facet>
 									<h:outputText value="#{item.produtoBean.descricao}" />
 								</p:column>
-								<p:column  width="25%" >
+								<p:column width="25%">
 									<f:facet name="header">
 										<h:outputText value="Brindes" />
 									</f:facet>
-									<h:outputText value="#{item.brindeBean.descricao}" />
+									<ui:fragment
+										rendered="#{item.ofertaBrindes.size()==1 ? true : false}">
+										<h:outputText
+											value="#{item.ofertaBrindes.get(0).brindeBean.descricao}" />
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{item.ofertaBrindes.size()>1 ? true : false}">
+										<ui:repeat var="itemBrinde" value="#{item.ofertaBrindes}">
+											<h:outputText value="#{itemBrinde.brindeBean.descricao}" />
+											<br />
+										</ui:repeat>
+
+									</ui:fragment>
 								</p:column>
-								<p:column  >
+								 
+								<p:column width="25%">
 									<f:facet name="header">
-										<h:outputText value="Tipo assinatura" />
+										<h:outputText value="Equipe" />
 									</f:facet>
-									<h:outputText value="#{item.tipoassinatura}" />
+									<ui:fragment
+										rendered="#{item.ofertaEquipe.size()==1 ? true : false}">
+										<h:outputText
+											value="#{item.ofertaEquipe.get(0).equipeBean.descricao}" />
+									</ui:fragment>
+									<ui:fragment
+										rendered="#{item.ofertaEquipe.size()>1 ? true : false}">
+										<ui:repeat var="itemEquipe" value="#{item.ofertaEquipe}">
+											<h:outputText value="#{itemEquipe.equipeBean.descricao}" />
+											<br />
+										</ui:repeat>
+
+									</ui:fragment>
 								</p:column>
-								<p:column  >
+
+
+								<p:column>
 									<f:facet name="header">
 										<h:outputText value="Status" />
 									</f:facet>
 									<h:outputText value="#{item.ativa ? 'ATIVA' : 'inativa'}" />
-									 
 								</p:column>
-	
-	
-	
-								<p:column width="20%">
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink actionListener="#{ofertaController.excluir(item)}"
+										<p:commandLink
+											actionListener="#{ofertaController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir oferta"
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":ofertaForm"
+										<p:commandLink update=":ofertaForm, :growl"
 											actionListener="#{ofertaController.prepararEditar(item)}"
-											oncomplete="PF('_ofertaDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){PF('_ofertaDialog').show();}"
+											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>
@@ -132,8 +159,8 @@
 	</h:form>
 
 	<ui:include src="ofertaForm.xhtml" />
-	
-	 <ui:include src="ofertaFormItens.xhtml" />
+
+	<ui:include src="ofertaFormItens.xhtml" />
 
 </ui:composition>
 </html>

@@ -1,6 +1,7 @@
 package editora3.facade;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.primefaces.model.SortOrder;
@@ -10,6 +11,8 @@ public class FiltrosLazyDataModel implements Serializable{
 	/**
 	 * 
 	 */
+	private HashMap<String, String> mapeamentoCampoViewModel=new HashMap<String, String>();
+    
 	private static final long serialVersionUID = 3896653425702623391L;
 
 	int first;
@@ -58,4 +61,11 @@ public class FiltrosLazyDataModel implements Serializable{
 	private String  sortField;
     private SortOrder sortOrder;
     private Map<String, Object> filters;
+	public HashMap<String, String> getMapeamentoCampoViewModel() {
+		return mapeamentoCampoViewModel;
+	}
+	public void setMapeamentoCampoViewModel(HashMap<String, String> mapeamentoCampoViewModel) {
+		this.mapeamentoCampoViewModel = mapeamentoCampoViewModel;
+	}
+
 }

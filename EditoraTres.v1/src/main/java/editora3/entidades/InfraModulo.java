@@ -13,6 +13,31 @@ import java.util.List;
 @Table(name="infra_modulos")
 @NamedQuery(name="InfraModulo.findAll", query="SELECT i FROM InfraModulo i")
 public class InfraModulo implements Serializable {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idmodulo == null) ? 0 : idmodulo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InfraModulo other = (InfraModulo) obj;
+		if (idmodulo == null) {
+			if (other.idmodulo != null)
+				return false;
+		} else if (!idmodulo.equals(other.idmodulo))
+			return false;
+		return true;
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

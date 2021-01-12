@@ -27,9 +27,11 @@ import editora3.entidades.Brinde;
 import editora3.entidades.BrindeEntrada;
  
 import editora3.entidades.Fornecedor;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.BrindeEntradaFacade;
 import editora3.facade.BrindeFacade;
 import editora3.facade.FornecedorFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("brindeEntradaController") 
 @RequestScoped
@@ -49,6 +51,12 @@ public class BrindeEntradaController implements AbstractController<BrindeEntrada
 	@Inject
 	private BrindeFacade brindeFacade; 
 	
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	private List<BrindeEntradaItens> brindaEntradaItensGrid;
 	
 	private Boolean editar=false;
@@ -56,8 +64,10 @@ public class BrindeEntradaController implements AbstractController<BrindeEntrada
 	@Override
 	public void excluir(BrindeEntrada item) {
 		// TODO Auto-generated method stub
-		getBrindeEntradafacade().cancelarEntradaBrinde(item);
-		setItens(null);
+		if(autorizacaoRecurso.VerificarAcesso("BrindeEntrada", "excluir",true,item.getCodigo().toString() ,true)) {
+			getBrindeEntradafacade().cancelarEntradaBrinde(item);
+			setItens(null);
+		}
 		
 	}
 	public Double getTotalEntradaItens() {
@@ -127,9 +137,10 @@ public class BrindeEntradaController implements AbstractController<BrindeEntrada
 
 	@Override
 	public void prepararEditar(BrindeEntrada item) {
-		setEditar(true);
-		setItem(item);
-		 
+		if(autorizacaoRecurso.VerificarAcesso("BrindeEntrada", "editar",true,null,false)) {
+			setEditar(true);
+			setItem(item);
+		}
 	}
 	
 	 
@@ -143,12 +154,16 @@ public class BrindeEntradaController implements AbstractController<BrindeEntrada
 
 	@Override
 	public void prepararNovo() {
-		//setItem(new BrindeEntrada()); 
-		BrindeEntrada item =new BrindeEntrada();
-		item.setData(new java.util.Date());
-		 
-		 setItem(item);
-		 setEditar(false);
+		
+		//setItem(new BrindeEntrada());
+		if(autorizacaoRecurso.VerificarAcesso("BrindeEntrada", "criar",true,null,false)) {
+
+			BrindeEntrada item =new BrindeEntrada();
+			item.setData(new java.util.Date());
+			 
+			 setItem(item);
+			 setEditar(false);
+		}
 		
 	} 
 	public void prepararNovoItem() {
@@ -257,6 +272,7 @@ public class BrindeEntradaController implements AbstractController<BrindeEntrada
 		    if(item.getCodigo()==null) {
 		    	item.setTotal(getTotalEntradaItens());
 		    	getBrindeEntradafacade().CriarEntrada(item);
+		    	auditoriaFacade.auditar("BrindeEntrada", "criar", item.getCodigo().toString());
 		    	JsfUtil.addSuccessMessage("Entrada de brinde criada com sucesso", "Procedimento OK");
 		    }
 		    atualizar();

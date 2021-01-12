@@ -8,12 +8,17 @@ package editora3.seguranca;
  
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import editora3.entidades.Auditoria;
+import editora3.entidades.InfraModulo;
 import editora3.entidades.InfraTipoPerfilDet;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.InfraUsuarioFacade;
 import editora3.util.JsfUtil;
  
@@ -32,6 +37,8 @@ public class AutorizacaoRecurso implements Serializable{
     private LoginInfo lusuario;
     @Inject
     private InfraUsuarioFacade infraUsuarioFacade;
+    @Inject
+    private AuditoriaFacade auditoriaFacade;
      /**
      * @return the lusuario
      */
@@ -59,25 +66,47 @@ public class AutorizacaoRecurso implements Serializable{
     public void setInfraUsuarioFacade(InfraUsuarioFacade infraUsuarioFacade) {
         this.infraUsuarioFacade = infraUsuarioFacade;
     }
-    
-	public boolean VerificarAcesso(String NomeClasse,String Acao){
-        return VerificarAcesso(NomeClasse, Acao, true);
+   /* public boolean VerificarAcesso(String NomeClasse,String Acao, String detalhe){
+        return VerificarAcesso(NomeClasse, Acao, true,detalhe);
     }
-    public boolean VerificarAcesso(String NomeClasse,String Acao,boolean ExibirMSG){
+	public boolean VerificarAcesso(String NomeClasse,String Acao){
+        return VerificarAcesso(NomeClasse, Acao, true,null);
+    }
+	public boolean VerificarAcesso(String NomeClasse,String Acao,boolean ExibirMSG) {
+		return VerificarAcesso(NomeClasse, Acao, ExibirMSG, null);
+	}*/
+    public boolean VerificarAcesso(String NomeClasse,String Acao,boolean ExibirMSG, String detalhe) {
+    	return VerificarAcesso(NomeClasse, Acao, ExibirMSG, detalhe, true);
+    }
+    public boolean VerificarAcesso(String NomeClasse,String Acao,boolean ExibirMSG, String detalhe, boolean auditar){
         boolean Ret = false;
         try {
-            List<InfraTipoPerfilDet> LocalizarRecursoClasse = getInfraUsuarioFacade().LocalizarRecursoClasse(getLusuario().getUsuario_logado().getIdusuario(), NomeClasse);
+        	Integer idusuario = getLusuario().getUsuario_logado().getIdusuario();
+        	 
+            List<InfraTipoPerfilDet> LocalizarRecursoClasse = getInfraUsuarioFacade().LocalizarRecursoClasse(idusuario, NomeClasse);
             if(LocalizarRecursoClasse.size()>0){
                if(Acao.equalsIgnoreCase("editar")){
                     Ret = LocalizarRecursoClasse.get(0).getEditar();
+                    
                }else if(Acao.equalsIgnoreCase("criar")){
                    Ret = LocalizarRecursoClasse.get(0).getCriar();
+                   
                }else if(Acao.equalsIgnoreCase("excluir")){
                    Ret = LocalizarRecursoClasse.get(0).getExcluir();
+                  
+               }else if(Acao.equalsIgnoreCase("acessar")){
+                   Ret = LocalizarRecursoClasse.get(0).getAcessar();
+                 
                }
+               
+
                if(!Ret && ExibirMSG){
                   JsfUtil.addSuccessMessage("Usuário não autorizado", "Acesso Negado");
                   FacesContext.getCurrentInstance().validationFailed();
+               }else {
+            	   if(auditar) {
+            		   auditoriaFacade.auditar(NomeClasse, Acao, detalhe);
+            	   }
                }
                    
             }else{

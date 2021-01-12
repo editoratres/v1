@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
  
@@ -37,6 +38,30 @@ public class ProdutoFacade extends AbstractFacade<Produto> {
 		}
 
 		return c;
+	}
+	
+	public Integer totalOfertasDoProduto(Integer codigoProduto) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(o.*) from oferta o  where"
+									+ " o.produtoBean=:codigoProduto" );
+			 
+				createQuery.setParameter("codigoProduto", codigoProduto);
+			 
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
 	}
 
 }

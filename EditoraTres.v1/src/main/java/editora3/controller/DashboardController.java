@@ -23,6 +23,8 @@ public class DashboardController implements Serializable {
 	/**
 	 * 
 	 */
+	
+	private boolean bloquearPaginaPrincipal=false;
 	 @Inject
 	 private LoginInfo loginInfo;
 	 
@@ -31,7 +33,9 @@ public class DashboardController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String paginaAtual="/ui/inicio.xhtml";
 	private HttpSession sessaoAtual;
-	
+	public void bloquarPaginaPrincipal(Boolean status) {
+		this.bloquearPaginaPrincipal=status;
+	}
 	public String getPaginaAtual() {
 		return paginaAtual;
 	}
@@ -50,6 +54,7 @@ public class DashboardController implements Serializable {
 	public void navegar(String pagina) {
 		if(!pagina.isEmpty()) {
 			flashApp.limpar();
+			this.bloquearPaginaPrincipal=false;
 			this.paginaAtual= pagina;
 		}
 	}
@@ -91,6 +96,12 @@ public class DashboardController implements Serializable {
 	}
 	public void setSessaoAtual(HttpSession sessaoAtual) {
 		this.sessaoAtual = sessaoAtual;
+	}
+	public boolean isBloquearPaginaPrincipal() {
+		return bloquearPaginaPrincipal;
+	}
+	public void setBloquearPaginaPrincipal(boolean bloquearPaginaPrincipal) {
+		this.bloquearPaginaPrincipal = bloquearPaginaPrincipal;
 	}
 	
 }

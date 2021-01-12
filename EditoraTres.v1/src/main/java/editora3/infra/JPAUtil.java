@@ -3,6 +3,7 @@ package editora3.infra;
 import java.io.Serializable;
 import java.sql.Connection;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
  
 import javax.persistence.EntityManager;
@@ -11,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
 
-@SessionScoped
+@RequestScoped
 public class JPAUtil implements Serializable {
 
 	/**

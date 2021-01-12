@@ -55,5 +55,28 @@ public class VendedorFacade extends AbstractFacade<Vendedor> implements Serializ
 		return v;
 		
 	}
+	public Integer totalContratosEfetivadosDoVendedor(Integer codigovendedor) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(c.*) from Contrato c  where not c.inclusao is null"
+									+ (codigovendedor != null ? "  and c.vendedorBean=:codigovendedor" : ""));
+			if (codigovendedor != null) {
+				createQuery.setParameter("codigovendedor", codigovendedor);
+			}
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
+	}
 
 }

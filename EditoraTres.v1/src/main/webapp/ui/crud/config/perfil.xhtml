@@ -16,7 +16,7 @@
 						</div>
 						<div>
 							<h3>
-								<b>Perfil de Acesso</b>
+								<b>Perfis de Acesso</b>
 							</h3>
 						</div>
 					</div>
@@ -32,8 +32,8 @@
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
 									actionListener="#{infraTipoPerfilUsuarioController.prepareCreate()}"
-									update=":InfraTipoPerfilUsuarioCreateForm"
-									oncomplete="PF('InfraTipoPerfilUsuarioCreateDialog').show()"
+									update=":InfraTipoPerfilUsuarioCreateForm, :growl"
+									oncomplete="if(!args.validationFailed){PF('InfraTipoPerfilUsuarioCreateDialog').show();}"
 									id="btUsuarioPerfilForm">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
@@ -89,9 +89,9 @@
 													message="Deseja confirma esta operação?"
 													icon="ui-icon-alert" />
 											</p:commandLink>
-											<p:commandLink update=":InfraTipoPerfilUsuarioCreateForm"
+											<p:commandLink update=":InfraTipoPerfilUsuarioCreateForm, :growl"
 												actionListener="#{infraTipoPerfilUsuarioController.prepararEditar(item)}"
-												oncomplete="PF('InfraTipoPerfilUsuarioCreateDialog').show();"
+												oncomplete="if(!args.validationFailed){PF('InfraTipoPerfilUsuarioCreateDialog').show();}"
 												style="font-size: 20px">
 												<i class="metismenu-icon pe-7s-note" />
 											</p:commandLink>

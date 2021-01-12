@@ -10,31 +10,38 @@
 	<f:metadata>
 		<f:viewAction action="#{contratoController.atualizar()}" />
 	</f:metadata>
-	<h:form id="_Formulario">
+	<h:form id="_FormularioContratos">
 		<div class="app-main__inner">
 			<div class="app-page-title">
 				<div class="page-title-wrapper">
 					<div class="page-title-heading" style="width: 90%">
 						<div class="page-title-icon">
-							<i class="fa fa-file-signature icon-gradient bg-premium-dark"> </i>
+							<i class="fa fa-file-signature icon-gradient bg-premium-dark">
+							</i>
 						</div>
 						<div>
-							<h3><b>Digitação de contratos</b></h3>
+							<h3>
+								<b>Digitação de contratos</b>
+							</h3>
 						</div>
 					</div>
 					<div class="page-title-actions" style="width: 10%">
 						<div class="row">
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;"
-									actionListener="#{contratoController.atualizar()}" update="datalist"
-									id="btAtualizar">
+								 	onclick="PF('_id-blockui_contrato').show();" 
+								 	oncomplete="PF('_id-blockui_contrato').hide();"
+								 	onerror="PF('_id-blockui_contrato').hide();"
+									actionListener="#{contratoController.atualizar()}"
+									update="datalist" id="btAtualizar">
 									<i class="fas fa-sync-alt" />
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":contratoForm"
+								<p:commandLink style="font-size: 20px !important;"
+									update=":contratoForm, :growl"
 									actionListener="#{contratoController.prepararNovo()}"
-									oncomplete="PF('_contratoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_contratoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -46,91 +53,115 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div  class="main-card mb-3 card">
+					<div class="main-card mb-3 card">
 						<div class="card-header-tab card-header-tab-animation card-header">
 							<div class="card-header-title">
 								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
 								</i>Listagem de contratos
 							</div>
 						</div>
-						 
+
 						<div class="card-body">
 
-							<p:dataTable id="datalist"  styleClass="table-editora"
+							<p:dataTable id="datalist" styleClass="table-editora"
 								value="#{contratoController.itensLazy}" var="item"
 								paginatorPosition="bottom"
-								emptyMessage="Nenhum registro localizado"
-								lazy="true"
-								selection="#{contratoController.item}" paginator="true"
+								emptyMessage="Nenhum registro localizado" lazy="true"
+							    paginator="true"
 								rowKey="#{item.codigo}" rows="10"
-							 
 								rowsPerPageTemplate="10,20,30,40,50">
-								
-								<p:column  width="7%" sortBy="#{item.codigocontrato}" filterBy="#{item.codigocontrato}" filterMatchMode="contains">
+
+								<p:column width="7%" sortBy="#{item.codigocontrato}"
+									filterBy="#{item.codigocontrato}" filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Cod" />
 									</f:facet>
 									<h:outputText value="#{item.codigocontrato}" />
 								</p:column>
-								<p:column width="20%" sortBy="#{item.assinanteBean.descricao}"  filterBy="#{item.assinanteBean.descricao}" filterMatchMode="contains">
+								<p:column width="20%" sortBy="#{item.assinanteBean.descricao}"
+									filterBy="#{item.assinanteBean.descricao}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Assinante" />
 									</f:facet>
 									<h:outputText value="#{item.assinanteBean.descricao}" />
 								</p:column>
-								
-								<p:column width="13%"   filterBy="#{item.assinanteBean.cnpjcpf}" filterMatchMode="contains">
+
+								<p:column width="13%" filterBy="#{item.assinanteBean.cnpjcpf}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Identificação" />
 									</f:facet>
 									<h:outputText value="#{item.assinanteBean.cnpjcpf}" />
 								</p:column>
-								<p:column width="10%"  >
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Bandeira" />
 									</f:facet>
-									<h:outputText value="#{item.pagamentoBean.bandeiraBean.descricao}" />
+									<h:outputText
+										value="#{item.pagamentoBean.bandeiraBean.descricao}" />
 								</p:column>
-								
-								<p:column width="15%"   filterBy="#{item.pagamentoBean.cartao}" filterMatchMode="contains">
+
+								<p:column width="11%" filterBy="#{item.pagamentoBean.cartao}"
+									filterMatchMode="contains">
 									<f:facet name="header">
 										<h:outputText value="Cartão" />
 									</f:facet>
 									<h:outputText value="#{item.pagamentoBean.cartao}" />
 								</p:column>
-								
-								<p:column width="10%"  >
+
+								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Valor" />
 									</f:facet>
-									<h:outputText value="#{item.pagamentoBean.valor}" >
-										<f:convertNumber type="currency" currencySymbol="R$" />
+									<h:outputText value="#{item.pagamentoBean.valor}">
+										<f:convertNumber type="currency" currencySymbol="" />
+									</h:outputText>
+								</p:column>
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText value="Desc." />
+									</f:facet>
+									<h:outputText value="#{item.valorDesconto}">
+										<f:convertNumber type="currency" currencySymbol="" />
+									</h:outputText>
+								</p:column>
+								<p:column width="10%">
+									<f:facet name="header">
+										<h:outputText value="V.Final" />
+									</f:facet>
+									<h:outputText value="#{item.pagamentoBean.valor - (item.valorDesconto==null ? 0  : item.valorDesconto)}">
+										<f:convertNumber type="currency" currencySymbol="" />
 									</h:outputText>
 								</p:column>
 								<p:column width="10%" sortBy="#{item.datavenda}">
 									<f:facet name="header">
 										<h:outputText value="Vda" />
 									</f:facet>
-									<h:outputText value="#{item.datavenda}" >
-											<f:convertDateTime pattern="dd/MM/yyyy" />
+									<h:outputText value="#{item.datavenda}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
 								</p:column>
 								<p:column width="10%" sortBy="#{item.datacancelamento}">
 									<f:facet name="header">
 										<h:outputText value="Canc." />
 									</f:facet>
-									<h:outputText value="#{item.datacancelamento}" >
-											<f:convertDateTime pattern="dd/MM/yyyy" />
+									<h:outputText value="#{item.datacancelamento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
 									</h:outputText>
 								</p:column>
-							 
-	
+
+
 								<p:column width="10%">
 									<f:facet name="header">
 										<h:outputText value="Ações" />
 									</f:facet>
 									<center>
-										<p:commandLink disabled="#{item.datacancelamento==null ? false : true}" actionListener="#{contratoController.excluir(item)}"
+										<h:panelGrid styleClass="noBorders"  columns="2">
+										<p:commandLink
+											title="Excluir contrato"
+											disabled="#{item.datacancelamento==null ? false : true}"
+											actionListener="#{contratoController.excluir(item)}"
 											update="datalist, :growl" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-trash" />
 											<p:confirm header="Excluir contrato"
@@ -138,12 +169,36 @@
 												icon="ui-icon-alert" />
 										</p:commandLink>
 										<p:commandLink update=":contratoForm"
-											onstart="PF('_id-blockui_entradabrinde').show();"
-											onerror="PF('_id-blockui_entradabrinde').hide();"
-											actionListener="#{contratoController.prepararEditar(item)}"
-											oncomplete="PF('_contratoDialog').show();PF('_id-blockui_entradabrinde').hide();" style="font-size: 20px">
+											title="Consultar contrato"
+											onclick="PF('_id-blockui_contrato').show();"
+											onerror="PF('_id-blockui_contrato').hide();"
+											actionListener="#{contratoController.prepararConsultar(item)}"
+											oncomplete="PF('_id-blockui_contrato').hide();PF('_contratoDialog').show();"
+											style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-search" />
 										</p:commandLink>
+
+										<p:commandLink update="datalist :contratoForm :growl"
+											onclick="PF('_id-blockui_contrato').show();"
+											title="Editar contrato" 
+											onerror="PF('_id-blockui_contrato').hide();"
+											disabled="#{item.datacancelamento==null ? false : true}"
+											actionListener="#{contratoController.prepararEditar(item)}"
+											oncomplete="PF('_id-blockui_contrato').hide();if (!args.validationFailed){ PF('_contratoDialog').show();}"
+											style="font-size: 20px">
+											<i class="metismenu-icon  pe-7s-note" />
+										</p:commandLink>
+										<p:commandLink update="datalist :FormConcederDesconto :growl"
+											onclick="PF('_id-blockui_contrato').show();"
+											onerror="PF('_id-blockui_contrato').hide();"
+											title="Conceder desconto"
+											disabled="#{item.datacancelamento==null ? false : true}"
+											actionListener="#{contratoController.prepararConcederDesconto(item)}"
+											oncomplete="PF('_id-blockui_contrato').hide();if (!args.validationFailed){ PF('_idConcederDesconto').show();}"
+											style="font-size: 20px">
+											<i class="metismenu-icon  pe-7s-cash" />
+										</p:commandLink>
+										</h:panelGrid>
 									</center>
 
 								</p:column>
@@ -156,15 +211,16 @@
 			</div>
 		</div>
 	</h:form>
-	<p:blockUI widgetVar="_id-blockui_entradabrinde"
-				id="id-blockui_entradabrinde" block=":_Formulario">
-				<ui:include src="/ui/carregando.xhtml" />
-			</p:blockUI>
+	<p:blockUI widgetVar="_id-blockui_contrato"
+		id="id-blockui_contrato" block=":_FormularioContratos">
+		<ui:include src="/ui/carregando.xhtml" />
+	</p:blockUI>
 
 	<ui:include src="contratoDigitacaoForm.xhtml" />
 	<ui:include src="contratoDigitacaoFormDialogos.xhtml" />
-	<ui:include src="contratoDigitacaoFormDialogosContratosDisponiveis.xhtml" />
-	
+	<ui:include
+		src="contratoDigitacaoFormDialogosContratosDisponiveis.xhtml" />
+
 
 </ui:composition>
 </html>

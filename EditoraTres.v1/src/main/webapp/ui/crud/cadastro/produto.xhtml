@@ -21,7 +21,7 @@
 						</div>
 						<div>
 							<h3><b>
-							Produto
+							Produtos
 							</b></h3>
 						</div>
 					</div>
@@ -37,7 +37,7 @@
 							<div class="col">
 								<p:commandLink style="font-size: 20px !important;" update=":produtoForm"
 									actionListener="#{produtoController.prepararNovo()}"
-									oncomplete="PF('_produtoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_produtoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -81,9 +81,9 @@
 									<h:outputText value="#{item.descricao}" />
 								</p:column>
 								
-								<p:column  >
+								<p:column  style="text-align: center">
 									<f:facet name="header">
-										<h:outputText value="Tipo assinatura" />
+										<h:outputText value="Tipo assinatura(Meses)" />
 									</f:facet>
 									<h:outputText value="#{item.tipoassinatura}" />
 								</p:column>
@@ -103,7 +103,7 @@
 										</p:commandLink>
 										<p:commandLink update=":produtoForm"
 											actionListener="#{produtoController.prepararEditar(item)}"
-											oncomplete="PF('_produtoDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){PF('_produtoDialog').show();}" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>

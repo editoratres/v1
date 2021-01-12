@@ -15,7 +15,9 @@ import org.primefaces.PrimeFaces;
 
 import editora3.entidades.ContratoEntrada;
 import editora3.entidades.ContratoSaida;
+import editora3.facade.AuditoriaFacade;
 import editora3.facade.ContratoEntradaFacade;
+import editora3.seguranca.AutorizacaoRecurso;
 import editora3.util.JsfUtil;
 @Named("contratoEntradaController") 
 @RequestScoped
@@ -28,6 +30,12 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 	private
 	ContratoEntradaFacade contratoEntradaFacade;
 	
+	@Inject
+	private AuditoriaFacade auditoriaFacade;  
+	
+	@Inject
+	private AutorizacaoRecurso autorizacaoRecurso; 
+	
 	@Override
 	public void excluir(ContratoEntrada item) {
 		// TODO Auto-generated method stub
@@ -39,8 +47,10 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 		    	FacesContext.getCurrentInstance().validationFailed();
 		    	return;
 			}else {
-				getContratoEntradaFacade().excluirEntradaContrato(item);
-				setItens(null);
+				if(autorizacaoRecurso.VerificarAcesso("ContratoEntrada", "excluir",true,item.getCodigo().toString() + " - Faixa : " + item.getFaixainicial().toString() + " até "+ item.getFaixafinal().toString() ,true)) {
+					getContratoEntradaFacade().excluirEntradaContrato(item);
+					setItens(null);
+				}
 			}
 		
 		} catch (Exception e) {
@@ -71,7 +81,10 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 
 	@Override
 	public void prepararNovo() {
-		setItem(new ContratoEntrada()); 
+		if(autorizacaoRecurso.VerificarAcesso("ContratoEntrada", "criar",true,null,false)) {
+
+			setItem(new ContratoEntrada()); 
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -115,6 +128,7 @@ public class ContratoEntradaController implements AbstractController<ContratoEnt
 		    if(item.getCodigo()==null) {
 		    	item.setData(new Date());
 		    	getContratoEntradaFacade().criarEntrada(item);
+		    	auditoriaFacade.auditar("ContratoEntrada", "criar", item.getCodigo().toString() + " - Faixa : " + item.getFaixainicial().toString() + " até "+ item.getFaixafinal().toString());
 		    	JsfUtil.addSuccessMessage("Entrada de contrato criada com sucesso", "Procedimento OK");
 		    	
 		    }

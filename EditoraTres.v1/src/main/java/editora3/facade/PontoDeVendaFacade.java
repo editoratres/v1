@@ -28,6 +28,55 @@ public class PontoDeVendaFacade extends AbstractFacade<PontoDeVenda> {
 		return em;
 	}
 	
+	public Integer totalContratosDoPontoDeVenda(Integer pontodevendabean) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(c.*) from Contrato c  where not c.inclusao is null"
+									+ (pontodevendabean != null ? "  and c.pontodevendabean=:pontodevendabean" : ""));
+			if (pontodevendabean != null) {
+				createQuery.setParameter("pontodevendabean", pontodevendabean);
+			}
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
+	}
+	
+	public Integer totalSaidasBrindesParaPontoDeVenda(Integer pontodevendabean) {
+		Integer ret = 0;
+		try {
+			Query createQuery = getEntityManager()
+					.createNativeQuery("select count(c.*) from brinde_saida c  where c.datacancelamento is null "
+									+ (pontodevendabean != null ? "  and c.pontodevendabean=:pontodevendabean" : ""));
+			if (pontodevendabean != null) {
+				createQuery.setParameter("pontodevendabean", pontodevendabean);
+			}
+
+			Object singleResult = createQuery.getSingleResult();
+			if(singleResult!=null) {
+				ret = Integer.valueOf(singleResult.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+
+		return ret;
+
+	}
+
+	
 	public PontoDeVenda localizarPorNome(String nome) {
 		PontoDeVenda c = null;
 		
@@ -50,4 +99,6 @@ public class PontoDeVendaFacade extends AbstractFacade<PontoDeVenda> {
 		 ret= (ArrayList<PontoDeVenda>) createNativeQuery.getResultList();
 		return ret;
 	}
+	
+	
 }

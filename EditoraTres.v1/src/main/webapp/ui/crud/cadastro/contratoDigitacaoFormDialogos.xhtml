@@ -16,232 +16,333 @@
 				<p:dataTable styleClass="table" id="datalistProdutos"
 					widgetVar="_datalistProdutos" rowExpandMode="single"
 					value="#{contratoController.ofertasDisponiveis}" var="oferta"
-					emptyMessage="Nenhum registro localizado" paginator="false"
-					rowKey="#{oferta.codigo}" scrollable="true"
-					disabled="#{contratoController.editar}" scrollRows="10"
-					scrollHeight="330">
-					<p:column style="width:16px">
+					emptyMessage="Nenhum registro localizado" paginator="true"
+					rows="10" lazy="true" rowKey="#{oferta.codigo}"
+					disabled="#{contratoController.editar}">
+					<p:column width="5%">
 						<p:rowToggler />
 					</p:column>
 					<p:rowExpansion>
-						<br />
-						<center>
-							<h4>
-								<b>OPÇÕES DE PARCELAMENTO DISPONIVÉIS</b>
-							</h4>
-						</center>
-						<center>
-							<h6>
-								<b>Selecione uma das opções abaixo</b>
-							</h6>
-						</center>
-						<p:dataTable styleClass="table" id="datalistOfertaItes"
-							widgetVar="_datalistOfertaItes" value="#{oferta.ofertaItens}"
-							var="ofertaItens" emptyMessage="Nenhum registro localizado"
-							paginator="false" rowKey="#{ofertaItens.codigo}"
-							style="margin: 10px !important;" scrollable="true"
-							scrollWidth="700" frozenColumns="2"
-							disabled="#{contratoController.editar}">
+						<fieldset class="border p-4" style="margin: 30px !important;background-color: gainsboro;">
+							<legend class="w-auto">
+								<b>Parcelamentos disponíveis</b>
+							</legend>
 
-							<p:column headerText="Edição">
-								<h:outputText value="#{ofertaItens.edicao}"
-									style="font-size : 13px" />
-							</p:column>
+							<p:dataTable styleClass="table" id="datalistOfertaItes"
+								widgetVar="_datalistOfertaItes" value="#{oferta.ofertaItens}"
+								var="ofertaItens" emptyMessage="Nenhum registro localizado"
+								paginator="false" rowKey="#{ofertaItens.codigo}"
+								style="margin: 10px !important;" scrollable="true"
+								scrollWidth="650" frozenColumns="2"
+								disabled="#{contratoController.editar}">
 
-							<p:column headerText="Valor Base">
-								<h:outputText value="#{ofertaItens.valorbase}"
-									style="font-size : 13px">
-									<f:convertNumber type="currency" currencySymbol="" />
-								</h:outputText>
-							</p:column>
+								<p:column headerText="Edição"  >  
+									<h:outputText value="#{ofertaItens.edicao}"
+										style="font-size : 13px" />
+								</p:column>
 
-							<p:column style="align-content : center !important;"
-								headerText="1 Parc." width="8%">
-								<f:facet name="1 Parc.">
-									<h:outputText value="Vl.Parc." />
-								</f:facet>
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez1==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez1,1)}">
-									<h:outputText value="#{ofertaItens.vez1}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
+								<p:column headerText="Valor Base"  width="8%">
+									<h:outputText value="#{ofertaItens.valorbase}"
+										style="font-size : 13px">
 										<f:convertNumber type="currency" currencySymbol="" />
 									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="2 Parc." width="8%">
+								</p:column>
 
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez2==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez2,2)}">
-									<h:outputText value="#{ofertaItens.vez2}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="3 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez3==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez3,3)}">
-									<h:outputText value="#{ofertaItens.vez3}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="4 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez4==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez4,4)}">
-									<h:outputText value="#{ofertaItens.vez4}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="5 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez5==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez5,5)}">
-									<h:outputText value="#{ofertaItens.vez5}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="6 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez6==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez6,6)}">
-									<h:outputText value="#{ofertaItens.vez6}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="7 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez7==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez7,7)}">
-									<h:outputText value="#{ofertaItens.vez7}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="8 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez8==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez8,8)}">
-									<h:outputText value="#{ofertaItens.vez8}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="9 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez9==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez9,9)}">
-									<h:outputText value="#{ofertaItens.vez9}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="10 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez10==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez10,10)}">
-									<h:outputText value="#{ofertaItens.vez10}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="11 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez11==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez11,11)}">
-									<h:outputText value="#{ofertaItens.vez11}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
-							<p:column style="align-content : center !important;"
-								headerText="12 Parc." width="8%">
-								<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
-									disabled="#{ofertaItens.vez12==0 ? true : false}"
-									update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
-									actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez12,12)}">
-									<h:outputText value="#{ofertaItens.vez12}"
-										style="font-size : 13px; font-weight: bold;align-text: center !important;">
-										<f:convertNumber type="currency" currencySymbol="" />
-									</h:outputText>
-								</p:commandLink>
-							</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="1 Parc." width="8%">
+									<f:facet name="1 Parc.">
+										<h:outputText value="Vl.Parc." />
+									</f:facet>
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez1==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez1,1)}">
+										<h:outputText value="#{ofertaItens.vez1}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="2 Parc." width="8%">
+
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez2==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez2,2)}">
+										<h:outputText value="#{ofertaItens.vez2}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="3 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez3==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez3,3)}">
+										<h:outputText value="#{ofertaItens.vez3}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="4 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez4==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez4,4)}">
+										<h:outputText value="#{ofertaItens.vez4}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="5 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez5==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez5,5)}">
+										<h:outputText value="#{ofertaItens.vez5}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="6 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez6==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez6,6)}">
+										<h:outputText value="#{ofertaItens.vez6}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="7 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez7==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez7,7)}">
+										<h:outputText value="#{ofertaItens.vez7}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="8 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez8==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez8,8)}">
+										<h:outputText value="#{ofertaItens.vez8}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="9 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez9==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez9,9)}">
+										<h:outputText value="#{ofertaItens.vez9}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="10 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez10==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez10,10)}">
+										<h:outputText value="#{ofertaItens.vez10}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="11 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez11==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez11,11)}">
+										<h:outputText value="#{ofertaItens.vez11}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
+								<p:column style="align-content : center !important;"
+									headerText="12 Parc." width="8%">
+									<p:commandLink oncomplete="PF('_idConsultaProdutos').hide();"
+										disabled="#{ofertaItens.vez12==0 ? true : false}"
+										update=":contratoForm:idvalorcartao  :contratoForm:datalistitens :contratoForm:datalistBrindes :contratoForm:idTotalProdutos  :contratoForm:idTotalProdutosParcela :contratoForm:idTotalBrindes"
+										actionListener="#{contratoController.atualizarProdutoConsultadoNoGrid(oferta.produtoBean,ofertaItens,ofertaItens.vez12,12)}">
+										<h:outputText value="#{ofertaItens.vez12}"
+											style="font-size : 13px; font-weight: bold;align-text: center !important;">
+											<f:convertNumber type="currency" currencySymbol="" />
+										</h:outputText>
+									</p:commandLink>
+								</p:column>
 
 
 
-						</p:dataTable>
+							</p:dataTable>
+						</fieldset>
 					</p:rowExpansion>
-					<p:column headerText="Cod.Oferta" filterBy="#{oferta.codigo}"
+					<p:column  width="5%" headerText="Cod.Oferta" filterBy="#{oferta.codigo}"
 						filterMatchMode="contains">
 						<h:outputText value="#{oferta.codigo}" />
 					</p:column>
-					<p:column headerText="Cod. Produto"
+					<p:column  width="5%" headerText="Cod. Produto"
 						filterBy="#{oferta.produtoBean.codigo}" filterMatchMode="contains">
 						<h:outputText value="#{oferta.produtoBean.codigo}" />
 					</p:column>
 
-					<p:column width="30%" headerText="Produto"
+					<p:column width="25%" headerText="Produto"
 						filterBy="#{oferta.produtoBean.descricao}"
 						filterMatchMode="contains">
 
 						<h:outputText value="#{oferta.produtoBean.descricao}" />
 					</p:column>
 
-					<p:column width="25%" headerText="Brinde"
-						filterBy="#{oferta.brindeBean.descricao}"
-						filterMatchMode="contains">
+					<p:column width="40%">
+						<f:facet name="header">
+							<h:outputText value="Brindes" />
+						</f:facet>
 
-						<h:outputText value="#{oferta.brindeBean.descricao}" />
-					</p:column>
+						<ui:repeat var="itemBrinde" value="#{oferta.ofertaBrindes}">
+							<h:panelGrid columns="2" style="border : hidden !important;text-align: center;" >
+								<h:column>
+									<p:row style="border : hidden !important;">
+										<h:outputText value="#{itemBrinde.brindeBean.descricao} (#{itemBrinde.quantidade})" />
+									</p:row>
+								</h:column>
+								<h:column>
+									<p:row style="border : hidden !important;text-align: right;">
+										<h:outputText  
+											value="#{itemBrinde.brindeBean.valor}">
+											<f:convertNumber type="currency" currencySymbol="R$" />
+										</h:outputText>
+									</p:row>
+								</h:column>
+							</h:panelGrid>
 
-					<p:column headerText="Vlr. Brinde">
-						<h:outputText value="#{oferta.brindeBean.valor}">
-							<f:convertNumber type="currency" currencySymbol="R$" />
-						</h:outputText>
+						</ui:repeat>
+
 					</p:column>
+					
+						<p:column width="15%" headerText="Equipe">
+							
+							<ui:repeat var="itemEquipe" value="#{oferta.ofertaEquipe}">
+							 
+							  <ui:fragment 
+							  	rendered="#{contratoController.loginInfo.codigoEquipeVinculada==null or (contratoController.loginInfo.codigoEquipeVinculada!=null and  contratoController.loginInfo.codigoEquipeVinculada==itemEquipe.equipeBean.codigo) ? true : false}"  
+							  >
+								<h:outputText 
+									 
+									value="#{itemEquipe.equipeBean.descricao}" />
+									 
+								 <br/>
+								</ui:fragment> 
+							</ui:repeat>
+						</p:column>
+					 
 
 
 				</p:dataTable>
 			</p:outputPanel>
 		</h:form>
 	</p:dialog>
+	<p:dialog modal="true" appendTo="@(body)" appendToBody="true"
+		width="40%" height="130" header="Conceder deconto"
+		id="idConcederDesconto" closeOnEscape="true"
+		widgetVar="_idConcederDesconto">
+		<h:form id="FormConcederDesconto">
+			<div class="form-row">
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+
+						<label for="descontoConcedidoValorContrato">Valor do
+							Contrato</label>
+						<p:inputNumber id="descontoConcedidoValorContrato"
+							readonly="true"
+							styleClass="textFieldDesativado"
+							value="#{contratoController.item.pagamentoBean.valor}"
+							style="width : 90%" type="text" decimalPlaces="2">
+						</p:inputNumber>
+					</div>
+				</div>
+			
+			 
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+
+						<label for="descontoConcedidoValorDesconto">Valor do
+							Desconto</label>
+						<p:inputNumber id="descontoConcedidoValorDesconto" 
+							title="O valor do desconto não pode ultrapassar o valor do contrato"
+							onfocus="this.select();"
+							value="#{contratoController.item.valorDesconto}"
+							style="width : 90%" type="text" minValue="0"
+							maxValue="#{contratoController.item.pagamentoBean.valor}"
+							decimalPlaces="2"
+							validatorMessage="Comissão inválida . Informe um valor válido #{contratoController.item.pagamentoBean.valor}">
+							<p:ajax event="keyup" process="descontoConcedidoValorDesconto" update="descontoConcedidoValorFinal"/>
+						</p:inputNumber>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="position-relative form-group">
+
+						<label for="descontoConcedidoValorFinal">Valor Final</label>
+						<p:inputNumber id="descontoConcedidoValorFinal"
+							readonly="true"
+							styleClass="textFieldDesativado"
+							value="#{contratoController.item.pagamentoBean.valor - (contratoController.item.valorDesconto==null ? 0  : contratoController.item.valorDesconto)}"
+							style="width : 90%" type="text" decimalPlaces="2">
+						</p:inputNumber>
+					</div>
+				</div>
+			</div>
+			<br/>
+
+			<div style="text-align: center !important;">
+
+				<p:commandLink
+					actionListener="#{contratoController.concederDesconto()}"
+					update=":_FormularioContratos:datalist :growl"
+					oncomplete="if (!args.validationFailed) PF('_idConcederDesconto').hide();"
+					styleClass="mb-2 mr-2 btn-transition btn btn-outline-primary"
+					type="submit">
+					<i class="fa fa-check"> </i>  Confirmar desconto
+			 	<p:confirm header="Conceder desconto"
+						message="Deseja confirma esta operação?" icon="ui-icon-alert" />
+
+				</p:commandLink>
+
+			</div>
+			<p:confirmDialog global="true" showEffect="clip" hideEffect="clip">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</p:dialog>
+
 	<p:dialog modal="true" appendTo="@(body)" appendToBody="true"
 		width="70%" height="400" header="Consulta de brindes"
 		id="idConsultaBrindes" closeOnEscape="true"
@@ -276,8 +377,8 @@
 
 								<div class="col-md-12">
 									<p:dataGrid var="estoquequipe"
-										value="#{brindeController.equipeDisponiveis(contratoController.loginInfo.codigoEquipeVinculada)}" columns="3"
-										layout="grid" rows="12">
+										value="#{brindeController.equipeDisponiveis(contratoController.loginInfo.codigoEquipeVinculada)}"
+										columns="3" layout="grid" rows="12">
 
 										<p:dataTable styleClass="table-editora"
 											rendered="#{brindeController.retornaEstoquePorEquipe(brindesconsulta.codigo,estoquequipe.codigo).isEmpty() ? false : true}"

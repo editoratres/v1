@@ -21,7 +21,7 @@
 						</div>
 						<div>
 							<h3><b>
-							Saida de contratos
+							Saidas de contratos
 							</b></h3>
 						</div>
 					</div>
@@ -37,9 +37,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":contratoSaidaForm"
+								<p:commandLink style="font-size: 20px !important;" update=":contratoSaidaForm, :growl"
 									actionListener="#{contratoSaidaController.prepararNovo()}"
-									oncomplete="PF('_saidaContratoDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_saidaContratoDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -55,7 +55,7 @@
 						<div class="card-header-tab card-header-tab-animation card-header">
 							<div class="card-header-title">
 								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
-								</i>Listagem de saída de contratos
+								</i>Listagem de saídas de contratos
 							</div>
 						</div> 
 						<div class="card-body">

@@ -21,7 +21,7 @@
 						</div>
 						<div>
 							<h3><b>
-							Fornecedor
+							Fornecedores
 							</b></h3>
 						</div>
 					</div>
@@ -35,9 +35,9 @@
 								</p:commandLink>
 							</div>
 							<div class="col">
-								<p:commandLink style="font-size: 20px !important;" update=":fornecedorForm"
+								<p:commandLink style="font-size: 20px !important;" update=":fornecedorForm, :growl"
 									actionListener="#{fornecedorController.prepararNovo()}"
-									oncomplete="PF('_fornecedorDialog').show();" id="btAdicionar">
+									oncomplete="if(!args.validationFailed){PF('_fornecedorDialog').show();}" id="btAdicionar">
 									<i class="fas fa-plus-circle" />
 								</p:commandLink>
 
@@ -87,9 +87,9 @@
 												message="Deseja confirma esta operação?"
 												icon="ui-icon-alert" />
 										</p:commandLink>
-										<p:commandLink update=":fornecedorForm"
+										<p:commandLink update=":fornecedorForm, :growl"
 											actionListener="#{fornecedorController.prepararEditar(item)}"
-											oncomplete="PF('_fornecedorDialog').show();" style="font-size: 20px">
+											oncomplete="if(!args.validationFailed){PF('_fornecedorDialog').show();}" style="font-size: 20px">
 											<i class="metismenu-icon pe-7s-note" />
 										</p:commandLink>
 									</center>

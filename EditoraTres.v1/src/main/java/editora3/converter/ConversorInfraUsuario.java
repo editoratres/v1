@@ -26,7 +26,7 @@ public  class ConversorInfraUsuario implements Converter  {
 			} else {
 				InfraUsuarioController controller = (InfraUsuarioController) facesContext.getApplication().getELResolver()
 						.getValue(facesContext.getELContext(), null, "infraUsuarioController");
-				if(value!=null && !value.equalsIgnoreCase("selecione")) {	
+				if(value!=null && !value.equalsIgnoreCase("selecione") && !value.equalsIgnoreCase("Todos os usuários") ) {	
 					find = controller.getFacade().find(value != null ? Integer.valueOf(value) : 0);
 				}
 
