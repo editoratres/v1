@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+	<f:metadata>
+		<f:viewAction action="#{auditoriaController.atualizar()}" />
+	</f:metadata>
+	<h:form id="_Formulario">
+		<div class="app-main__inner">
+			<div class="app-page-title">
+				<div class="page-title-wrapper">
+					<div class="page-title-heading" style="width: 90%">
+						<div class="page-title-icon">
+							<i class="fa fa-user icon-gradient bg-premium-dark"> </i>
+						</div>
+						<div>
+							<h3><b>Auditoria</b></h3>
+							<!-- <div class="page-title-subheading">SUBTITULO</div> -->
+						</div>
+					</div>
+					<div class="page-title-actions" style="width: 10%">
+						<div class="row">
+							 <div class="col">
+								<p:commandLink style="font-size: 20px !important;"
+									actionListener="#{auditoriaController.atualizar()}"
+									update="datalist" id="btAtualizar">
+									<i class="fas fa-sync-alt" />
+								</p:commandLink>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div   class="main-card mb-3 card">
+						<div class="card-header-tab card-header-tab-animation card-header">
+							<div class="card-header-title">
+								<i class="header-icon lnr-apartment icon-gradient bg-love-kiss">
+								</i>Listagem de eventos auditados
+							</div>
+						</div>
+						<div  class="card-body">
+							<div class="row">
+								<p:dataTable id="datalist" styleClass="table-editora"
+									value="#{auditoriaController.auditoriaDisponiveis}" var="item"
+									 paginatorPosition="bottom"
+									emptyMessage="Nenhum registro localizado"
+									widgetVar="_datalist"
+									lazy="true"
+									selection="#{auditoriaController.selected}" paginator="true"
+									rowKey="#{item.id}" rows="10"
+									>
+
+									<p:column width="20%" sortBy="#{item.datahora}">
+										<f:facet name="header">
+											<h:outputText value="Período" />
+											<div class="form-row" style="font-size: 0.7rem !important;">
+												<div class="col-md-6">
+													<p:calendar size="5"  inputStyle="padding: 0.1px;" value="#{auditoriaController.inicio}" showOn="button" >
+														 <p:ajax  event="dateSelect" onsuccess="PF('_datalist').filter();" />
+													</p:calendar>
+												</div>
+												 
+												<div class="col-md-6">
+													<p:calendar  size="5"  inputStyle="padding: 0.1px;"  value="#{auditoriaController.termino}" showOn="button" >
+														<p:ajax event="dateSelect" onsuccess="PF('_datalist').filter();" />
+													</p:calendar>
+												</div>
+											</div> 
+										</f:facet>
+										<h:outputText value="#{item.datahora}" >
+											<f:convertDateTime pattern="dd/MM/yy hh:mm:ss" />
+										</h:outputText>
+									</p:column>
+									<p:column width="20%" sortBy="#{item.idusuario.nome}" filterMatchMode="contains" filterBy="#{item.idusuario.nome}">
+										<f:facet name="filter">
+
+											<h:selectOneMenu styleClass="form-control"
+												onchange="PF('_datalist').filter()"
+												converter="editora3.converter.ConversorInfraUsuario" var="u"
+												id="idusuario">
+												<f:selectItem itemValue="0" itemLabel="Todos os usuários"
+													noSelectionOption="true" />
+												<f:selectItems value="#{auditoriaController.usuarios}"
+													var="usuarios" itemLabel="#{usuarios.nome}"
+													itemValue="#{usuarios}" />
+												<p:column style="width:10%">
+													<h:outputText value="#{u.usuario}" />
+												</p:column>
+												<p:column>
+													<h:outputText value="#{u.nome}" />
+												</p:column>
+											</h:selectOneMenu>
+
+										</f:facet> 
+										<f:facet name="header">
+											<h:outputText value="Usuário" />
+										</f:facet>
+										<h:outputText value="#{item.idusuario.nome}" />
+									</p:column>
+									<p:column width="20%" sortBy="#{item.idmodulo.descricao}"  filterBy="#{item.idmodulo.descricao}">
+										<f:facet name="filter">
+											<h:selectOneMenu styleClass="form-control"
+												onchange="PF('_datalist').filter()"
+												converter="editora3.converter.conversorInfraModulos" var="m"
+												id="idmodulo">
+												<f:selectItem itemValue="0" itemLabel="Todos os módulos"
+													noSelectionOption="true" />
+												<f:selectItems value="#{auditoriaController.modulos}"
+													var="modulo" itemLabel="#{modulo.descricao}"
+													itemValue="#{modulo}" />
+												 
+												<p:column>
+													<h:outputText value="#{m.descricao}" />
+												</p:column>
+											</h:selectOneMenu>
+										</f:facet>
+										<f:facet name="header">
+											<h:outputText value="Módulo" />
+										</f:facet>
+										<h:outputText value="#{item.idmodulo.descricao}" />
+									</p:column>
+									<p:column width="7%" style="text-align: center;">
+										<f:facet name="header">
+											<h:outputText value="Criar" />
+										</f:facet>
+										<p:commandLink >
+											<i class="#{item.criar ? 'fa fa-check' : '' }" />
+										</p:commandLink>
+									</p:column>
+									<p:column width="7%" style="text-align: center;">
+										<f:facet name="header">
+											<h:outputText value="Editar" />
+										</f:facet>
+										
+										<p:commandLink style="text-align: center;">
+											<i class="#{item.editar ? 'fa fa-check' : '' }" />
+										</p:commandLink>
+									</p:column>
+									<p:column width="7%" style="text-align: center;">
+										<f:facet name="header">
+											<h:outputText value="Excluir" />
+										</f:facet>
+										<p:commandLink style="text-align: center;">
+											<i class="#{item.excluir ? 'fa fa-check' : '' }" />
+										</p:commandLink>
+									</p:column>
+									 
+									<p:column width="25%" sortBy="#{item.detalhe}" filterBy="#{item.detalhe}">
+										<f:facet name="header">
+											<h:outputText value="Detalhe" />
+										</f:facet>
+										<h:outputText value="#{item.detalhe}" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+
+	 
+
+</ui:composition>
+</html>
